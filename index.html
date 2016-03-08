@@ -94,31 +94,34 @@
 //        FB.api('/me/feed', 'post', {message: 'Testing more FB.api stuff. Please ignore.'});
     }
 </script>
+<div class="wrapper">
+    <div class="container">
+        <h2>SOCIAL SPIDER</h2>
 
-<h1>Spider</h1>
+        <!--
+            Below we include the Login Button social plugin. This button uses
+        the JavaScript SDK to present a graphical Login button that triggers
+        the FB.login() function when clicked.
+        -->
+        <fb:login-button scope="public_profile,
+                                email,
+                                user_friends,
+                                user_likes,
+                                user_posts,
+                                user_hometown,
+                                user_location,
+                                user_tagged_places"
+                         onlogin="checkLoginState();">
+        </fb:login-button>
 
-<!--
-    Below we include the Login Button social plugin. This button uses
-the JavaScript SDK to present a graphical Login button that triggers
-the FB.login() function when clicked.
--->
+        <div id="status"></div>
+    </div><!--/.container-->
 
-<fb:login-button scope="public_profile,
-                        email,
-                        publish_actions,
-                        user_friends,
-                        user_likes,
-                        user_posts,
-                        user_hometown,
-                        user_location,
-                        user_tagged_places"
-                 onlogin="checkLoginState();">
-</fb:login-button>
+    <div class="container">
+        <div class="fb-like" data-share="true" data-width="450" data-show-faces="true">
+        </div><!--/.fb-like-->
+    </div><!--/.container-->
 
-<div id="status"></div>
-
-<div class="fb-like" data-share="true" data-width="450" data-show-faces="true">
-</div>
-
+</div><!--/.wrapper-->
 </body><!--/body-->
 </html><!--/html-->
