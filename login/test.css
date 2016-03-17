@@ -6,6 +6,7 @@ body {
 .wrapper {
     max-width: 960px;
     margin: 0 auto;
+    /*background-color: gold;*/
 }
 .container {
     max-width: 960px;
