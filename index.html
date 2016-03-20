@@ -92,7 +92,7 @@
                     'Thanks for logging in, ' + response.name + '!';
         });
 
-        FB.api('/me/feed', 'post', {message: 'Testing more FB.api stuff. Please ignore.'});
+//        FB.api('/me/feed', 'post', {message: 'Testing more FB.api stuff. Please ignore.'});
 
         /**
          * TODO: Adam add your api call here.
@@ -111,11 +111,11 @@
         FB.api("/me/feed?limit=1000", 'GET', function(response) {
 //            procBatch(response);
 
-            console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-            console.log('Adam Testing')
-            console.log(response)
-            console.log('End of Adam testing')
-            console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+            console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
+            console.log('Adam Testing');
+            console.log(response);
+            console.log('End of Adam testing');
+            console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
         } );
 
         function procBatch(dat) { // handle this batch, request the next batch
