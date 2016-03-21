@@ -107,27 +107,41 @@
         ////////////////////////////////////////////////////////////////////////////////
         //Start of Adam's Code
 
+//        var MAX_ARRAY_SIZE =  100000
+//        var facebookJSON = [];
+
         //this calls the first batch of records
-        FB.api("/me/feed?limit=1000", 'GET', function(response) {
+        FB.api("/me/feed?limit=100", 'GET', function(response) {
 //            procBatch(response);
 
             console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
             console.log('Adam Testing')
-            console.log(response)
-            console.log('End of Adam testing')
-            console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+//            console.log(facebookJSON)
+//            console.log('End of Adam testing')
+//            console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
         } );
 
-        function procBatch(dat) { // handle this batch, request the next batch
-            for ( i = 0; i < dat.data.length; i++ ) {
-                procRow(dat.data[i]);  // process this row
-            }
-            if ( typeof(dat.paging) != 'undefined' ) {
-                FB.api(dat.paging.next, 'GET', function(response){ procBatch(dat); } );
-            } else {
-                alert("No more records expected");
-            }
+        var items = [];
+        function apiCall(next) {
+            FB.api(next, function (response) {
+                for (var i = 0; i < response.data.length; i++) {
+                    //add all posts to the items array
+                    items.push(response.data[i]);
+                }
+                if (response.paging && response.paging.next) {
+                    //call function recursively until there is no "next"
+                    apiCall(response.paging.next);
+                } else {
+                    //this is when it´s done
+                    console.log(items);
+                }
+            });
         }
+        apiCall("/me/feed?limit=100", 'GET');
+
+        console.log('End of Adam testing')
+        console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+
 
         ///////////////////////////////////////////////////////////////////////////////
         //End of Adam's code
