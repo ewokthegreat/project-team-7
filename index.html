@@ -92,8 +92,10 @@
                     'Thanks for logging in, ' + response.name + '!';
         });
 
-        FB.api('/me/feed', 'post', {message: 'Testing more FB.api stuff. Please ignore.'});
-
+//        FB.api('/me/feed', 'post', {message: 'Testing more FB.api stuff. Please ignore.'});
+        FB.api('/me/picture?type=normal', function(response) {
+            console.log(response.data.url);
+        });
         /**
          * TODO: Adam add your api call here.
          * TODO: READ THIS ADAM -- Concat 2 arrays

@@ -233,7 +233,7 @@ body {
     width: 100%;
     display: block;
     box-sizing: border-box; /* modern way to say width:100% without padding */
-    background-color: transparent;
+    background-color: #4267B2;
     border: 2px solid #fff;
     padding: 15px 20px;
     margin-bottom: 10px;
