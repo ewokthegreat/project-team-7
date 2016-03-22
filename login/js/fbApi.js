@@ -46,5 +46,5 @@ window.fbAsyncInit = function() {
         }
     }, 'My pickle is a beautiful girl.');
 
-    _testes(_testesCb, 'My dick belongs in a pickle!');
+    _testes(_testesCb, 'My sharona!');
 };
