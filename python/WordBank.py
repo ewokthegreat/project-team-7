@@ -1,21 +1,18 @@
 import csv
 
-#Constructor for WordBank Class. A class that accesses a csv file and creates a list from it.
+# Constructor for WordBank Class. A class that accesses a csv file and creates a list from it.
 class WordBank:
-    def __init__(self, wordBankList,file):
-        self.wordBankList = wordBankList
-        self.file = file
 
-        self.setUpWordBank()
-
-    def setUpWordBank(self):
-        f = open(self.file)
+    def setUpWordBank(self, wordBankList=[], file=''):
+        f = open(file)
         csv_f = csv.reader(f)
 
-        self.wordBankList = []
+        wordBankList = []
         for row in csv_f:
-            self.wordBankList.append(row)
+            wordBankList.append(row)
 
-        print (self.wordBankList)
+        print (wordBankList)
 
-wordBank = WordBank([],'../doc/SpiderWordBank.csv')
+#
+wordBank = WordBank()
+wordBank.setUpWordBank([],'../doc/SpiderWordBank.csv')
