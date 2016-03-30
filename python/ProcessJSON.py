@@ -1,14 +1,27 @@
 import json
-import _mysql
-from WordBank import setUpWordBank
+# import _mysql
 
 obj_json = u'{"answer":[42], "abs":42}'
 
-try:
-    mysql_connection = _mysql.connect(user='',passwd='',
-                                      host='',db='')
-except mysql.connector.Error as err:
-    print (err)
+# try:
+#     mysql_connection = _mysql.connect(user='',passwd='',
+#                                       host='',db='')
+# except mysql.connector.Error as err:
+#     print (err)
+
+class WordBank:
+
+    def setUpWordBank(self, wordBankList=[], file=''):
+        f = open(file)
+        csv_f = csv.reader(f)
+
+        wordBankList = []
+        for row in csv_f:
+            wordBankList.append(row)
+
+        print (wordBankList)
+
+
 
 
 class FBTextPost(object):
@@ -17,7 +30,7 @@ class FBTextPost(object):
 
 fbTest = FBTextPost(obj_json)
 
-setUpWordBank([],'../doc/SpiderWordBank.csv')
+WordBank.setUpWordBank([],'../doc/SpiderWordBank.csv')
 
 
 

@@ -14,5 +14,5 @@ class WordBank:
         print (wordBankList)
 
 #
-wordBank = WordBank()
-wordBank.setUpWordBank([],'../doc/SpiderWordBank.csv')
+# wordBank = WordBank()
+# wordBank.setUpWordBank([],'../doc/SpiderWordBank.csv')
