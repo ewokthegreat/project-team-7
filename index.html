@@ -119,7 +119,7 @@
 //        var facebookJSON = [];
 
         //this calls the first batch of records
-        FB.api("/me/feed?limit=100", 'GET', function(response) {
+        FB.api("/me/feed?limit=100&fields=video.watches", 'GET', function(response) {
 //            procBatch(response);
 
             console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
@@ -129,12 +129,15 @@
 //            console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
         });
 
+        //Clark is watching this!
+//        FB.api("me/user_actions.video")
         var items = [];
         function apiCall(next) {
             FB.api(next, function (response) {
                 for (var i = 0; i < response.data.length; i++) {
+                    var currentData = response.data[i];
                     //add all posts to the items array
-                    items.push(response.data[i]);
+                    items.push(currentData);
                 }
                 if (response.paging && response.paging.next) {
                     //call function recursively until there is no "next"
@@ -173,6 +176,7 @@
                                 user_hometown,
                                 user_location,
                                 user_tagged_places"
+
                          onlogin="checkLoginState();">
         </fb:login-button>
 
