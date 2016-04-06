@@ -8,6 +8,7 @@ window.fbAsyncInit = function() {
     });
 
     FB.getLoginStatus(function(response) {
+        
         console.log(response);
 
         var xhr = new XMLHttpRequest();

@@ -5,5 +5,5 @@
  * Date: 4/5/2016
  * Time: 9:26 PM
  */
-echo 'dick';
+echo json_encode(array("blahblahblah"=>$_POST["authResponse"]));
 ?>

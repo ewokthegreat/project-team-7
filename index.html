@@ -22,7 +22,17 @@
         // for FB.getLoginStatus().
         if (response.status === 'connected') {
             // Logged into your app and Facebook.
-            console.log(response.authResponse);
+            
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/spider/login/php/test.php');
+            xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            xhr.onload = function() {
+                console.log(xhr.responseText);
+            };
+            xhr.send(JSON.stringify({
+                authResponse: response.authResponse
+            }));
+
             testAPI();
         } else if (response.status === 'not_authorized') {
             // The person is logged into Facebook, but not your app.
