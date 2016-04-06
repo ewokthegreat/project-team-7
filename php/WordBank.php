@@ -12,6 +12,7 @@ class WordBankHandler{
         $file = $passedFile;
 
         if(!file_exists($file) || !is_readable($file))
+            echo 'FALSE!';
             return FALSE;
 
         $header = NULL;

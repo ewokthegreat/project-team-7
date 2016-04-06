@@ -6,9 +6,15 @@
  * Time: 10:30 PM
  */
 require_once '../libs/facebook-php-sdk-v4-5.0.0/src/Facebook/autoload.php';
-//$wordBank = WordBankHandler::getWordBank('../doc/SpiderWordBank.csv');
+require 'WordBank.php';
+
+$wordBank = WordBankHandler::getWordBank('../../doc/SpiderWordBank.php');
+
+echo 'Herro\n';
+print_r($wordBank);
+
 $totalPosts = getAllPosts();
-flagPosts(['netflix', 'Trump'], $totalPosts);
+flagPosts($wordBank, $totalPosts);
 //getAllPosts();
 
 /**TODO:
