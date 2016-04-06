@@ -8,8 +8,8 @@
 
 class WordBankHandler{
 
-    public static function getWordBank(){
-        $file = "../doc/SpiderWordBank.csv";
+    public static function getWordBank($passedFile = ''){
+        $file = $passedFile;
 
         if(!file_exists($file) || !is_readable($file))
             return FALSE;

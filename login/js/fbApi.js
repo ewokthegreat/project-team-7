@@ -11,14 +11,18 @@ window.fbAsyncInit = function() {
 
     FB.login(function(response) {
         if (response.authResponse) {
-            alert('You are logged in and cookie set!');
+            console.log('You are logged in and cookie set!');
             // Now you can redirect the user or do an AJAX request to
             // a PHP script that grabs the signed request from the cookie.
 
-            $.post("/spider/login/php/test.php", { json_string:JSON.stringify({name:"John", time:"2pm"}) });
-
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/spider/php/ProcessFBPosts.php');
+            xhr.onload = function() {
+                console.log(xhr.responseText);
+            };
+            xhr.send();
         } else {
-            alert('User cancelled login or did not fully authorize.');
+            console.log('User cancelled login or did not fully authorize.');
         }
     });
 

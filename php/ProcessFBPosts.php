@@ -5,10 +5,11 @@
  * Date: 3/29/2016
  * Time: 10:30 PM
  */
-require_once __DIR__ . '..\libs\facebook-php-sdk-v4-5.0.0\src\Facebook\autoload.php';
-//$wordBank = WordBankHandler::getWordBank();
-
-getAllPosts();
+require_once '../libs/facebook-php-sdk-v4-5.0.0/src/Facebook/autoload.php';
+//$wordBank = WordBankHandler::getWordBank('../doc/SpiderWordBank.csv');
+$totalPosts = getAllPosts();
+flagPosts(['netflix', 'Trump'], $totalPosts);
+//getAllPosts();
 
 /**TODO:
  *
@@ -26,8 +27,8 @@ getAllPosts();
 function getAllPosts()
 {
     $fb = new \Facebook\Facebook([
-        'app_id' => '{1679655878969496}',
-        'app_secret' => '{74ab0d53fbe6e26d3f001bc7f31cfcea}',
+        'app_id' => '1679655878969496',
+        'app_secret' => '74ab0d53fbe6e26d3f001bc7f31cfcea',
         'default_graph_version' => 'v2.5'
     ]);
     $helper = $fb->getJavaScriptHelper();
@@ -80,10 +81,10 @@ function getAllPosts()
                 $total_posts = array_merge($total_posts, $response_array);
             }
             //for testing if we're getting data
-            print_r($total_posts);
-            foreach ($total_posts as $key){
-                echo $key['message'];
-            }
+//            print_r($total_posts);
+//            foreach ($total_posts as $key){
+//                echo $key['message'];
+//            }
         } else {
             $posts_response = $posts_request->getGraphEdge()->asArray();
             print_r($posts_response);
@@ -106,11 +107,12 @@ function flagPosts($wordBank = array(), $total_posts = array())
     $flaggedPostIDs = array();
     foreach ($total_posts as $currentPost) {
         foreach ($wordBank as $currentWord) {
-            if (strpos($currentPost['message'], $currentWord) !== FALSE) {
+            if (strpos(strtolower($currentPost['message']), strtolower($currentWord)) !== FALSE) {
                 $flaggedPostIDs[$currentPost['id']] = $currentPost['message'];
             }
         }
     }
+    print_r($flaggedPostIDs);
     return $flaggedPostIDs;
 }
 

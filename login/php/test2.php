@@ -7,7 +7,7 @@
  */
 
 require_once '../../libs/facebook-php-sdk-v4-5.0.0/src/Facebook/autoload.php';
-echo 'Hello';
+
 $fb = new Facebook\Facebook([
     'app_id' => '{app-id}',
     'app_secret' => '{app-secret}',
