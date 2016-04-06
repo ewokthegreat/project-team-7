@@ -15,7 +15,6 @@ require_once __DIR__ . '..\libs\facebook-php-sdk-v4-5.0.0\src\Facebook\autoload.
  * Need to get new permission from app: Status & Review -> Items in Review -> add
  * items to submission -> user_posts
  *
- * Also need access token to be passed in here somewhere?
  */
 
 
@@ -24,25 +23,22 @@ require_once __DIR__ . '..\libs\facebook-php-sdk-v4-5.0.0\src\Facebook\autoload.
  *
  * Gets all posts from a user's feed.
  */
-function getAllPosts(){
+function getAllPosts()
+{
     $fb = new \Facebook\Facebook([
         'app_id' => '{1679655878969496}',
         'app_secret' => '{74ab0d53fbe6e26d3f001bc7f31cfcea}',
         'default_graph_version' => 'v2.5'
     ]);
-    $helper = $fb->getCanvasHelper();
+    $helper = $fb->getJavaScriptHelper();
     // checking if access token is not null
     try {
-        if (isset($_SESSION['facebook_access_token'])) {
-            $accessToken = $_SESSION['facebook_access_token'];
-        } else {
-            $accessToken = $helper->getAccessToken();
-        }
-    } catch(Facebook\Exceptions\FacebookResponseException $e) {
+        $accessToken = $helper->getAccessToken();
+    } catch (Facebook\Exceptions\FacebookResponseException $e) {
         // When Graph returns an error
         echo 'Graph returned an error: ' . $e->getMessage();
         exit;
-    } catch(Facebook\Exceptions\FacebookSDKException $e) {
+    } catch (Facebook\Exceptions\FacebookSDKException $e) {
         // When validation fails or other local issues
         echo 'Facebook SDK returned an error: ' . $e->getMessage();
         exit;
@@ -65,18 +61,18 @@ function getAllPosts(){
         // getting all posts from timeline
         try {
             $posts_request = $fb->get('/me/posts?limit=500');
-        } catch(Facebook\Exceptions\FacebookResponseException $e) {
+        } catch (Facebook\Exceptions\FacebookResponseException $e) {
             // When Graph returns an error
             echo 'Graph returned an error: ' . $e->getMessage();
             exit;
-        } catch(Facebook\Exceptions\FacebookSDKException $e) {
+        } catch (Facebook\Exceptions\FacebookSDKException $e) {
             // When validation fails or other local issues
             echo 'Facebook SDK returned an error: ' . $e->getMessage();
             exit;
         }
 
         $posts_response = $posts_request->getGraphEdge();
-        if($fb->next($posts_response)) {
+        if ($fb->next($posts_response)) {
             $response_array = $posts_response->asArray();
             $total_posts = array_merge($total_posts, $response_array);
             while ($posts_response = $fb->next($posts_response)) {
@@ -105,11 +101,12 @@ function getAllPosts(){
  * Start of algorithm. This function matches the wordbank to each post's message and
  * adds that post id and message to a new array.
  */
-function flagPosts($wordBank = array(), $total_posts = array()){
+function flagPosts($wordBank = array(), $total_posts = array())
+{
     $flaggedPostIDs = array();
-    foreach($total_posts as $currentPost){
-        foreach($wordBank as $currentWord){
-            if (strpos($currentPost['message'],$currentWord) !== FALSE){
+    foreach ($total_posts as $currentPost) {
+        foreach ($wordBank as $currentWord) {
+            if (strpos($currentPost['message'], $currentWord) !== FALSE) {
                 $flaggedPostIDs[$currentPost['id']] = $currentPost['message'];
             }
         }
