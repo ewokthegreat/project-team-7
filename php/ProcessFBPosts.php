@@ -8,9 +8,8 @@
 require_once '../libs/facebook-php-sdk-v4-5.0.0/src/Facebook/autoload.php';
 require 'WordBank.php';
 
-$wordBank = WordBankHandler::getWordBank('../../doc/SpiderWordBank.php');
+$wordBank = WordBankHandler::getWordBank('SpiderWordBank.csv');
 
-echo 'Herro\n';
 print_r($wordBank);
 
 $totalPosts = getAllPosts();
