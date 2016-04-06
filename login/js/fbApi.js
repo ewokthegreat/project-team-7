@@ -1,27 +1,6 @@
 /**
  * Created by ewokthegreat on 3/21/2016.
  */
-
-//iife to test some things out
-(function(window, document) {
-    'use strict';
-
-    console.log("Creating request object...");
-
-    var xhr = new XMLHttpRequest();
-    console.log(xhr);
-    xhr.open('POST', '/spider/login/php/test.php');
-    xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-    xhr.onload = function() {
-        console.log(xhr.responseText);
-    };
-    xhr.send(JSON.stringify({
-        message: 'TESTING',
-        type: 'SEND'
-    }));
-
-})(window, document);
-
 window.fbAsyncInit = function() {
     FB.init({
         appId      : '1679655878969496', //Social Spider Test appID
@@ -30,6 +9,17 @@ window.fbAsyncInit = function() {
 
     FB.getLoginStatus(function(response) {
         console.log(response);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/spider/login/php/test.php');
+        xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+        xhr.onload = function() {
+            console.log(xhr.responseText);
+        };
+        xhr.send(JSON.stringify({
+            authResponse: response.authResponse
+        }));
+
     }, true);
 
     FB.getLoginStatus(_eatMe, true);
