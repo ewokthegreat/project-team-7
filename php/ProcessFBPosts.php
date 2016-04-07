@@ -9,12 +9,8 @@ require_once '../libs/facebook-php-sdk-v4-5.0.0/src/Facebook/autoload.php';
 require 'WordBank.php';
 
 $wordBank = WordBankHandler::getWordBank('SpiderWordBank.csv');
-
-print_r($wordBank);
-
 $totalPosts = getAllPosts();
 flagPosts($wordBank, $totalPosts);
-//getAllPosts();
 
 /**TODO:
  *
