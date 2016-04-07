@@ -9,9 +9,8 @@
 require_once '../libs/facebook-php-sdk-v4-5.0.0/src/Facebook/autoload.php';
 require_once 'WordBank.php';
 
-$wordBank = WordBankHandler::getWordBank('SpiderWordBank.csv');
 $totalPosts = getAllPosts();
-flagPosts($wordBank, $totalPosts);
+flagPosts(getAllWordBanks(), $totalPosts);
 
 /**TODO:
  *
@@ -19,6 +18,18 @@ flagPosts($wordBank, $totalPosts);
  * items to submission -> user_posts
  *
  */
+
+
+function getAllWordBanks(){
+    $wordBankList = array();
+    array_push($wordBankList,WordBankHandler::getWordBank('SpiderWordBank.csv'));
+    array_push($wordBankList,WordBankHandler::getWordBank('nfl_top_players_2015csv.csv'));
+    array_push($wordBankList,WordBankHandler::getWordBank('nfl_city_state.csv'));
+    array_push($wordBankList,WordBankHandler::getWordBank('nfl_stadiums.csv'));
+    array_push($wordBankList,WordBankHandler::getWordBank('nfl_team_names.csv'));
+
+    return $wordBankList;
+}
 
 
 /**
@@ -97,25 +108,32 @@ function getAllPosts()
 }
 
 /**
- * @param array $wordBank
+ * @param array $wordBankList
  * @param array $total_posts
- * @return array
+ * @return array Start of algorithm. This function matches the wordbank to each post's message and
  *
  * Start of algorithm. This function matches the wordbank to each post's message and
  * adds that post id and message to a new array.
+ * @internal param array $wordBank
  */
-function flagPosts($wordBank = array(), $total_posts = array())
+function flagPosts($wordBankList = array(), $total_posts = array())
 {
     $flaggedPostIDs = array();
     $flaggedWords = array();
+
+
     foreach ($total_posts as $currentPost) {
-        foreach ($wordBank as $currentWord) {
-            if (strpos(strtolower($currentPost['message']), strtolower($currentWord)) !== FALSE) {
+        foreach($wordBankList as $wordBank){
+            foreach ($wordBank as $currentWord) {
+                if (strpos(strtolower($currentPost['message']), strtolower($currentWord)) !== FALSE) {
 //                $flaggedPostIDs[$currentPost['id']] = $currentPost['message'];
-                $flaggedWords[$currentWord] = $currentPost['message'];
+                    $flaggedWords[$currentWord] = $currentPost['message'];
+                }
             }
         }
     }
+
+
     print_r($flaggedWords);
     return($flaggedWords);
 //    print_r($flaggedPostIDs);
