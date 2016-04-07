@@ -122,10 +122,32 @@ function flagPosts($wordBankList = array(), $total_posts = array())
     $flaggedWords = array();
 
 
+    $reportData = array();
+
     foreach ($total_posts as $currentPost) {
-        foreach($wordBankList as $wordBank){
+
+        foreach($wordBankList as $wordBankName => $wordBank){
             foreach ($wordBank as $currentWord) {
                 if (strpos(strtolower($currentPost['message']), strtolower($currentWord)) !== FALSE) {
+                    $postID = $currentPost['id'];
+
+                    if(!in_array($postID,$reportData,true)){
+
+                        array_push($reportData,$$postID = new stdClass());
+                        $$postID->postMessage = $currentPost['message'];
+                        $$postID->matchedWords = new stdClass();
+                        $$postID->matchedWords->$wordBankName = array();
+                        array_push($$postID->matchedWords->$wordBankName,$currentWord);
+                    } else if(in_array($wordBankName, (array)$$postID->matchedWords)) {
+                        array_push($$postID->matchedWords->$wordBankName,$currentWord);
+                    }
+
+
+                    $reportData->postData = new stdClass();
+                    $reportData->postData->postID = $flaggedPostIDs[$currentPost['id']];
+
+
+
 //                $flaggedPostIDs[$currentPost['id']] = $currentPost['message'];
                     $flaggedWords[$currentWord] = $currentPost['message'];
                 }
@@ -135,6 +157,7 @@ function flagPosts($wordBankList = array(), $total_posts = array())
 
 
     print_r($flaggedWords);
+    print_r($reportData);
     return($flaggedWords);
 //    print_r($flaggedPostIDs);
 //    return $flaggedPostIDs;
