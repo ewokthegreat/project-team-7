@@ -21,8 +21,8 @@ window.fbAsyncInit = function() {
             // a PHP script that grabs the signed request from the cookie.
 
             var xhr = new XMLHttpRequest();
-            // xhr.open('POST', '/spider/php/ProcessFBPosts.php');
-            xhr.open('POST', '/spider/login/php/test.php');
+            xhr.open('POST', '/spider/php/ProcessFBPosts.php');
+            // xhr.open('POST', '/spider/login/php/test.php');
             xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
             xhr.onload = function() {
                 console.log(xhr.responseText);
