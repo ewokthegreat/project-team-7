@@ -131,6 +131,25 @@ function flagPosts($wordBankList = array(), $total_posts = array())
                 if (strpos(strtolower($currentPost['message']), strtolower($currentWord)) !== FALSE) {
                     $postID = $currentPost['id'];
 
+                    //Need logic to decide if we'll set up object skeleton
+                    //Need logic to check if wordBankName arrays exist
+
+                    if(!in_array()){
+
+                    }
+
+
+                    $reportData[$postID] = array();
+                    $reportData[$postID['postMessage']] = $currentPost['message'];
+                    $reportData[$postID['matchedWords']] = array();
+                    $reportData[$postID['matchedWords']][$wordBankName] = array();
+                    array_push($reportData[$postID['matchedWords']][$wordBankName],$currentWord);
+
+
+
+
+
+
                     if(!in_array($postID,$reportData,true)){
 
                         array_push($reportData,$$postID = new stdClass());
