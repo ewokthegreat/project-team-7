@@ -106,15 +106,19 @@ function getAllPosts()
 function flagPosts($wordBank = array(), $total_posts = array())
 {
     $flaggedPostIDs = array();
+    $flaggedWords = array();
     foreach ($total_posts as $currentPost) {
         foreach ($wordBank as $currentWord) {
             if (strpos(strtolower($currentPost['message']), strtolower($currentWord)) !== FALSE) {
-                $flaggedPostIDs[$currentPost['id']] = $currentPost['message'];
+//                $flaggedPostIDs[$currentPost['id']] = $currentPost['message'];
+                $flaggedWords[$currentWord] = $currentPost['message'];
             }
         }
     }
-    print_r($flaggedPostIDs);
-    return $flaggedPostIDs;
+    print_r($flaggedWords);
+    return($flaggedWords);
+//    print_r($flaggedPostIDs);
+//    return $flaggedPostIDs;
 }
 
 ?>
