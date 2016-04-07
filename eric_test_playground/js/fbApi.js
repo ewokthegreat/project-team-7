@@ -22,12 +22,13 @@ window.fbAsyncInit = function() {
 
             var xhr = new XMLHttpRequest();
             // xhr.open('POST', '/spider/php/ProcessFBPosts.php');
-            xhr.open('POST', '/spider/eric_test_playground/php/test.php');
+            // xhr.open('POST', '/spider/eric_test_playground/php/test.php');
+            xhr.open('POST', '/spider/eric_test_playground/php/ProcessFBPosts.php');
             xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
             xhr.onload = function() {
                 console.log(xhr.responseText);
             };
-            xhr.send(JSON.stringify({name:'NAME', time: 'TIME', dickSize: 'DICK'}));
+            xhr.send(JSON.stringify({name:'NAME', time: 'TIME', dickSize: 'TINY'}));
         } else {
             console.log('User cancelled login or did not fully authorize.');
         }

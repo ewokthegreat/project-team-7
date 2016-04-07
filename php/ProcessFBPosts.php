@@ -139,10 +139,10 @@ function flagPosts($wordBankList = array(), $total_posts = array())
                     }
 
 
-                    $reportData[$postID] = array();
-                    $reportData[$postID['postMessage']] = $currentPost['message'];
-                    $reportData[$postID['matchedWords']] = array();
-                    $reportData[$postID['matchedWords']][$wordBankName] = array();
+                    $currentPostData = $reportData[$postID] = array();
+                    $currentPostData['postMessage'] = $currentPost['message'];
+                    $currentPostData['matchedWords'] = array();
+                    $currentPostData['matchedWords'][$wordBankName] = array();
                     array_push($reportData[$postID['matchedWords']][$wordBankName],$currentWord);
 
 
@@ -183,3 +183,5 @@ function flagPosts($wordBankList = array(), $total_posts = array())
 }
 
 ?>
+
+$matchedWords = &$reportData[$postID['matchedWords'];
