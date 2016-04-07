@@ -5,8 +5,9 @@
  * Date: 3/29/2016
  * Time: 10:30 PM
  */
+
 require_once '../libs/facebook-php-sdk-v4-5.0.0/src/Facebook/autoload.php';
-require 'WordBank.php';
+require_once 'WordBank.php';
 
 $wordBank = WordBankHandler::getWordBank('SpiderWordBank.csv');
 $totalPosts = getAllPosts();
