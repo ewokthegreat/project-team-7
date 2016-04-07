@@ -5,7 +5,7 @@
  * Date: 3/29/2016
  * Time: 10:30 PM
  */
-
+define( "__PROJECT_ROOT__", $_SERVER['DOCUMENT_ROOT'] . '/spider');
 require_once '../libs/facebook-php-sdk-v4-5.0.0/src/Facebook/autoload.php';
 require_once 'WordBank.php';
 
