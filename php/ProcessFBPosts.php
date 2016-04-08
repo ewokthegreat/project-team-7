@@ -121,7 +121,6 @@ function flagPosts($wordBankList = array(), $total_posts = array())
     $flaggedPostIDs = array();
     $flaggedWords = array();
 
-
     $reportData = array();
 
     foreach ($total_posts as $currentPost) {
