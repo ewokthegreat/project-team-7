@@ -22,14 +22,19 @@ $fb = getAccessToken();
  *      userData['last_name']
  */
 $userData = getUserData($fb);
-$totalPosts = getAllPosts($fb);
-writeUserDataToDiskAsJSON($userData['id'], $totalPosts);
+
+echo $userData;
+
+echo $totalPosts = json_encode(getAllPosts($fb));
+
+//writeUserDataToDiskAsJSON($userData['id'], $totalPosts);
 
 //flagPosts(getAllWordBanks(), $totalPosts);
 function writeUserDataToDiskAsJSON($userID, $data) {
 
     $pathToUserData = __RAW_USER_DATA__ . '/' . $userID;
     $userDataFileName = $userID . '.json';
+    $dateString = date('m,d,y');
 
     if(!file_exists($pathToUserData)) {
         mkdir($pathToUserData);
@@ -104,7 +109,6 @@ function getAccessToken() {
 
 function saveUserJSON($data) {
     file_put_contents('filename.json', json_encode($data));
-
 }
 /**TODO:
  *
@@ -135,7 +139,7 @@ function getAllPosts($fb)
     $total_posts = array();
     // getting all posts from timeline
     try {
-        $posts_request = $fb->get('/me/posts?limit=1');
+        $posts_request = $fb->get('/me/posts?limit=500');
     } catch (Facebook\Exceptions\FacebookResponseException $e) {
         // When Graph returns an error
         echo 'Graph returned an error: ' . $e->getMessage();
@@ -159,9 +163,9 @@ function getAllPosts($fb)
 
     } else {
         $posts_response = $posts_request->getGraphEdge()->asArray();
-        print_r($posts_response);
+        echo json_encode($posts_response);
     }
-    print_r($total_posts);
+
     return $total_posts;
 }
 

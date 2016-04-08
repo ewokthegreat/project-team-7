@@ -10,7 +10,12 @@ window.fbAsyncInit = function() {
     });
 
     FB.getLoginStatus(function(response) {
-        console.log(response);
+        /**
+         * Logged into FB and our app.
+         */
+        if(response && response.status == 'connected') {
+
+        }
     });
 
     FB.login(function(response) {
@@ -27,6 +32,8 @@ window.fbAsyncInit = function() {
             xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
             xhr.onload = function() {
                 console.log(xhr.responseText);
+                var response = JSON.parse(xhr.responseText);
+                console.log(response);
             };
             xhr.send(JSON.stringify({name:'NAME', time: 'TIME', dickSize: 'TINY'}));
         } else {
