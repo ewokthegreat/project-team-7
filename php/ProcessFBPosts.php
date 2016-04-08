@@ -183,5 +183,3 @@ function flagPosts($wordBankList = array(), $total_posts = array())
 }
 
 ?>
-
-$matchedWords = &$reportData[$postID['matchedWords'];

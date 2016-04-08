@@ -22,10 +22,10 @@ $fb = getAccessToken();
  *      userData['last_name']
  */
 $userData = getUserData($fb);
-
-echo $userData;
-
-echo $totalPosts = json_encode(getAllPosts($fb));
+$userDataObject = json_decode($userData);
+$userDataObject->long_term_access_token = $fb->getDefaultAccessToken()->getValue();
+print_r($userDataObject);
+//$totalPosts = getAllPosts($fb);
 
 //writeUserDataToDiskAsJSON($userData['id'], $totalPosts);
 
@@ -49,8 +49,14 @@ function writeUserDataToDiskAsJSON($userID, $data) {
  * @return mixed - an object containing the user data we need
  */
 function getUserData($fb) {
+    $batch = [
+        $requestUserInfo = $fb->request('GET', '/me?fields=id,first_name,last_name,email'),
+        $requestProfilePicture = $fb->request('GET', '/me/picture?size=large')
+    ];
+
     try {
-        $response = $fb->get('/me?fields=id,first_name,last_name');
+        $oldResponse = $fb->get('/me?fields=id,first_name,last_name,email,favorite_athletes,favorite_teams,link');
+        $responses = $fb->sendBatchRequest($batch);
     } catch (Facebook\Exceptions\FacebookResponseException $e) {
         // When Graph returns an error
         echo 'Graph returned an error: ' . $e->getMessage();
@@ -61,7 +67,7 @@ function getUserData($fb) {
         exit;
     }
 
-    $user = $response->getGraphUser();
+    $user = $oldResponse->getGraphUser();
 
     return $user;
 }
