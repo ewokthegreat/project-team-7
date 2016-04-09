@@ -5,28 +5,39 @@
  * Date: 3/29/2016
  * Time: 10:30 PM
  */
-define('__PROJECT_ROOT__', $_SERVER['DOCUMENT_ROOT'] . '/spider');
-define('__FB_API_PATH__', 'libs/facebook-php-sdk-v4-5.0.0/src/Facebook/autoload.php');
+ini_set('display_errors',1);
+error_reporting(E_ALL);
+
+define('__PROJECT_ROOT__', $_SERVER['DOCUMENT_ROOT']);
+define('__FB_API_PATH__', '/libs/facebook-php-sdk-v4-5.0.0/src/Facebook/autoload.php');
 define('__RAW_USER_DATA__', __PROJECT_ROOT__ . '/.raw_user_data');
 
-
-require_once __PROJECT_ROOT__ . '/' . __FB_API_PATH__;
+require_once __PROJECT_ROOT__ .  __FB_API_PATH__;
 require_once 'WordBank.php';
+require_once 'User.php';
+require_once 'Report.php';
 require_once 'DatabaseConnector.php';
 
 $fb = getAccessToken();
-//getProfilePicture($fb);
-/**
- * Contents of $userData:
- *      userData['id']
- *      userData['first_name']
- *      userData['last_name']
- */
-$userData = getUserData($fb);
-$userDataObject = json_decode($userData);
-$userDataObject->long_term_access_token = $fb->getDefaultAccessToken()->getValue();
-print_r($userDataObject->picture->url);
-print_r($userDataObject);
+
+$userDataObject = json_decode(getUserData($fb));
+
+$applicantID = $userDataObject->id;
+$fbAuthToken = $fb->getDefaultAccessToken()->getValue();
+$firstName = $userDataObject->first_name;
+$lastName = $userDataObject->last_name;
+$email = $userDataObject->email;
+$profileLink = $userDataObject->link;
+$password = '1qaz2wsx!QAZ@WSX';
+$isAdmin = FALSE;
+$profilePicture = $userDataObject->picture->url;
+
+$db = new DatabaseConnector();
+$user = new User($applicantID, $fbAuthToken, $firstName, $lastName,
+                 $email, $profileLink, $password, $isAdmin, $profilePicture);
+$db->insertUser($user);
+print_r($user);
+
 //$totalPosts = getAllPosts($fb);
 
 //writeUserDataToDiskAsJSON($userData['id'], $totalPosts);

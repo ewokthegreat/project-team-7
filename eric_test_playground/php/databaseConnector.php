@@ -8,17 +8,9 @@
  */
 class DatabaseConnector {
 
-    function __construct($user, $pass) {
+    function __construct() {
         echo "databaseConnector constructor initiated";
         
-        if(isset($user)) {
-            $this->user = $user;
-        }
-        
-        if(isset($pass)) {
-            $this->pass = $pass;
-        }
-
         $this->dsn = "mysql:host=$this->host;dbname=$this->db;charset=$this->charset";
         $this->pdo = new PDO($this->dsn, $this->user, $this->pass, $this->opt);
     }
@@ -37,8 +29,16 @@ class DatabaseConnector {
     private $pdo;
     private $query;
 
-    public function createUser() {
-        return $user;
+    /**
+     * @param $user
+     * @return PDOStatement
+     */
+    public function insertUser($user) {
+        $sql = "INSERT INTO applicant(applicantID, fbAuthToken, firstName, lastName, email, profileLink, password, isAdmin, profilePicture)
+                            VALUES(:id, :token, :fname, :lname, :email, :link, :pass, :isAdmin, :pic)";
+        $stmt = $this->pdo->prepare($sql);
+
+        return $stmt->execute($user->getUserDataArray());
     }
 
     /**

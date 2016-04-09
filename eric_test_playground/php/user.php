@@ -8,6 +8,19 @@
  */
 class User
 {
+    public function __construct($id, $token, $fname, $lname, $email, $link, $pass, $admin, $pic)
+    {
+        $this->applicantID = $id;
+        $this->fbAuthToken = $token;
+        $this->firstName = $fname;
+        $this->lastName = $lname;
+        $this->email = $email;
+        $this->profileLink = $link;
+        $this->password = $pass;
+        $this->isAdmin = $admin;
+        $this->profilePicture = $pic;
+    }
+
     private $applicantID;
     private $fbAuthToken;
     private $firstName;
@@ -17,7 +30,22 @@ class User
     private $password;
     private $isAdmin;
     private $profilePicture;
-
+    
+    public function getUserDataArray() {
+        $userDataArray = [
+            'id' => $this->applicantID,
+            'token' => $this->fbAuthToken,
+            'fname' => $this->firstName,
+            'lname' => $this->lastName,
+            'email' => $this->email,
+            'link' => $this->profileLink,
+            'pass' => $this->password,
+            'isAdmin' => $this->isAdmin,
+            'pic' => $this->profilePicture
+        ];
+        
+        return $userDataArray;
+    }
     /**
      * @return mixed
      */
