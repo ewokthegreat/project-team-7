@@ -16,6 +16,25 @@ class User
     private $profileLink;
     private $password;
     private $isAdmin;
+    private $profilePicture;
+
+    /**
+     * @return mixed
+     */
+    public function getProfilePicture()
+    {
+        return $this->profilePicture;
+    }
+
+    /**
+     * @param mixed $profilePicture
+     * @return User
+     */
+    public function setProfilePicture($profilePicture)
+    {
+        $this->profilePicture = $profilePicture;
+        return $this;
+    }
 
     /**
      * @return mixed
