@@ -9,12 +9,13 @@ define('__PROJECT_ROOT__', $_SERVER['DOCUMENT_ROOT'] . '/spider');
 define('__FB_API_PATH__', 'libs/facebook-php-sdk-v4-5.0.0/src/Facebook/autoload.php');
 define('__RAW_USER_DATA__', __PROJECT_ROOT__ . '/.raw_user_data');
 
+
 require_once __PROJECT_ROOT__ . '/' . __FB_API_PATH__;
 require_once 'WordBank.php';
-
+require_once 'DatabaseConnector.php';
 
 $fb = getAccessToken();
-
+//getProfilePicture($fb);
 /**
  * Contents of $userData:
  *      userData['id']
@@ -49,14 +50,8 @@ function writeUserDataToDiskAsJSON($userID, $data) {
  * @return mixed - an object containing the user data we need
  */
 function getUserData($fb) {
-    $batch = [
-        $requestUserInfo = $fb->request('GET', '/me?fields=id,first_name,last_name,email'),
-        $requestProfilePicture = $fb->request('GET', '/me/picture?size=large')
-    ];
-
     try {
-        $oldResponse = $fb->get('/me?fields=id,first_name,last_name,email,favorite_athletes,favorite_teams,link');
-        $responses = $fb->sendBatchRequest($batch);
+        $response = $fb->get('/me?fields=id,first_name,last_name,email,favorite_athletes,favorite_teams,link,picture.width(80)');
     } catch (Facebook\Exceptions\FacebookResponseException $e) {
         // When Graph returns an error
         echo 'Graph returned an error: ' . $e->getMessage();
@@ -67,7 +62,7 @@ function getUserData($fb) {
         exit;
     }
 
-    $user = $oldResponse->getGraphUser();
+    $user = $response->getGraphUser();
 
     return $user;
 }

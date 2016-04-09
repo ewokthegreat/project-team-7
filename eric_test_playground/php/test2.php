@@ -42,3 +42,26 @@ $_SESSION['fb_access_token'] = (string) $accessToken;
 // User is logged in!
 // You can redirect them to a members-only page.
 //header('Location: https://example.com/members.php');
+
+//<!--//    $reportData = array(-->
+//<!--//        'postID'=>array(-->
+//<!--//            'postMessage'=>'Facebook post contents',-->
+//<!--//            'matchedWords'=>array(-->
+//<!--//                'wordBank1'=>array(1,2,3),-->
+//<!--//                'wordBank2'=>array(4,5,6),-->
+//<!--//                'wordBank3'=>array(7,8,9),-->
+//<!--//                'wordBank4'=>array(11,22,33),-->
+//<!--//                'wordBank5'=>array(44,55,66)-->
+//<!--//            )-->
+//<!--//        ),-->
+//<!--//        'postID2'=>array(-->
+//<!--//            'postMessage'=>'Facebook post contents',-->
+//<!--//            'matchedWords'=>array(-->
+//<!--//                'wordBank1'=>array(1,2,3),-->
+//<!--//                'wordBank2'=>array(4,5,6),-->
+//<!--//                'wordBank3'=>array(7,8,9),-->
+//<!--//                'wordBank4'=>array(11,22,33),-->
+//<!--//                'wordBank5'=>array(44,55,66)-->
+//<!--//            )-->
+//<!--//        )-->
+//<!--//    );-->
