@@ -8,6 +8,18 @@
  */
 class User
 {
+    /**
+     * User constructor.
+     * @param $id
+     * @param $token
+     * @param $fname
+     * @param $lname
+     * @param $email
+     * @param $link
+     * @param $pass
+     * @param $admin
+     * @param $pic
+     */
     public function __construct($id, $token, $fname, $lname, $email, $link, $pass, $admin, $pic)
     {
         $this->applicantID = $id;
@@ -30,7 +42,10 @@ class User
     private $password;
     private $isAdmin;
     private $profilePicture;
-    
+
+    /**
+     * @return array
+     */
     public function getUserDataArray() {
         $userDataArray = [
             'id' => $this->applicantID,

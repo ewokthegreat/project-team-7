@@ -28,7 +28,7 @@ window.fbAsyncInit = function() {
             var xhr = new XMLHttpRequest();
             // xhr.open('POST', '/spider/php/ProcessFBPosts.php');
             // xhr.open('POST', '/spider/eric_test_playground/php/test.php');
-            xhr.open('POST', '/php/ProcessFBPosts.php');
+            xhr.open('POST', '/php/init.php');
             xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
             xhr.onload = function() {
                 console.log(xhr.responseText);
