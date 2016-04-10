@@ -23,4 +23,27 @@ $app = new AppEngine();
 $db = $app->getDb();
 $fb = $app->getFb();
 
-print_r($fb->get('/me/posts?limit=500'));
+getAllPosts($app);
+
+function getAllPosts($app) {
+    $app->makeGraphRequest('/me/posts?limit=500', function($response) use($app) {
+        $fb = $app->getFb();
+        $posts_response = $response->getGraphEdge();
+        $total_posts = array();
+
+        if ($fb->next($posts_response)) {
+            $response_array = $posts_response->asArray();
+            $total_posts = array_merge($total_posts, $response_array);
+
+            while ($posts_response = $fb->next($posts_response)) {
+                $response_array = $posts_response->asArray();
+                $total_posts = array_merge($total_posts, $response_array);
+            }
+
+        } else {
+            $posts_response = $response->getGraphEdge()->asArray();
+            echo json_encode($posts_response);
+        }
+        $app->writeGraphResponseToDiskAsJSON($total_posts);
+    });
+}

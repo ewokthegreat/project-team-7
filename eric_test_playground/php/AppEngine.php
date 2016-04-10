@@ -12,10 +12,62 @@ class AppEngine
      * AppEngine constructor.
      */
     public function __construct() {
+        $this->db = new DatabaseConnector();
         $this->fb = $this->createServiceClass();
         $this->token = $this->getAccessToken();
         $this->user = $this->generateUserData();
-        $this->db = new DatabaseConnector();
+    }
+
+    /**
+     * @param $requestString
+     * @param $callback
+     */
+    public function makeGraphRequest($requestString, $callback) {
+        $fb = $this->fb;
+
+        try {
+            $response = $fb->get($requestString);
+        } catch (Facebook\Exceptions\FacebookResponseException $e) {
+            // When Graph returns an error
+            echo 'Graph returned an error: ' . $e->getMessage();
+            exit;
+        } catch (Facebook\Exceptions\FacebookSDKException $e) {
+            // When validation fails or other local issues
+            echo 'Facebook SDK returned an error: ' . $e->getMessage();
+            exit;
+        }
+
+        $callback($response);
+    }
+
+    /**
+     * @param $data
+     */
+    public function writeGraphResponseToDiskAsJSON($data) {
+        $this->makeGraphRequest('/me?fields=id', function($response) use($data) {
+            $user = json_decode($response->getGraphUser());
+            $userID = $user->id;
+
+            $dateString = date('y.m.d.G.i.s__');
+            $pathToUserData = __RAW_USER_DATA__ . '/' . $userID;
+            $userDataFileName = $dateString . $userID . '.json';
+
+            echo "'\n'" . 'PATHTOUSERDATA = ' . $pathToUserData . "'\n'";
+            echo "'\n'" . 'USERDATAFILENAME = ' . $userDataFileName . "'\n'";
+
+            if(!file_exists($pathToUserData)) {
+                mkdir($pathToUserData);
+                file_put_contents($pathToUserData . '/' . $userDataFileName, json_encode($data));
+            } else {
+                echo 'Directory already exists, attempting to write file!';
+                if(!file_exists($pathToUserData . '/' . $userDataFileName)) {
+                    file_put_contents($pathToUserData . '/' . $userDataFileName, json_encode($data));
+                } else {
+                    echo 'A file with that name already exists!';
+                }
+
+            }
+        });
     }
 
     private $fb;
@@ -25,6 +77,7 @@ class AppEngine
     private $token;
     private $user;
     private $db;
+
 
     /**
      * @return \Facebook\Facebook
@@ -137,6 +190,7 @@ class AppEngine
     {
         $this->id = $id;
     }
+
     /**
      * @return \Facebook\Facebook
      */
@@ -151,56 +205,29 @@ class AppEngine
     }
 
     /**
-     * @param $userID
-     * @param $data
-     */
-    private function writeUserDataToDiskAsJSON($userID, $data) {
-
-        $pathToUserData = __RAW_USER_DATA__ . '/' . $userID;
-        $dateString = date('y.m.d.G.i.s__');
-        $userDataFileName = $pathToUserData . $dateString . '.json';
-
-        if(!file_exists($pathToUserData)) {
-            mkdir($pathToUserData);
-            file_put_contents($pathToUserData . '/' . $userDataFileName, json_encode($data));
-        } else {
-            echo 'Directory already exists!';
-        }
-    }
-
-    /**
      * @param $fb - an authorized instance of our application
      * @return mixed - an object containing the user data we need
      */
     private function generateUserData() {
-        $fb = $this->fb;
+        $db = $this->db;
 
-        try {
-            $response = $fb->get('/me?fields=id,first_name,last_name,email,link,picture.width(80)');
-        } catch (Facebook\Exceptions\FacebookResponseException $e) {
-            // When Graph returns an error
-            echo 'Graph returned an error: ' . $e->getMessage();
-            exit;
-        } catch (Facebook\Exceptions\FacebookSDKException $e) {
-            // When validation fails or other local issues
-            echo 'Facebook SDK returned an error: ' . $e->getMessage();
-            exit;
-        }
+        $requestString = '/me?fields=id,first_name,last_name,email,link,picture.width(80)';
+        $this->makeGraphRequest($requestString, function($response) use($db) {
+            $user = json_decode($response->getGraphUser());
+            $applicantID = $user->id;
+            $fbAuthToken = $this->fb->getDefaultAccessToken()->getValue();
+            $firstName = $user->first_name;
+            $lastName = $user->last_name;
+            $email = $user->email;
+            $profileLink = $user->link;
+            $password = '1qaz2wsx!QAZ@WSX';
+            $isAdmin = FALSE;
+            $profilePicture = $user->picture->url;
+            $userData = new User($applicantID, $fbAuthToken, $firstName, $lastName,
+                $email, $profileLink, $password, $isAdmin, $profilePicture);
 
-        $user = json_decode($response->getGraphUser());
-
-        $applicantID = $user->id;
-        $fbAuthToken = $fb->getDefaultAccessToken()->getValue();
-        $firstName = $user->first_name;
-        $lastName = $user->last_name;
-        $email = $user->email;
-        $profileLink = $user->link;
-        $password = '1qaz2wsx!QAZ@WSX';
-        $isAdmin = FALSE;
-        $profilePicture = $user->picture->url;
-
-        return new User($applicantID, $fbAuthToken, $firstName, $lastName,
-            $email, $profileLink, $password, $isAdmin, $profilePicture);
+            $db->insertUser($userData);
+        });
     }
 
     /**
