@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors',1);
+error_reporting(E_ALL);
+
 require_once(__DIR__ . '/phpunit-5.3.1.phar');
 require_once '../ProcessFBPosts.php';
 require_once '../WordBank.php';
@@ -34,14 +37,14 @@ class TestProcessFBPosts extends PHPUnit_Framework_TestCase {
         $f2 = file("../nfl_stop_players_2015csv.csv");
         $count += count($f2);
 
-        $f2 = file("../nfl_stop_players_2015csv.csv");
+        $f2 = file("../nfl_last_names.csv");
         $count += count($f2);
 
         $f3 = file("../nfl_city_state.csv");
         $count += count($f3);
 
         $f4 = file("../nfl_stadiums.csv");
-        $count += count($f4;
+        $count += count($f4);
 
         $f5 = file("../nfl_team_names.csv");
         $count += count($f5);
