@@ -6,72 +6,45 @@
  * Date: 4/8/2016
  * Time: 5:55 PM
  */
-
-/**
- * Class User
- * This class represent's a user in the system. There are two type of user's, either an admin or applicant.
- */
 class User
 {
-    //Private data members
-    private $applicantID;
-    private $fbAuthToken; //Facebook authorization token; used to access information on applicant's profile
-    private $firstName; //User's first name
-    private $lastName; //User's last name
-    private $email; //User's email
-    private $profileLink; //User's link to there profile
-    private $password; //User's password for our local application only. This is not the Facebook profile
-    private $isAdmin; //Specifies if a user is an admin or not
-    private $profilePicture; //This is a link to the user's profile picture.
-
     /**
      * User constructor.
-     * @param $applicantID
-     * @param $fbAuthToken
-     * @param $firstName
-     * @param $lastName
+     * @param $id
+     * @param $token
+     * @param $fname
+     * @param $lname
      * @param $email
-     * @param $profileLink
-     * @param $password
-     * @param $isAdmin
-     * @param $profilePicture
+     * @param $link
+     * @param $pass
+     * @param $admin
+     * @param $pic
      */
-    public function __construct($applicantID, $fbAuthToken, $firstName, $lastName, $email, $profileLink, $password, $isAdmin, $profilePicture)
+    public function __construct($id, $token, $fname, $lname, $email, $link, $pass, $admin, $pic)
     {
-//        $this->applicantID = $applicantID;
-//        $this->fbAuthToken = $fbAuthToken;
-//        $this->firstName = $firstName;
-//        $this->lastName = $lastName;
-//        $this->email = $email;
-//        $this->profileLink = $profileLin;
-//        $this->password = $password;
-//        $this->isAdmin = $isAdmin;
-//        $this->profilePicture = $profilePicture;
-        $this->setApplicantID($applicantID);
-        $this->setFbAuthToken($fbAuthToken);
-        $this->setFirstName($firstName);
-        $this->setLastName($lastName);
-        $this->setEmail($email);
-        $this->setProfileLink($profileLink);
-        $this->setPassword($password);
-        $this->setIsAdmin($isAdmin);
-        $this->setProfileLink($profilePicture);
+        $this->applicantID = $id;
+        $this->fbAuthToken = $token;
+        $this->firstName = $fname;
+        $this->lastName = $lname;
+        $this->email = $email;
+        $this->profileLink = $link;
+        $this->password = $pass;
+        $this->isAdmin = $admin;
+        $this->profilePicture = $pic;
     }
 
-//    private $applicantID;
-//    private $fbAuthToken;
-//    private $firstName;
-//    private $lastName;
-//    private $email;
-//    private $profileLink;
-//    private $password;
-//    private $isAdmin;
-//    private $profilePicture;
+    private $applicantID;
+    private $fbAuthToken;
+    private $firstName;
+    private $lastName;
+    private $email;
+    private $profileLink;
+    private $password;
+    private $isAdmin;
+    private $profilePicture;
 
     /**
-     * Get function for the user's data array
-     * @return an array representing all the specified user's data. The array represents a list of
-     * key => value pairs.
+     * @return array
      */
     public function getUserDataArray() {
         $userDataArray = [
@@ -89,8 +62,7 @@ class User
         return $userDataArray;
     }
     /**
-     * Get function for user's profile picture
-     * @return a link (string) to the user's specified profile picture
+     * @return mixed
      */
     public function getProfilePicture()
     {
@@ -98,19 +70,17 @@ class User
     }
 
     /**
-     * Set function for user's profile picture
-     * @param $profilePicture a link (string) to the user's profile picture
-     * @return User the instance of the user class
+     * @param mixed $profilePicture
+     * @return User
      */
     public function setProfilePicture($profilePicture)
     {
         $this->profilePicture = $profilePicture;
-         return $this;
+        return $this;
     }
 
     /**
-     * Get function for applicant's ID
-     * @return a string representing the applicant's ID
+     * @return mixed
      */
     public function getApplicantID()
     {
@@ -118,9 +88,8 @@ class User
     }
 
     /**
-     * Set method for applicant's ID
-     * @param $applicantID a string representing the applicant's ID
-     * @return User the instance of the user class
+     * @param mixed $applicantID
+     * @return User
      */
     public function setApplicantID($applicantID)
     {
@@ -129,8 +98,7 @@ class User
     }
 
     /**
-     * Get method for user's Facebook authorization token
-     * @return the user's Facebook authorization token as a string
+     * @return mixed
      */
     public function getFbAuthToken()
     {
@@ -138,9 +106,8 @@ class User
     }
 
     /**
-     * Set method for user's Facebook authorization token
-     * @param $fbAuthToken the user's Facebook authorization token as a string
-     * @return User the instance of the user class
+     * @param mixed $fbAuthToken
+     * @return User
      */
     public function setFbAuthToken($fbAuthToken)
     {
@@ -149,8 +116,7 @@ class User
     }
 
     /**
-     * Get method for user's first name
-     * @return firstName the user's first name as a string
+     * @return mixed
      */
     public function getFirstName()
     {
@@ -158,9 +124,8 @@ class User
     }
 
     /**
-     * Set method for user's first name
-     * @param $firstName the user's first name as a string
-     * @return User the instance of the user class
+     * @param mixed $firstName
+     * @return User
      */
     public function setFirstName($firstName)
     {
@@ -169,8 +134,7 @@ class User
     }
 
     /**
-     * Get method for user's last name
-     * @return $lastName the user's last name a string
+     * @return mixed
      */
     public function getLastName()
     {
@@ -178,9 +142,8 @@ class User
     }
 
     /**
-     * Set method for user'ls last name
-     * @param $lastName the user's last name a string
-     * @return User the instance of the user class
+     * @param mixed $lastName
+     * @return User
      */
     public function setLastName($lastName)
     {
@@ -189,8 +152,7 @@ class User
     }
 
     /**
-     * Get method for user's email address
-     * @return $email the user's email address as a string
+     * @return mixed
      */
     public function getEmail()
     {
@@ -198,9 +160,8 @@ class User
     }
 
     /**
-     * Set method for user's email address
-     * @param $email the user's email address as a string
-     * @return User the instance of the user class
+     * @param mixed $email
+     * @return User
      */
     public function setEmail($email)
     {
@@ -209,8 +170,7 @@ class User
     }
 
     /**
-     * Get method for user's profile link
-     * @return $profileLink the user's profile link a string
+     * @return mixed
      */
     public function getProfileLink()
     {
@@ -218,9 +178,8 @@ class User
     }
 
     /**
-     * Set method for user's profile link
-     * @param $profileLink user's profile link a string
-     * @return User the instance of the user class
+     * @param mixed $profileLink
+     * @return User
      */
     public function setProfileLink($profileLink)
     {
@@ -229,8 +188,7 @@ class User
     }
 
     /**
-     * Get method for user's password
-     * @return user's password a string
+     * @return mixed
      */
     public function getPassword()
     {
@@ -238,9 +196,8 @@ class User
     }
 
     /**
-     * Set method for user's password
-     * @param $password user's password as a string
-     * @return User the instance of the user class
+     * @param mixed $password
+     * @return User
      */
     public function setPassword($password)
     {
@@ -249,8 +206,7 @@ class User
     }
 
     /**
-     * Get method to determine if the user is an admin
-     * @return true if the user is an admin, else returns false
+     * @return mixed
      */
     public function getIsAdmin()
     {
@@ -258,9 +214,8 @@ class User
     }
 
     /**
-     * Set method to determine if a user is an admin
-     * @param $isAdmin boolean value, either true or false
-     * @return User the instance of the user class
+     * @param mixed $isAdmin
+     * @return User
      */
     public function setIsAdmin($isAdmin)
     {
