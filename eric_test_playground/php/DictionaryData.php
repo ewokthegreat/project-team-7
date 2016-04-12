@@ -7,14 +7,33 @@
  * Time: 3:57 AM
  */
 class DictionaryData {
+    private $name;
     private $dictionaryArray;
     private $weight;
 
     public function __construct($pathToCSV, $weight = 1) {
         $data = preg_split('/,/', file_get_contents($pathToCSV),-1, PREG_SPLIT_NO_EMPTY);
-        
+
         $this->setDictionaryArray($data);
         $this->setWeight($weight);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param mixed $name
+     * @return DictionaryData
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+        return $this;
     }
 
     /**
