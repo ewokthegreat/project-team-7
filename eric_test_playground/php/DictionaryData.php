@@ -11,9 +11,10 @@ class DictionaryData {
     private $dictionaryArray;
     private $weight;
 
-    public function __construct($pathToCSV, $weight = 1) {
+    public function __construct($name, $pathToCSV, $weight = 1) {
         $data = preg_split('/,/', file_get_contents($pathToCSV),-1, PREG_SPLIT_NO_EMPTY);
 
+        $this->setName($name);
         $this->setDictionaryArray($data);
         $this->setWeight($weight);
     }
