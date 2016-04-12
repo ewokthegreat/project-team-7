@@ -20,7 +20,7 @@ class ReportGenerator
     {
         $this->setDictionaryData($dictionaryData);
         $this->setPostDataArray($postData);
-        $this->init();
+        $this->doAlgorithm();
     }
 
     /**
@@ -66,11 +66,14 @@ class ReportGenerator
     /**
      *
      */
-    private function init()
-    {
+    private function doAlgorithm() {
         echo '<hr/>Do whatever you have to do to do here!<hr/>';
 
-        print_r($this->getDictionaryData());
-        print_r($this->getPostDataArray());
+        $dictionary = $this->getDictionaryData()->getDictionaryArray();
+        $post = $this->getPostDataArray()[1]->getWordArray();
+
+        print_r($this->getPostDataArray()[1]);
+        print_r($dictionary);
+        print_r($post);
     }
 }
