@@ -11,6 +11,7 @@ error_reporting(E_ALL);
 
 include_once 'php/PostData.php';
 include_once 'php/DictionaryData.php';
+include_once 'php/ReportGenerator.php';
 
 define('__PROJECT_ROOT__', '/home/ewoktheg/public_html/spider/eric_test_playground');
 
@@ -21,8 +22,6 @@ $pathToDictionary = __PROJECT_ROOT__ . "/dictionaries/SpiderWordBank.csv";
 $json = file_get_contents($pathToData);
 //Convert the raw post data from json to php
 $data = json_decode($json);
-//Create the dictionary
-$dictionary = new DictionaryData($pathToDictionary);
 ?>
 <!doctype HTML>
 <html>
@@ -38,17 +37,10 @@ $dictionary = new DictionaryData($pathToDictionary);
 <div>
     <pre>
         <?php
-        print_r($dictionary->getDictionaryArray());
-
-        //Create the post data from raw data.
-        $postDataArray = array();
-        foreach ($data as $obj) {
-            array_push($postDataArray, new PostData($obj));
-        }
-
-        foreach($postDataArray as $post) {
-            print_r($post->getWordArray());
-        }
+        //Create the dictionary
+        $dictionary = new DictionaryData($pathToDictionary);
+        //Create the report
+        $report = new ReportGenerator($dictionary, $data);
         ?>
     </pre>
 </div>

@@ -12,7 +12,7 @@ error_reporting(E_ALL);
 //require_once '/home/ewoktheg/public_html/spider/php/ProcessJSON.php';
 //require_once '/home/ewoktheg/public_html/spider/php/ProcessFBPosts.php';
 require_once 'ProcessFBPosts.php';
-require_once 'WordBank.php';
+require_once 'OLD_WordBank.php';
 
 $pathToData = "/home/ewoktheg/public_html/spider/eric_test_playground/.raw_user_data/10208453844209830/16.04.10.23.52.59__10208453844209830.json";
 
