@@ -21,10 +21,8 @@ $pathToDictionary = __PROJECT_ROOT__ . "/dictionaries/SpiderWordBank.csv";
 $json = file_get_contents($pathToData);
 //Convert the raw post data from json to php
 $data = json_decode($json);
-//Get the dictionary
-//$dictionary = array_map('str_getcsv', file($pathToDictionary));
+//Create the dictionary
 $dictionary = new DictionaryData($pathToDictionary);
-
 ?>
 <!doctype HTML>
 <html>
@@ -40,16 +38,17 @@ $dictionary = new DictionaryData($pathToDictionary);
 <div>
     <pre>
         <?php
-//        print_r($dictionary->getDictionaryArray());
-        $postDataArray = array();
+        print_r($dictionary->getDictionaryArray());
 
+        //Create the post data from raw data.
+        $postDataArray = array();
         foreach ($data as $obj) {
             array_push($postDataArray, new PostData($obj));
         }
 
-//        foreach($postDataArray as $post) {
-//            print_r($post->getWordArray());
-//        }
+        foreach($postDataArray as $post) {
+            print_r($post->getWordArray());
+        }
         ?>
     </pre>
 </div>
