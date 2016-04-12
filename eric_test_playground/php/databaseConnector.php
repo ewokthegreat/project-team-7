@@ -9,8 +9,6 @@
 class DatabaseConnector {
 
     function __construct() {
-        echo "databaseConnector constructor initiated";
-        
         $this->dsn = "mysql:host=$this->host;dbname=$this->db;charset=$this->charset";
         $this->pdo = new PDO($this->dsn, $this->user, $this->pass, $this->opt);
     }
@@ -34,11 +32,14 @@ class DatabaseConnector {
      * @return PDOStatement
      */
     public function insertUser($user) {
-        $sql = "INSERT INTO applicant(applicantID, fbAuthToken, firstName, lastName, email, profileLink, password, isAdmin, profilePicture)
+        try {
+            $sql = "INSERT INTO applicant(applicantID, fbAuthToken, firstName, lastName, email, profileLink, password, isAdmin, profilePicture)
                             VALUES(:id, :token, :fname, :lname, :email, :link, :pass, :isAdmin, :pic)";
-        $stmt = $this->pdo->prepare($sql);
-
-        return $stmt->execute($user->getUserDataArray());
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($user->getUserDataArray());
+        } catch(PDOException $e) {
+            echo $e->getMessage();
+        }
     }
 
     /**
@@ -64,17 +65,10 @@ class DatabaseConnector {
         return $allUsersArray;
     }
 
+    /**
+     * @param $query
+     */
     public function setQuery($query) {
         $this->query = $query;
     }
-    
-
-
-//new PDO("mysql:host=localhost;dbname=ewoktheg_spider;charset=utf8mb4", $user, $pass);
-//"INSERT INTO applicant(applicantID, fb_auth_token, firstName, lastName, primaryEmail, profileLink, password)
-//values("1", "123saasdqwea", "bob", "smith", "eric@ewokthegreat.com", "blah", "blah")");
-//$stmt = $db->query("SELECT * from applicant");
-//$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-//print_r($results);
-
 }
