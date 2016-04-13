@@ -38,7 +38,7 @@ $data = json_decode($json);
     <pre>
         <?php
         //Create the dictionary
-        $dictionary = new DictionaryData($pathToDictionary);
+        $dictionary = new DictionaryData('footballTerms', $pathToDictionary);
         //Create the report
         $report = new ReportGenerator($dictionary, $data);
         ?>

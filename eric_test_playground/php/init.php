@@ -14,8 +14,8 @@ define('__RAW_USER_DATA__', __PROJECT_ROOT__ . '/.raw_user_data');
 
 require_once __PROJECT_ROOT__ .  __FB_API_PATH__;
 require_once 'OLD_WordBank.php';
-require_once 'User.php';
-require_once 'Report.php';
+require_once 'Applicant.php';
+require_once 'Scan.php';
 require_once 'DatabaseConnector.php';
 require_once 'AppEngine.php';
 
