@@ -41,6 +41,10 @@ class PostData {
 
         return preg_split($delimiter, $postText, -1, PREG_SPLIT_NO_EMPTY);
     }
+
+    public function getAllWordsAsString() {
+        return $this->getStory() . ' ' . $this->getMessage();
+    }
     
     /**
      * @return mixed
