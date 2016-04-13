@@ -70,10 +70,13 @@ class ReportGenerator
         echo '<hr/>Do whatever you have to do to do here!<hr/>';
 
         $dictionary = $this->getDictionaryData()->getDictionaryArray();
+
+        $string = $this->getPostDataArray()[1]->getAllWordsAsString();
         $post = $this->getPostDataArray()[1]->getWordArray();
 
         print_r($this->getPostDataArray()[1]);
         print_r($dictionary);
+        print_r($string);
         print_r($post);
     }
 }
