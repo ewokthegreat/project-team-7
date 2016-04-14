@@ -68,15 +68,111 @@ class ReportGenerator
      */
     private function doAlgorithm() {
         echo '<hr/>Do whatever you have to do to do here!<hr/>';
+        $sampleDictionary = $this->getDictionaryData()->getDictionaryArray();
+        $postAsString = $this->getPostDataArray()[1]->getAllWordsAsString();
+        $postAsArray = $this->getPostDataArray()[1]->getWordArray();
 
-        $dictionary = $this->getDictionaryData()->getDictionaryArray();
+        $flaggedPosts = array();
 
-        $string = $this->getPostDataArray()[1]->getAllWordsAsString();
-        $post = $this->getPostDataArray()[1]->getWordArray();
 
-        print_r($this->getPostDataArray()[1]);
-        print_r($dictionary);
-        print_r($string);
-        print_r($post);
+        foreach ($this->getPostDataArray() as $currentPost){
+            $flaggedInstances = array();
+            foreach($currentPost->getWordArray() as $currentPostWord){
+                foreach($sampleDictionary as $dictWord){
+                    //do stuff
+                    if (strtolower($currentPostWord) ===  strtolower($dictWord)){
+                        array_push($flaggedInstances,
+                            new FlaggedInstance($this->getDictionaryData()->getName(),
+                                $this->getDictionaryData()->getWeight(),
+                                strtolower($dictWord)));
+                    }
+                }
+            }
+            if(!empty($flaggedInstances)){
+                array_push($flaggedPosts,
+                    new AlgoResult($currentPost,$flaggedInstances));
+            }
+        }
+
+        echo '<pre>';
+        print_r($flaggedPosts);
+        echo '</pre>';
+
+
+//        print_r($this->getPostDataArray()[1]);
+//        print_r($sampleDictionary);
+//        print_r($postAsString);
+//        print_r($postAsArray);
+    }
+}
+class AlgoResult{
+    private $postData;
+    private $flaggedWords = array();
+
+    public function __construct($postData, $flaggedWords){
+        $this->setPostData($postData);
+        $this->setFlaggedWords($flaggedWords);
+    }
+
+    public function getPostData()
+    {
+        return $this->postData;
+    }
+
+    public function setPostData($postData)
+    {
+        $this->postData = $postData;
+    }
+
+    public function getFlaggedWords()
+    {
+        return $this->flaggedWords;
+    }
+
+    public function setFlaggedWords($flaggedWords)
+    {
+        $this->flaggedWords = $flaggedWords;
+    }
+}
+
+class FlaggedInstance{
+    private $dataDictName;
+    private $dictWeight;
+    private $flaggedWord;
+
+    public function __construct($dataDictName,$dictWeight,$flaggedWord){
+        $this->setDataDictName($dataDictName);
+        $this->setDictWeight($dictWeight);
+        $this->setFlaggedWord($flaggedWord);
+    }
+
+    public function getDataDictName()
+    {
+        return $this->dataDictName;
+    }
+
+    public function setDataDictName($dataDictName)
+    {
+        $this->dataDictName = $dataDictName;
+    }
+
+    public function getDictWeight()
+    {
+        return $this->dictWeight;
+    }
+
+    public function setDictWeight($dictWeight)
+    {
+        $this->dictWeight = $dictWeight;
+    }
+
+    public function getFlaggedWord()
+    {
+        return $this->flaggedWord;
+    }
+
+    public function setFlaggedWord($flaggedWord)
+    {
+        $this->flaggedWord = $flaggedWord;
     }
 }

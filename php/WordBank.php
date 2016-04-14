@@ -10,15 +10,14 @@ class WordBankHandler{
 
     public static function getWordBank($passedFile = ''){
         $file = $passedFile;
-        $finalArray = array();
 
         if(!file_exists($file) || !is_readable($file)) {
+            print_r('Ain\'t no file here');
             return FALSE;
         }
         $data = array_map('str_getcsv', file($file));
 
-        $finalArray[basename($passedFile, ".csv")] = $data[0];
-        return $finalArray;
+        return $data[0];
     }
 }
 
