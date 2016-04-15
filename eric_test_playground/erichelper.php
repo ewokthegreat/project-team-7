@@ -32,7 +32,7 @@ $data = json_decode($json);
 
 <body>
 
-<h1><?='Hello, world!'?></h1>
+<h1><?='Spider Search Results'?></h1>
 
 <div>
     <pre>

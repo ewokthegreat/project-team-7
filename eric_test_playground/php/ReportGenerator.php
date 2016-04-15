@@ -68,7 +68,7 @@ class ReportGenerator
      */
     private function doAlgorithm()
     {
-        echo '<hr/>Do whatever you have to do to do here!<hr/>';
+        $startTime = microtime(true);
         $flaggedPosts = array();
         
         foreach ($this->getPostDataArray() as $currentPost) {
@@ -82,7 +82,7 @@ class ReportGenerator
                                 new FlaggedInstance($currentDict->getName(),
                                     $currentDict->getWeight(),
                                     strtolower($dictWord)));
-
+                            break 2;
                         }
                     }
                 }
@@ -110,6 +110,7 @@ class ReportGenerator
         }
         echo '</pre>';
 
+        echo 'Elapsed Time: ' . (microtime(true) - $startTime) . "seconds";
         return $flaggedPosts;
     }
 
