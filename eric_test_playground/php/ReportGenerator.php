@@ -100,12 +100,11 @@ class ReportGenerator
 
         foreach($flaggedPosts as $post) {
             print_r($post);
-            print_r("Score: ");
+            print_r("Score: " . $post->getTotalWeight());
             //this is a static function call
 //            print_r(self::getTotalWeightOfFlaggedPost($post));
             //this is a regular function call form the object.
             //i believe this looks more object oriented and would like to keep this
-            print_r($post->getTotalWeight());
             echo '<br/>';
         }
         echo '</pre>';
