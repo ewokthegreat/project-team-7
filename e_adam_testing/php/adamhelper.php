@@ -11,8 +11,8 @@ error_reporting(E_ALL);
 
 //require_once '/home/ewoktheg/public_html/spider/php/ProcessJSON.php';
 //require_once '/home/ewoktheg/public_html/spider/php/ProcessFBPosts.php';
-require_once 'ProcessFBPosts.php';
-require_once 'OLD_WordBank.php';
+//require_once 'ProcessFBPosts.php';
+//require_once 'OLD_WordBank.php';
 
 $pathToData = "/home/ewoktheg/public_html/spider/eric_test_playground/.raw_user_data/10208453844209830/16.04.10.23.52.59__10208453844209830.json";
 
@@ -46,7 +46,10 @@ foreach($dataArray as $bigSubstring) {
 // Now combine both arrays here
 $final_array = array_combine($key_id_array, $value_message_array);
 
-//print_r($final_array);
+echo '<pre>';
+print_r($final_array);
+echo '</pre>';
+
 
 //foreach ($dataArray as $subString) {
 ///
@@ -72,13 +75,15 @@ $final_array = array_combine($key_id_array, $value_message_array);
 //original: [10208453844209830_10208832407153667] => Amen.
 //after: [10208453844209830_10208832407153667] => array('Amen', 0, 0, 0, 0, 0);
 
+//('I love football. go packerrs', 1, 0, 0, 1, 0)
+
 //so here would be the function call signature
 //function create2Darray($finalArray, $2DarrayWordBank)
 
 //declare 2D array
 //$multiArray = [[]];
 
-$multiArray = get2dArrayWordBank();
+//$multiArray = get2dArrayWordBank();
 
 #print Array to test....cannot test this method, so I will assume it is correct
 foreach ($multiArray as $singleArray) {
@@ -122,19 +127,19 @@ function flagPosts($formattedMessageArray, $multi2dWordbankArray) {
 /**
  * @param $multiArray
  */
-function get2dArrayWordBank()
-{
-    $multiArray = [[]]; //array that will be returned
-
-    //adding arrays using key values pairs
-    $multiArray["nfl_city_state"] = WordBankHandler::getWordBank('nfl_city_state.csv');
-    $multiArray["nfl_last_names"] = WordBankHandler::getWordBank('nfl_last_names.csv');
-    $multiArray["nfl_stadiums"] = WordBankHandler::getWordBank('nfl_stadiums.csv');
-    $multiArray["nfl_team_names"] = WordBankHandler::getWordBank('nfl_team_names.csv');
-    $multiArray["nfl_top_players_2015"] = WordBankHandler::getWordBank('nfl_top_players_2015csv.csv');
-
-    return $multiArray;
-}
+//function get2dArrayWordBank()
+//{
+//    $multiArray = [[]]; //array that will be returned
+//
+//    //adding arrays using key values pairs
+//    $multiArray["nfl_city_state"] = WordBankHandler::getWordBank('nfl_city_state.csv');
+//    $multiArray["nfl_last_names"] = WordBankHandler::getWordBank('nfl_last_names.csv');
+//    $multiArray["nfl_stadiums"] = WordBankHandler::getWordBank('nfl_stadiums.csv');
+//    $multiArray["nfl_team_names"] = WordBankHandler::getWordBank('nfl_team_names.csv');
+//    $multiArray["nfl_top_players_2015"] = WordBankHandler::getWordBank('nfl_top_players_2015csv.csv');
+//
+//    return $multiArray;
+//}
 
 //get2DarrayWordBank($multiArray);
 
