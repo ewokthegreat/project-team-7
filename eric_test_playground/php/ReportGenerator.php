@@ -64,33 +64,32 @@ class ReportGenerator
     }
 
     /**
-     *
+     * @return array of flagged posts
      */
-    private function doAlgorithm() {
+    private function doAlgorithm()
+    {
         echo '<hr/>Do whatever you have to do to do here!<hr/>';
-        $sampleDictionary = $this->getDictionaryData()->getDictionaryArray();
-        $postAsString = $this->getPostDataArray()[1]->getAllWordsAsString();
-        $postAsArray = $this->getPostDataArray()[1]->getWordArray();
-
         $flaggedPosts = array();
-
-
-        foreach ($this->getPostDataArray() as $currentPost){
+        
+        foreach ($this->getPostDataArray() as $currentPost) {
             $flaggedInstances = array();
-            foreach($currentPost->getWordArray() as $currentPostWord){
-                foreach($sampleDictionary as $dictWord){
-                    //do stuff
-                    if (strtolower($currentPostWord) ===  strtolower($dictWord)){
-                        array_push($flaggedInstances,
-                            new FlaggedInstance($this->getDictionaryData()->getName(),
-                                $this->getDictionaryData()->getWeight(),
-                                strtolower($dictWord)));
+            foreach ($currentPost->getWordArray() as $currentPostWord) {
+                foreach ($this->getDictionaryData() as $currentDict) {
+                    foreach ($currentDict->getDictionaryArray() as $dictWord) {
+
+                        if (strtolower($currentPostWord) === strtolower($dictWord)) {
+                            array_push($flaggedInstances,
+                                new FlaggedInstance($currentDict->getName(),
+                                    $currentDict->getWeight(),
+                                    strtolower($dictWord)));
+
+                        }
                     }
                 }
             }
-            if(!empty($flaggedInstances)){
+            if (!empty($flaggedInstances)) {
                 array_push($flaggedPosts,
-                    new AlgoResult($currentPost,$flaggedInstances));
+                    new AlgoResult($currentPost, $flaggedInstances));
             }
         }
 
@@ -98,18 +97,17 @@ class ReportGenerator
         print_r($flaggedPosts);
         echo '</pre>';
 
-
-//        print_r($this->getPostDataArray()[1]);
-//        print_r($sampleDictionary);
-//        print_r($postAsString);
-//        print_r($postAsArray);
+        return $flaggedPosts;
     }
 }
-class AlgoResult{
+
+class AlgoResult
+{
     private $postData;
     private $flaggedWords = array();
 
-    public function __construct($postData, $flaggedWords){
+    public function __construct($postData, $flaggedWords)
+    {
         $this->setPostData($postData);
         $this->setFlaggedWords($flaggedWords);
     }
@@ -135,12 +133,14 @@ class AlgoResult{
     }
 }
 
-class FlaggedInstance{
+class FlaggedInstance
+{
     private $dataDictName;
     private $dictWeight;
     private $flaggedWord;
 
-    public function __construct($dataDictName,$dictWeight,$flaggedWord){
+    public function __construct($dataDictName, $dictWeight, $flaggedWord)
+    {
         $this->setDataDictName($dataDictName);
         $this->setDictWeight($dictWeight);
         $this->setFlaggedWord($flaggedWord);
