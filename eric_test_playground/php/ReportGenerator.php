@@ -141,7 +141,7 @@ class ReportGenerator
         //bubble sort algorithm
         for ($i = ($arrayLength - 1); $i >= 0; $i--) {
             for ($j = 1; $j <= $i; $j++) {
-                if ($flaggedPostArray[$j-1]->getTotalWeight() > $flaggedPostArray[$j]->getTotalWeight()) {
+                if ($flaggedPostArray[$j-1]->getTotalWeight() < $flaggedPostArray[$j]->getTotalWeight()) {
                     $temp = $flaggedPostArray[$j-1];
                     $flaggedPostArray[$j-1] = $flaggedPostArray[$j];
                     $flaggedPostArray[$j] = $temp;

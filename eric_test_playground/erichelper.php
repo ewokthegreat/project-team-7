@@ -39,11 +39,20 @@ $data = json_decode($json);
         <?php
         //Create the dictionary array
         $dictionaries = array();
-        array_push($dictionaries,new DictionaryData('footballTerms',  __PROJECT_ROOT__ . "/dictionaries/SpiderWordBank.csv",5));
-        array_push($dictionaries,new DictionaryData('nflLocations',  __PROJECT_ROOT__ . "/dictionaries/nfl_city_state.csv",1));
-        array_push($dictionaries,new DictionaryData('nflStadiums',  __PROJECT_ROOT__ . "/dictionaries/nfl_stadiums.csv",2));
-        array_push($dictionaries,new DictionaryData('nflTeams',  __PROJECT_ROOT__ . "/dictionaries/nfl_team_names.csv", 4));
-        array_push($dictionaries,new DictionaryData('nflPlayers',  __PROJECT_ROOT__ . "/dictionaries/nfl_top_players_2015csv.csv",3));
+
+        $footballTerms = new DictionaryData("footballTerms", __PROJECT_ROOT__ . "/dictionaries/SpiderWordBank.csv",5);
+        $nflLocations = new DictionaryData("nflLocations",  __PROJECT_ROOT__ . "/dictionaries/nfl_city_state.csv",1);
+        $nflStadiums = new DictionaryData("nflStadiums",  __PROJECT_ROOT__ . "/dictionaries/nfl_stadiums.csv",2);
+        $nflTeams = new DictionaryData("nflTeams",  __PROJECT_ROOT__ . "/dictionaries/nfl_team_names.csv", 4);
+        $nflPlayers = new DictionaryData("nflPlayers",  __PROJECT_ROOT__ . "/dictionaries/nfl_top_players_2015csv.csv",3);
+
+        array_push($dictionaries,$footballTerms);
+        array_push($dictionaries,$nflLocations);
+        array_push($dictionaries,$nflStadiums);
+        array_push($dictionaries,$nflTeams);
+        array_push($dictionaries,$nflPlayers);
+
+
 
         //Create the report
         $report = new ReportGenerator($dictionaries, $data);
