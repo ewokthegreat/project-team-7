@@ -98,7 +98,11 @@ class ReportGenerator
         foreach($flaggedPosts as $post) {
             print_r($post);
             print_r("Score: ");
-            print_r(self::getTotalWeightOfFlaggedPost($post));
+            //this is a static function call
+//            print_r(self::getTotalWeightOfFlaggedPost($post));
+            //this is a regular function call form the object.
+            //i believe this looks more object oriented and would like to keep this
+            print_r($post->getTotalWeight());
             echo '<br/>';
         }
         echo '</pre>';
@@ -122,6 +126,29 @@ class ReportGenerator
 
         return $totalWeight;
     }
+
+    /**
+     * This function takes in a flagged post array and sorts it.
+     * I am using amperstand to signify I will be doing a pass by reference
+     * @param $flaggedPostArray
+     */
+//    public static function sortFlaggedPostArray(&$flaggedPostArray) {
+//        $arrayLength = sizeof($flaggedPostArray);
+//        for ($i = 2; $i < $arrayLength;  $i++) {
+//
+//            //$key = $flaggedPostArray[$i];
+//            $key = self::getTotalWeightOfFlaggedPost($flaggedPostArray[$i]);
+//            $j = $i - 1;
+//
+//            //while ($j > 0 && $flaggedPostArray[j] > $key) {
+//            while ($j > 0 && $flaggedPostArray[j] > $key) {
+//                $flaggedPostArray[$j + 1] = $flaggedPostArray[$j];
+//                $j++;
+//            }
+//            $flaggedPostArray[$j + 1] = $key;
+//        }
+//
+//    }
 }
 
 class AlgoResult
@@ -153,6 +180,15 @@ class AlgoResult
     public function setFlaggedWords($flaggedWords)
     {
         $this->flaggedWords = $flaggedWords;
+    }
+
+    public function getTotalWeight() {
+        $totalWeight = 0;
+
+        foreach($this->getFlaggedWords() as $flaggedWord) {
+            $totalWeight += $flaggedWord->getDictWeight();
+        }
+        return $totalWeight;
     }
 }
 
