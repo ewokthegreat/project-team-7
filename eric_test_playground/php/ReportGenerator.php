@@ -94,19 +94,23 @@ class ReportGenerator
         }
 
         echo '<pre>';
+
+        print_r(self::getFlaggedWordsAndFrequency($flaggedPosts));
+
 //        print_r($flaggedPosts);
         //sort array here
-        self::sortFlaggedPostArray($flaggedPosts);
-
-        foreach($flaggedPosts as $post) {
-            print_r($post);
-            print_r("Score: " . $post->getTotalWeight());
-            //this is a static function call
-//            print_r(self::getTotalWeightOfFlaggedPost($post));
-            //this is a regular function call form the object.
-            //i believe this looks more object oriented and would like to keep this
-            echo '<br/>';
-        }
+//        self::sortFlaggedPostArray($flaggedPosts);
+//
+//        foreach($flaggedPosts as $post) {
+//            print_r($post);
+//            print_r("Score: ");
+//            //this is a static function call
+////            print_r(self::getTotalWeightOfFlaggedPost($post));
+//            //this is a regular function call form the object.
+//            //i believe this looks more object oriented and would like to keep this
+//            print_r($post->getTotalWeight());
+//            echo '<br/>';
+//        }
         echo '</pre>';
 
         echo 'Elapsed Time: ' . (microtime(true) - $startTime) . "seconds";
@@ -128,6 +132,30 @@ class ReportGenerator
         }
 
         return $totalWeight;
+    }
+
+    /**
+     * @param $flaggedPostArray
+     * @return array
+     */
+    public static function getFlaggedWordsAndFrequency($flaggedPostArray) {
+        $flaggedWordsArray = array();
+        //sort through all flagd posts array
+        foreach ($flaggedPostArray as $flaggedPost) {
+            foreach ($flaggedPost->getFlaggedWords() as $flaggedWordObject) {
+                $flaggedWord = $flaggedWordObject->getFlaggedWord();
+                //Sees if the word already exists in the flagged word array
+                if (isset($flaggedWordsArray[$flaggedWord])) {
+                    //if it exists, increment the word array
+                    $flaggedWordsArray[$flaggedWord]++;
+                    //if it doesn't exists, then add it to the word array
+                } else {
+                    $flaggedWordsArray[$flaggedWord] = 1;
+                }
+            }
+        }
+
+        return $flaggedWordsArray;
     }
 
     /**
