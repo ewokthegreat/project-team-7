@@ -94,10 +94,33 @@ class ReportGenerator
         }
 
         echo '<pre>';
-        print_r($flaggedPosts);
+//        print_r($flaggedPosts);
+        foreach($flaggedPosts as $post) {
+            print_r($post);
+            print_r("Score: ");
+            print_r(self::getTotalWeightOfFlaggedPost($post));
+            echo '<br/>';
+        }
         echo '</pre>';
 
         return $flaggedPosts;
+    }
+
+    /**
+     * @param $flaggedPost
+     * @return int This function returns the total weight of a post, by adding all the weights of all
+     * the flagged words in a post.
+     */
+    public static function getTotalWeightOfFlaggedPost($flaggedPost) {
+        $flaggedWordsList = $flaggedPost->getFlaggedWords();
+
+        $totalWeight = 0;
+
+        foreach($flaggedWordsList as $flaggedWord) {
+            $totalWeight += $flaggedWord->getDictWeight();
+        }
+
+        return $totalWeight;
     }
 }
 
