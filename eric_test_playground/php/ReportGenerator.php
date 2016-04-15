@@ -95,6 +95,9 @@ class ReportGenerator
 
         echo '<pre>';
 //        print_r($flaggedPosts);
+        //sort array here
+        self::sortFlaggedPostArray($flaggedPosts);
+
         foreach($flaggedPosts as $post) {
             print_r($post);
             print_r("Score: ");
@@ -132,23 +135,21 @@ class ReportGenerator
      * I am using amperstand to signify I will be doing a pass by reference
      * @param $flaggedPostArray
      */
-//    public static function sortFlaggedPostArray(&$flaggedPostArray) {
-//        $arrayLength = sizeof($flaggedPostArray);
-//        for ($i = 2; $i < $arrayLength;  $i++) {
-//
-//            //$key = $flaggedPostArray[$i];
-//            $key = self::getTotalWeightOfFlaggedPost($flaggedPostArray[$i]);
-//            $j = $i - 1;
-//
-//            //while ($j > 0 && $flaggedPostArray[j] > $key) {
-//            while ($j > 0 && $flaggedPostArray[j] > $key) {
-//                $flaggedPostArray[$j + 1] = $flaggedPostArray[$j];
-//                $j++;
-//            }
-//            $flaggedPostArray[$j + 1] = $key;
-//        }
-//
-//    }
+    public static function sortFlaggedPostArray(&$flaggedPostArray) {
+        $arrayLength = sizeof($flaggedPostArray);
+
+        //bubble sort algorithm
+        for ($i = ($arrayLength - 1); $i >= 0; $i--) {
+            for ($j = 1; $j <= $i; $j++) {
+                if ($flaggedPostArray[$j-1]->getTotalWeight() > $flaggedPostArray[$j]->getTotalWeight()) {
+                    $temp = $flaggedPostArray[$j-1];
+                    $flaggedPostArray[$j-1] = $flaggedPostArray[$j];
+                    $flaggedPostArray[$j] = $temp;
+                }
+            }
+        }
+
+    }
 }
 
 class AlgoResult
