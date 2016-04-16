@@ -5,7 +5,6 @@
  * User: ewokthegreat
  * Date: 4/12/2016
  * Time: 5:04 AM
- * Update: 5:36 4/16
  */
 class ReportGenerator
 {
@@ -67,23 +66,35 @@ class ReportGenerator
     /**
      * @return array of flagged posts
      */
-    private function doAlgorithm()
-    {
+    private function doAlgorithm() {
         $startTime = microtime(true);
         $flaggedPosts = array();
-        
-        foreach ($this->getPostDataArray() as $currentPost) {
-            $flaggedInstances = array();
-            foreach ($currentPost->getWordArray() as $currentPostWord) {
-                foreach ($this->getDictionaryData() as $currentDict) {
-                    foreach ($currentDict->getDictionaryArray() as $dictWord) {
+       // $isPlayerNames = false;
 
-                        if (strtolower($currentPostWord) === strtolower($dictWord)) {
+        echo "Adam Testing";
+
+        foreach ($this->getPostDataArray() as $currentPost) {// iterate through each post
+            $flaggedInstances = array(); //create flagdict word array
+            foreach ($this->getDictionaryData() as $currentDict) { //iterate through each dictionary
+                if ($currentDict->getName() === 'nflPlayers') { //if dictionary is nfl players
+                    foreach ($currentDict->getDictionaryArray() as $dictWord) {
+                        if (strpos(strtolower($currentPost->getAllWordsAsString()), strtolower($dictWord)) !== FALSE) { // if matches a players name
                             array_push($flaggedInstances,
                                 new FlaggedInstance($currentDict->getName(),
                                     $currentDict->getWeight(),
                                     strtolower($dictWord)));
-                            break 2;
+                        }
+                    }
+                } else { //the dictionary is not a nfl players dictionary/
+                    foreach ($currentDict->getDictionaryArray() as $dictWord) { //get all words out of the dictionary
+                        foreach ($currentPost->getWordArray() as $currentPostWord) { //get word array
+                            if (strtolower($currentPostWord) === strtolower($dictWord)) {
+                                array_push($flaggedInstances,
+                                    new FlaggedInstance($currentDict->getName(),
+                                        $currentDict->getWeight(),
+                                        strtolower($dictWord)));
+                                break;
+                            }
                         }
                     }
                 }
@@ -94,17 +105,19 @@ class ReportGenerator
             }
         }
 
+
         echo '<pre>';
 
         $flaggedWordArray = self::getFlaggedWordsAndFrequency($flaggedPosts);
         print_r(self::getSortedFlaggedWordsArray($flaggedWordArray));
 
         self::sortFlaggedPostArray($flaggedPosts);
-        foreach($flaggedPosts as $post) {
-            print_r($post);
+        foreach ($flaggedPosts as $post) {
             print_r("Score: ");
             //this is a regular function call form the object.
             print_r($post->getTotalWeight());
+            echo '<br/>';
+            print_r($post);
             echo '<br/>';
         }
         echo '</pre>';
@@ -118,12 +131,13 @@ class ReportGenerator
      * @return int This function returns the total weight of a post, by adding all the weights of all
      * the flagged words in a post.
      */
-    public static function getTotalWeightOfFlaggedPost($flaggedPost) {
+    public static function getTotalWeightOfFlaggedPost($flaggedPost)
+    {
         $flaggedWordsList = $flaggedPost->getFlaggedWords();
 
         $totalWeight = 0;
 
-        foreach($flaggedWordsList as $flaggedWord) {
+        foreach ($flaggedWordsList as $flaggedWord) {
             $totalWeight += $flaggedWord->getDictWeight();
         }
 
@@ -134,7 +148,8 @@ class ReportGenerator
      * @param $flaggedPostArray
      * @return array
      */
-    public static function getFlaggedWordsAndFrequency($flaggedPostArray) {
+    public static function getFlaggedWordsAndFrequency($flaggedPostArray)
+    {
         $flaggedWordsArray = array();
         //sort through all flagd posts array
         foreach ($flaggedPostArray as $flaggedPost) {
@@ -154,25 +169,27 @@ class ReportGenerator
         return $flaggedWordsArray;
     }
 
-    public static function getSortedFlaggedWordsArray($flaggedWordArray) {
+    public static function getSortedFlaggedWordsArray($flaggedWordArray)
+    {
         arsort($flaggedWordArray);
         return $flaggedWordArray;
     }
 
     /**
-     * This function takes in a flagged post array and sorts it.
+     * This function takes in a flagged post array and sorts it. This uses the bubble sort algoirthm.
      * I am using amperstand to signify I will be doing a pass by reference
      * @param $flaggedPostArray
      */
-    public static function sortFlaggedPostArray(&$flaggedPostArray) {
+    public static function sortFlaggedPostArray(&$flaggedPostArray)
+    {
         $arrayLength = sizeof($flaggedPostArray);
 
         //bubble sort algorithm
         for ($i = ($arrayLength - 1); $i >= 0; $i--) {
             for ($j = 1; $j <= $i; $j++) {
-                if ($flaggedPostArray[$j-1]->getTotalWeight() < $flaggedPostArray[$j]->getTotalWeight()) {
-                    $temp = $flaggedPostArray[$j-1];
-                    $flaggedPostArray[$j-1] = $flaggedPostArray[$j];
+                if ($flaggedPostArray[$j - 1]->getTotalWeight() < $flaggedPostArray[$j]->getTotalWeight()) {
+                    $temp = $flaggedPostArray[$j - 1];
+                    $flaggedPostArray[$j - 1] = $flaggedPostArray[$j];
                     $flaggedPostArray[$j] = $temp;
                 }
             }
@@ -212,10 +229,11 @@ class AlgoResult
         $this->flaggedWords = $flaggedWords;
     }
 
-    public function getTotalWeight() {
+    public function getTotalWeight()
+    {
         $totalWeight = 0;
 
-        foreach($this->getFlaggedWords() as $flaggedWord) {
+        foreach ($this->getFlaggedWords() as $flaggedWord) {
             $totalWeight += $flaggedWord->getDictWeight();
         }
         return $totalWeight;
