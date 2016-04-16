@@ -6,7 +6,7 @@
  * Date: 4/8/2016
  * Time: 5:55 PM
  */
-class User
+class Applicant
 {
     /**
      * User constructor.

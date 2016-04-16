@@ -42,6 +42,17 @@ class DatabaseConnector {
         }
     }
 
+    public function insertScan($scan) {
+        try {
+            $sql = "INSERT INTO scan(scanID, applicantID, score, date, path)
+                              VALUES(:scanID, :applicantID, :score, :timestamp, :path)";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($scan->getScanDataArray());
+        } catch(PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
+
     /**
      * @param $applicantID
      * @return mixed
@@ -60,7 +71,7 @@ class DatabaseConnector {
      */
     public function selectAllUsers() {
         $sql = "SELECT * FROM applicant";
-        $allUsersArray = $this->pdo->query($sql)->fetchAll(PDO::FETCH_CLASS, 'User');
+        $allUsersArray = $this->pdo->query($sql)->fetchAll(PDO::FETCH_CLASS, 'Applicant');
 
         return $allUsersArray;
     }

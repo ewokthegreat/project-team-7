@@ -17,12 +17,20 @@ include_once 'php/Scan.php';
 include_once 'php/DatabaseConnector.php';
 
 define('__PROJECT_ROOT__', $_SERVER['DOCUMENT_ROOT']);
+define('__DICTIONARY_DATA__', __PROJECT_ROOT__ . '/' . 'dictionaries');
+define('__USER_DATA__', __PROJECT_ROOT__ . '/' . '.raw_user_data');
 
 $userId = '10208453844209830';
-$fileName = '16.04.10.23.52.59__10208453844209830' . '.json';
-$pathToData = __PROJECT_ROOT__ . "/.raw_user_data" . '/' . $userId . '/' . $fileName;
+$dateTime = '16.04.10.23.52.59';
+$fileName = '16.04.10.23.52.59__10208453844209830';
+$extJSON = '.json';
+$extACE = '.ace';
+$pathToData = __USER_DATA__ . '/' . $userId . '/' . $fileName;
 
-//$scan = new Scan($fileName);
+$scan = new Scan('16.04.10.23.52.59__10208453844209830', '10208453844209830',
+                 NULL, '16.04.10.23.52.59', __USER_DATA__ . '/' . $userId . '/' . $fileName . $extACE );
+
+print_r($scan);
 
 //Get the raw post data
 $json = file_get_contents($pathToData);

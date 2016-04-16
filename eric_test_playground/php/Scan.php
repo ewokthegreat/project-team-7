@@ -6,14 +6,49 @@
  * Date: 4/9/2016
  * Time: 3:21 PM
  */
-class Report
-{
+class Scan extends DBObject{
+    public function __construct($scanId, $applicantId, $score, $date, $path) {
+        $this->setScanID($scanId);
+        $this->setApplicantID($applicantId);
+        $this->setScore($score);
+        $this->setDate($date);
+        $this->setPath($path);
+    }
+
+    /*
+        $this->setScanID(basename($fileName, '.json'));
+        $fileInfo = explode('__', $this->getScanID());
+        $this->setApplicantID($fileInfo[1]);
+        $this->setDate($fileInfo[0]);
+
+        $path = $this->getScanID() . 'ace';
+
+        $this->setPath($path);
+
+        // Unused field (for now)
+        $this->setScore(NULL);
+     */
     private $scanID;
     private $applicantID;
     private $score;
     private $date;
     private $path;
 
+    public function getTableName() {
+        return 'scan';
+    }
+
+    public function getDataArray() {
+        $scanDataArray = [
+            'scanID' => $this->getScanID(),
+            'applicantID' => $this->getApplicantID(),
+            'score' => $this->getScore(),
+            'timestamp' => $this->getDate(),
+            'path' => $this->getPath()
+        ];
+        
+        return $scanDataArray;
+    }
     /**
      * @return mixed
      */

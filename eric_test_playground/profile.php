@@ -17,7 +17,7 @@
             <a href="#">Index</a>
         </li>
         <li class="active">
-            <a href="profile.html">Profiles</a>
+            <a href="profile.php">Profiles</a>
         </li>
         <!-- for not logged in users -->
         <li>
