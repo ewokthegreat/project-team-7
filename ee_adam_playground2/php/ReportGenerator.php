@@ -72,13 +72,15 @@ class ReportGenerator
         $flaggedPosts = array();
         $isPlayerNames = false;
 
+        print_r($this->dictionaryData);
+
         foreach ($this->getDictionaryData() as $currentDict) {
             if($currentDict->getName() === 'nflPlayers'){
                 $isPlayerNames = true;
             }
             foreach ($currentDict->getDictionaryArray() as $dictWord) {
                 foreach ($this->getPostDataArray() as $currentPost) {
-                    $flaggedInstances = array();
+                    $flaggedInstances = array(); //This will store all the flagged posts
 
                     if($isPlayerNames){
                         if (strpos(strtolower($currentPost->getAllWordsAsString()), strtolower($dictWord)) !== FALSE) {
@@ -87,7 +89,7 @@ class ReportGenerator
                                     $currentDict->getWeight(),
                                     strtolower($dictWord)));
                         }
-                    } else {
+                    } else { //none player name
 
                         foreach ($currentPost->getWordArray() as $currentPostWord) {
                             if (strtolower($currentPostWord) === strtolower($dictWord)) {
