@@ -71,8 +71,6 @@ class ReportGenerator
         $flaggedPosts = array();
        // $isPlayerNames = false;
 
-        echo "Adam Testing";
-
         foreach ($this->getPostDataArray() as $currentPost) {// iterate through each post
             $flaggedInstances = array(); //create flagdict word array
             foreach ($this->getDictionaryData() as $currentDict) { //iterate through each dictionary
@@ -112,6 +110,12 @@ class ReportGenerator
         echo '<br/>';
 
         $flaggedWordArray = self::getFlaggedWordsAndFrequency($flaggedPosts);
+
+        echo "Favorite Team: ";
+        echo self::getFavoriteTeam($flaggedWordArray, $this->dictionaryData);
+        echo '<br/>';
+
+        //$flaggedWordArray = self::getFlaggedWordsAndFrequency($flaggedPosts);
         print_r(self::getSortedFlaggedWordsArray($flaggedWordArray));
 
         self::sortFlaggedPostArray($flaggedPosts);
@@ -197,23 +201,36 @@ class ReportGenerator
                 }
             }
         }
-
     }
 
     public static function getAverageWeightPerFlaggedPosts($flaggedPostArray) {
         $sum = 0.0;
-        $counter = 0;
+        $numberOfFlaggedPosts = sizeof($flaggedPostArray);
 
         foreach ($flaggedPostArray as $flaggedPost) { //iterate through each post
             $sum += $flaggedPost->getTotalWeight();
-            $counter++;
-//            $flaggedWordArray = $flaggedPost->getFlaggedWords(); //get flagged words
-//            foreach ($flaggedWordArray as $flaggedWord) { //itereate through each flagged word
-//                $sum += $flaggedWord->getDictWeight();
-//
-//            }
         }
-        return ($sum / $counter);
+        return ($sum / $numberOfFlaggedPosts);
+    }
+
+    public static function getFavoriteTeam($flaggedWordArrayWithFrequency, $dictionaryData) {
+        arsort($flaggedWordArrayWithFrequency);
+
+        //create array containing all keys
+        $keyArray = array_keys($flaggedWordArrayWithFrequency);
+
+        foreach ($keyArray as $key) { //iterate through every key
+            foreach ($dictionaryData as $currentDictionary) { //itereate through all the dictionaries
+                if ($currentDictionary->getName() === 'nflTeams') { //if dictionary matches nfl teams
+                    foreach ($currentDictionary->getDictionaryArray() as $dictWord) { //cycle through each word in the dictionary
+                        if (strtolower($key) === strtolower($dictWord)) {
+                            return $dictWord;
+                        }
+                    }
+                }
+            }
+        }
+        return "No favorite team";
     }
 }
 
