@@ -121,7 +121,7 @@ class ReportGenerator
         self::sortFlaggedPostArray($flaggedPosts);
         foreach ($flaggedPosts as $post) {
             print_r("Score: ");
-            //this is a regular function call form the object.
+            //this is a regular function call form the object. yep.
             print_r($post->getTotalWeight());
             echo '<br/>';
             print_r($post);
