@@ -109,6 +109,12 @@ class ReportGenerator
     }
 
     public function runTestOutput() {
+        echo '<pre>';
+        echo "Percentage of flagged posts: ";
+        $flaggedPostPercentage = $this->getPercentageOfFlaggedPosts();
+        echo $flaggedPostPercentage;
+        echo '<br/>';
+
 
         echo '<pre>';
         echo "Average weight per post: ";
@@ -140,6 +146,13 @@ class ReportGenerator
             echo '<br/>';
         }
         echo '</pre>';
+    }
+
+    public function getPercentageOfFlaggedPosts() {
+        $allPostsTotal = sizeof($this->postDataArray);
+        $flaggedPostTotal = sizeof($this->flaggedPostArray);
+
+        return ($flaggedPostTotal / (float) $allPostsTotal);
     }
 
     /**
