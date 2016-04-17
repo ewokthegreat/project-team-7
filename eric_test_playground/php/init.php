@@ -4,6 +4,7 @@
  * User: ewokthegreat
  * Date: 4/9/2016
  * Time: 9:23 PM
+ * Upder: NOW
  */
 ini_set('display_errors',1);
 error_reporting(E_ALL);
@@ -13,7 +14,7 @@ define('__FB_API_PATH__', '/libs/facebook-php-sdk-v4-5.0.0/src/Facebook/autoload
 define('__RAW_USER_DATA__', __PROJECT_ROOT__ . '/.raw_user_data');
 
 require_once __PROJECT_ROOT__ .  __FB_API_PATH__;
-require_once 'OLD_WordBank.php';
+require_once 'DBObject.php';
 require_once 'Applicant.php';
 require_once 'Scan.php';
 require_once 'DatabaseConnector.php';

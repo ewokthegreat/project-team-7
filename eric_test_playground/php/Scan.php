@@ -5,14 +5,24 @@
  * User: ewokthegreat
  * Date: 4/9/2016
  * Time: 3:21 PM
+ * Update: today
  */
 class Scan extends DBObject{
-    public function __construct($scanId, $applicantId, $score, $date, $path) {
-        $this->setScanID($scanId);
-        $this->setApplicantID($applicantId);
-        $this->setScore($score);
-        $this->setDate($date);
-        $this->setPath($path);
+    /**
+     * Scan constructor.
+     * @param $scanID
+     * @param $applicantID
+     * @param $score
+     * @param $date
+     * @param $path
+     */
+    public function __construct($scanID = null, $applicantID = null,
+                                $score = null, $date = null, $path = null) {
+        $this->scanID = $scanID;
+        $this->applicantID = $applicantID;
+        $this->score = $score;
+        $this->date = $date;
+        $this->path = $path;
     }
 
     /*
@@ -28,27 +38,16 @@ class Scan extends DBObject{
         // Unused field (for now)
         $this->setScore(NULL);
      */
-    private $scanID;
-    private $applicantID;
-    private $score;
-    private $date;
-    private $path;
+    protected $scanID;
+    protected $applicantID;
+    protected $score;
+    protected $date;
+    protected $path;
 
     public function getTableName() {
         return 'scan';
     }
-
-    public function getDataArray() {
-        $scanDataArray = [
-            'scanID' => $this->getScanID(),
-            'applicantID' => $this->getApplicantID(),
-            'score' => $this->getScore(),
-            'timestamp' => $this->getDate(),
-            'path' => $this->getPath()
-        ];
-        
-        return $scanDataArray;
-    }
+    
     /**
      * @return mixed
      */

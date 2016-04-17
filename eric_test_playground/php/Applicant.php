@@ -6,8 +6,7 @@
  * Date: 4/8/2016
  * Time: 5:55 PM
  */
-class Applicant
-{
+class Applicant extends DBObject {
     /**
      * User constructor.
      * @param $id
@@ -20,7 +19,8 @@ class Applicant
      * @param $admin
      * @param $pic
      */
-    public function __construct($id, $token, $fname, $lname, $email, $link, $pass, $admin, $pic)
+    public function __construct($id = null, $token = null, $fname = null, $lname = null,
+                                $email = null, $link = null, $pass = null, $admin = null, $pic = null)
     {
         $this->applicantID = $id;
         $this->fbAuthToken = $token;
@@ -33,34 +33,20 @@ class Applicant
         $this->profilePicture = $pic;
     }
 
-    private $applicantID;
-    private $fbAuthToken;
-    private $firstName;
-    private $lastName;
-    private $email;
-    private $profileLink;
-    private $password;
-    private $isAdmin;
-    private $profilePicture;
+    protected $applicantID;
+    protected $fbAuthToken;
+    protected $firstName;
+    protected $lastName;
+    protected $email;
+    protected $profileLink;
+    protected $password;
+    protected $isAdmin;
+    protected $profilePicture;
 
-    /**
-     * @return array
-     */
-    public function getUserDataArray() {
-        $userDataArray = [
-            'id' => $this->applicantID,
-            'token' => $this->fbAuthToken,
-            'fname' => $this->firstName,
-            'lname' => $this->lastName,
-            'email' => $this->email,
-            'link' => $this->profileLink,
-            'pass' => $this->password,
-            'isAdmin' => $this->isAdmin,
-            'pic' => $this->profilePicture
-        ];
-        
-        return $userDataArray;
+    public function getTableName() {
+        return 'applicant';
     }
+
     /**
      * @return mixed
      */

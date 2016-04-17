@@ -27,27 +27,21 @@ class DatabaseConnector {
     private $pdo;
     private $query;
 
-    /**
-     * @param $user
-     * @return PDOStatement
-     */
-    public function insertUser($user) {
-        try {
-            $sql = "INSERT INTO applicant(applicantID, fbAuthToken, firstName, lastName, email, profileLink, password, isAdmin, profilePicture)
-                            VALUES(:id, :token, :fname, :lname, :email, :link, :pass, :isAdmin, :pic)";
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute($user->getUserDataArray());
-        } catch(PDOException $e) {
-            echo $e->getMessage();
+    public function insert($scan) {
+        $props = $scan->getProperties();
+        $tableName = $scan->getTableName();
+        
+        foreach($props as $field => $value) {
+            $ins[] = ':' . $field;
         }
-    }
+        
+        $ins = implode(',', $ins);
+        $fields = implode(',', array_keys($props));
 
-    public function insertScan($scan) {
         try {
-            $sql = "INSERT INTO scan(scanID, applicantID, score, date, path)
-                              VALUES(:scanID, :applicantID, :score, :timestamp, :path)";
+            $sql = "INSERT INTO $tableName ($fields) VALUES ($ins)";
             $stmt = $this->pdo->prepare($sql);
-            $stmt->execute($scan->getScanDataArray());
+            $stmt->execute($scan->getProperties());
         } catch(PDOException $e) {
             echo $e->getMessage();
         }
@@ -71,9 +65,16 @@ class DatabaseConnector {
      */
     public function selectAllUsers() {
         $sql = "SELECT * FROM applicant";
-        $allUsersArray = $this->pdo->query($sql)->fetchAll(PDO::FETCH_CLASS, 'Applicant');
+        $allUsersArray = $this->pdo->query($sql)->fetchAll(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'applicant');
 
         return $allUsersArray;
+    }
+    
+    public function selectAllScansFromUser($applicantID) {
+        $sql = "SELECT * FROM scan";
+        $scanForUserArray = $this->pdo->query($sql)->fetchAll(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'scan');
+        
+        return $scanForUserArray;
     }
 
     /**

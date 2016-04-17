@@ -223,10 +223,10 @@ class AppEngine
             $password = '1qaz2wsx!QAZ@WSX';
             $isAdmin = FALSE;
             $profilePicture = $user->picture->url;
-            $userData = new User($applicantID, $fbAuthToken, $firstName, $lastName,
+            $userData = new Applicant($applicantID, $fbAuthToken, $firstName, $lastName,
                 $email, $profileLink, $password, $isAdmin, $profilePicture);
 
-            $db->insertUser($userData);
+            $db->insert($userData);
         });
     }
 

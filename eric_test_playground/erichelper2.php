@@ -14,23 +14,28 @@ include_once 'php/PostData.php';
 include_once 'php/DictionaryData.php';
 include_once 'php/ReportGenerator.php';
 include_once 'php/Scan.php';
+include_once 'php/Applicant.php';
 include_once 'php/DatabaseConnector.php';
 
 define('__PROJECT_ROOT__', $_SERVER['DOCUMENT_ROOT']);
 define('__DICTIONARY_DATA__', __PROJECT_ROOT__ . '/' . 'dictionaries');
 define('__USER_DATA__', __PROJECT_ROOT__ . '/' . '.raw_user_data');
 
+//Date format: year.month.day.hour.minute.second
+
 $userId = '10208453844209830';
 $dateTime = '16.04.10.23.52.59';
 $fileName = '16.04.10.23.52.59__10208453844209830';
 $extJSON = '.json';
 $extACE = '.ace';
-$pathToData = __USER_DATA__ . '/' . $userId . '/' . $fileName;
+$pathToData = __USER_DATA__ . '/' . $userId . '/' . $fileName . $extJSON;
 
-$scan = new Scan('16.04.10.23.52.59__10208453844209830', '10208453844209830',
-                 NULL, '16.04.10.23.52.59', __USER_DATA__ . '/' . $userId . '/' . $fileName . $extACE );
-
-print_r($scan);
+$scan = new Scan('16.04.10.23.52.61__10208453844209830', '10208453844209830',
+                 '5', '16.04.10.23.52.59', __USER_DATA__ . '/' . $userId . '/' . $fileName . $extACE );
+$scan1 = new Scan('16.04.10.23.52.62__10208453844209830', '10208453844209830',
+                 '5', '16.04.10.23.52.59', __USER_DATA__ . '/' . $userId . '/' . $fileName . $extACE );
+$scan2 = new Scan('16.04.10.23.52.63__10208453844209830', '10208453844209830',
+                 '5', '16.04.10.23.52.59', __USER_DATA__ . '/' . $userId . '/' . $fileName . $extACE );
 
 //Get the raw post data
 $json = file_get_contents($pathToData);
@@ -51,6 +56,15 @@ $data = json_decode($json);
 <div>
     <pre>
         <?php
+        
+        $db = new DatabaseConnector();
+        $db->insert($scan);
+        $db->insert($scan1);
+        $db->insert($scan2);
+        print_r($db->selectAllUsers());
+        print_r($db->selectAllScansFromUser($userId));
+
+
         //Create the dictionary array
         $dictionaries = array();
 
@@ -69,7 +83,7 @@ $data = json_decode($json);
 
 
         //Create the report
-        $report = new ReportGenerator($dictionaries, $data);
+        //$report = new ReportGenerator($dictionaries, $data);
         ?>
     </pre>
 </div>
