@@ -76,24 +76,23 @@ class ReportGenerator
         foreach ($this->getPostDataArray() as $currentPost) {// iterate through each post
             $flaggedInstances = array(); //create flagdict word array
             foreach ($this->getDictionaryData() as $currentDict) { //iterate through each dictionary
-                if ($currentDict->getName() === 'nflPlayers') { //if dictionary is nfl players
-                    foreach ($currentDict->getDictionaryArray() as $dictWord) {
-                        if (strpos(strtolower($currentPost->getAllWordsAsString()), strtolower($dictWord)) !== FALSE) { // if matches a players name
+                foreach ($currentDict->getDictionaryArray() as $dictWord) { //iterate through each word in dictionary
+                    if ($currentDict->getName() === 'nflPlayers') { //if dictionary is nfl players
+                        //strpos method will be used o match the dict word to the entire message as a string
+                        if (strpos(strtolower($currentPost->getAllWordsAsString()), strtolower($dictWord)) !== FALSE) {
                             array_push($flaggedInstances,
                                 new FlaggedInstance($currentDict->getName(),
                                     $currentDict->getWeight(),
                                     strtolower($dictWord)));
                         }
-                    }
-                } else { //the dictionary is not a nfl players dictionary/
-                    foreach ($currentDict->getDictionaryArray() as $dictWord) { //get all words out of the dictionary
-                        foreach ($currentPost->getWordArray() as $currentPostWord) { //get word array
-                            if (strtolower($currentPostWord) === strtolower($dictWord)) {
+                    } else { //the dictionary is not a nfl players dictionary/
+                        foreach ($currentPost->getWordArray() as $currentPostWord) { //iterate through each word in the post
+                            if (strtolower($currentPostWord) === strtolower($dictWord)) { //match word by word
                                 array_push($flaggedInstances,
                                     new FlaggedInstance($currentDict->getName(),
                                         $currentDict->getWeight(),
                                         strtolower($dictWord)));
-                                break;
+                                //break; //Uncomment this if you want to avoid duplicate dictionary words per post.
                             }
                         }
                     }
@@ -107,6 +106,10 @@ class ReportGenerator
 
 
         echo '<pre>';
+
+        echo "Average weight per post: ";
+        echo self::getAverageWeightPerFlaggedPosts($flaggedPosts);
+        echo '<br/>';
 
         $flaggedWordArray = self::getFlaggedWordsAndFrequency($flaggedPosts);
         print_r(self::getSortedFlaggedWordsArray($flaggedWordArray));
@@ -195,6 +198,22 @@ class ReportGenerator
             }
         }
 
+    }
+
+    public static function getAverageWeightPerFlaggedPosts($flaggedPostArray) {
+        $sum = 0.0;
+        $counter = 0;
+
+        foreach ($flaggedPostArray as $flaggedPost) { //iterate through each post
+            $sum += $flaggedPost->getTotalWeight();
+            $counter++;
+//            $flaggedWordArray = $flaggedPost->getFlaggedWords(); //get flagged words
+//            foreach ($flaggedWordArray as $flaggedWord) { //itereate through each flagged word
+//                $sum += $flaggedWord->getDictWeight();
+//
+//            }
+        }
+        return ($sum / $counter);
     }
 }
 
