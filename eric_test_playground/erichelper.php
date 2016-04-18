@@ -15,6 +15,7 @@ include_once 'php/DictionaryData.php';
 include_once 'php/ReportGenerator.php';
 include_once 'php/Scan.php';
 include_once 'php/DatabaseConnector.php';
+include_once 'php/Report.php';
 
 define('__PROJECT_ROOT__', $_SERVER['DOCUMENT_ROOT']);
 
@@ -58,10 +59,11 @@ $data = json_decode($json);
         array_push($dictionaries,$nflTeams);
         array_push($dictionaries,$nflPlayers);
 
-
-
         //Create the report
-        $report = new ReportGenerator($dictionaries, $data, $userId, $pathToData);
+        $reportGenerator = new ReportGenerator($dictionaries, $data, $userId, $pathToData);
+        $report =  $reportGenerator->getReportObject(); //<-----Here is the report object. please take it
+
+        print_r($report); // <--------------------Report object is be printed out
         ?>
     </pre>
 </div>

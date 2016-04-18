@@ -43,13 +43,14 @@ class ReportGenerator implements JsonSerializable {
         $timeStamp = $pathToDataArray[$size - 1];
 
         $cleanTimeStamp = explode('__', $timeStamp);
+        $finalTimeStamp = $cleanTimeStamp[0];
 
         self::sortFlaggedPostArray($this->flaggedPostArray);
 
         $flaggedWordArray = self::getFlaggedWordsAndFrequency($this->flaggedPostArray);
 
         $nflTeamDict = null;
-        foreach ($this->getDictionaryData() as $currentDict) { //iterate through each dictionaryecho "Favorite Team: ";
+        foreach ($this->getDictionaryData() as $currentDict) { //iterate through each dictionar
             if ($currentDict->getName() === 'nflTeams') { //if dictionary is nfl players
                 $nflTeamDict = $currentDict;
                 break;
@@ -57,28 +58,28 @@ class ReportGenerator implements JsonSerializable {
         }
 
         $report = new Report($this->userId,
+            $finalTimeStamp,
             $this->pathToData,
-            $cleanTimeStamp,
-            $this->getLatestPostDate(),
-            $this->getOldestPostDate(),
-            $this->flaggedPostArray,
+            $this->getFirstPostDate(),
+            $this->getLastPostDate(),
             $this->getPercentageOfFlaggedPosts(),
-            self::getSortedFlaggedWordsArray($flaggedWordArray),
             $this->getAverageWeightPerFlaggedPosts($this->flaggedPostArray),
-            $this->getFavoriteTeam($flaggedWordArray, $nflTeamDict ));
+            $this->getFavoriteTeam($flaggedWordArray, $nflTeamDict ),
+            $this->flaggedPostArray,
+            self::getSortedFlaggedWordsArray($flaggedWordArray));
 
-        print_r($report);
+//        print_r($report);
         return $report;
     }
 
-    public function getLatestPostDate() {
+    public function getLastPostDate() {
         $firstDate = $this->postDataArray[0]->getDate();
 
         print_r($firstDate);
         return $firstDate;
     }
 
-    public function getOldestPostDate() {
+    public function getFirstPostDate() {
         $sizeOfPosts = sizeof($this->postDataArray);
         $lastPost = $this->postDataArray[$sizeOfPosts - 1]->getDate();
 

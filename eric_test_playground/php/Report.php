@@ -12,39 +12,39 @@ class Report implements jsonSerializable {
     private $dateGenerated;
     private $firstPostDate;
     private $lastPostDate;
-    private $sortedByWeightFlaggedPostsArray;
     private $percentageOfFlaggedPosts;
-   // private $totalWeightOfAllFlaggedPosts;
-    private $sortedByWeightFlaggedWordsAndFrequencyArray;
     private $averageWeightOfFlaggedPost;
     private $favoriteTeam;
+    private $sortedByWeightFlaggedPostsArray;
+    private $sortedByWeightFlaggedWordsAndFrequencyArray;
 
     /**
      * Report constructor.
      * @param $userID
-     * @param $pathToReportData
      * @param $dateGenerated
-     * @param $lastPostDate
+     * @param $pathToReportData
      * @param $firstPostDate
-     * @param $sortedByWeightFlaggedPostsArray
+     * @param $lastPostDate
      * @param $percentageOfFlaggedPosts
-     * @param $sortedByWeightFlaggedWordsAndFrequencyArray
      * @param $averageWeightOfFlaggedPost
      * @param $favoriteTeam
+     * @param $sortedByWeightFlaggedPostsArray
+     * @param $sortedByWeightFlaggedWordsAndFrequencyArray
      */
-    public function __construct($userID, $pathToReportData, $dateGenerated, $lastPostDate, $firstPostDate, $sortedByWeightFlaggedPostsArray, $percentageOfFlaggedPosts, $sortedByWeightFlaggedWordsAndFrequencyArray, $averageWeightOfFlaggedPost, $favoriteTeam)
+    public function __construct($userID, $dateGenerated, $pathToReportData, $firstPostDate, $lastPostDate, $percentageOfFlaggedPosts, $averageWeightOfFlaggedPost, $favoriteTeam, $sortedByWeightFlaggedPostsArray, $sortedByWeightFlaggedWordsAndFrequencyArray)
     {
         $this->userID = $userID;
-        $this->pathToReportData = $pathToReportData;
         $this->dateGenerated = $dateGenerated;
-        $this->lastPostDate = $lastPostDate;
+        $this->pathToReportData = $pathToReportData;
         $this->firstPostDate = $firstPostDate;
-        $this->sortedByWeightFlaggedPostsArray = $sortedByWeightFlaggedPostsArray;
+        $this->lastPostDate = $lastPostDate;
         $this->percentageOfFlaggedPosts = $percentageOfFlaggedPosts;
-        $this->sortedByWeightFlaggedWordsAndFrequencyArray = $sortedByWeightFlaggedWordsAndFrequencyArray;
         $this->averageWeightOfFlaggedPost = $averageWeightOfFlaggedPost;
         $this->favoriteTeam = $favoriteTeam;
+        $this->sortedByWeightFlaggedPostsArray = $sortedByWeightFlaggedPostsArray;
+        $this->sortedByWeightFlaggedWordsAndFrequencyArray = $sortedByWeightFlaggedWordsAndFrequencyArray;
     }
+
 
     public function jsonSerialize() {
         $props = array();
