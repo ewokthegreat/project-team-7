@@ -32,26 +32,33 @@
     }
 
     function _populateScanTable(response) {
+        var id = response.userID;
+        var elementId = id + '-scans';
         var scanObject = {
-            scans: response
+            scans: response.scanData
         };
+
         var template = document.getElementById('applicant-scan-template').innerHTML;
-        var target = document.getElementById('applicant-scan-data');
+        var target = document.getElementById(elementId);
+        target.classList.toggle('hide');
 
         Mustache.parse(template);
-        var rendered = Mustache.render(template, )
-        console.log(scanObject.scans);
+
+        var rendered = Mustache.render(template, scanObject);
+        target.innerHTML = rendered;
     }
 
     function _handleReportLinkClicks() {
-        console.log('handleReportLink');
         var reportLinkArray = document.getElementsByClassName('report-link');
         for(var i = 0; i < reportLinkArray.length; i++) {
             var currentLink = reportLinkArray[i];
+
             currentLink.addEventListener('click', function() {
+                console.log('CLICK');
+                console.log(this.dataset.id);
                 var data = { id: this.dataset.id };
                 _requestScript('php/scanLoader.php', _populateScanTable, data);
-            })
+            });
         }
     }
 })(window, document, undefined);

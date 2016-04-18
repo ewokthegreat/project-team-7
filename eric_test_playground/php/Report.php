@@ -15,6 +15,12 @@ class Report implements jsonSerializable {
     private $pathToReportData;
 
     public function jsonSerialize() {
-        // TODO: Implement jsonSerialize() method.
+        $props = array();
+
+        foreach ($this as $key => $value) {
+            $props[$key] = $value;
+        }
+
+        return $props;
     }
 }

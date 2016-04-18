@@ -26,7 +26,12 @@ $postDataArray =  json_decode($postData);
 $userID = $postDataArray->id;
 $db = new DatabaseConnector();
 $scanData = $db->selectAllScansFromApplicant($userID);
-trace($scanData);
+
+$obj = new stdClass();
+$obj->userID = $userID;
+$obj->scanData = $scanData;
+
+trace($obj);
 
 function trace($data) {
     print_r(json_encode($data));
