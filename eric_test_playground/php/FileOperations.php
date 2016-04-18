@@ -7,5 +7,8 @@
  * Time: 3:08 PM
  */
 class FileOperations {
-    public function writeFileToDisk() {}
+    public function writeFileToDisk($obj) {
+        $json_obj = json_encode($obj);
+        
+    }
 }

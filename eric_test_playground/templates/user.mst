@@ -1,0 +1,15 @@
+<tr class="active">
+    <td class="id">{{ applicantID }}</td>
+    <td class="avatar">
+        <img src="{{ profilePicture }}" />
+    </td>
+    <td>{{ firstName }}</td>
+    <td>{{ lastName }}</td>
+    <td>{{ email }}</td>
+    <td>
+        <a href="{{ profileLink }}">Profile</a>
+    </td>
+    <td>
+        <a id="report-link" href="#">Report</a>
+    </td>
+</tr>

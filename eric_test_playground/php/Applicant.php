@@ -6,7 +6,7 @@
  * Date: 4/8/2016
  * Time: 5:55 PM
  */
-class Applicant extends DBObject {
+class Applicant extends DBObject implements JsonSerializable {
     /**
      * User constructor.
      * @param $id
@@ -42,6 +42,21 @@ class Applicant extends DBObject {
     protected $password;
     protected $isAdmin;
     protected $profilePicture;
+
+    public function jsonSerialize() {
+        $props = array();
+
+        foreach ($this as $key => $value) {
+            if (!($key === 'password' ||
+                $key === 'fbAuthToken' ||
+                $key === 'isAdmin')
+            ) {
+                $props[$key] = $value;
+            }
+        }
+
+        return $props;
+    }
 
     public function getTableName() {
         return 'applicant';

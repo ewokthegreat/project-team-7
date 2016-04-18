@@ -30,12 +30,8 @@ $extJSON = '.json';
 $extACE = '.ace';
 $pathToData = __USER_DATA__ . '/' . $userId . '/' . $fileName . $extJSON;
 
-$scan = new Scan('16.04.10.23.52.61__10208453844209830', '10208453844209830',
-                 '5', '16.04.10.23.52.59', __USER_DATA__ . '/' . $userId . '/' . $fileName . $extACE );
-$scan1 = new Scan('16.04.10.23.52.62__10208453844209830', '10208453844209830',
-                 '5', '16.04.10.23.52.59', __USER_DATA__ . '/' . $userId . '/' . $fileName . $extACE );
-$scan2 = new Scan('16.04.10.23.52.63__10208453844209830', '10208453844209830',
-                 '5', '16.04.10.23.52.59', __USER_DATA__ . '/' . $userId . '/' . $fileName . $extACE );
+$scan = new Scan('16.04.10.23.52.61__10108215518995891', '10108215518995891',
+                 '5', '16.04.10.23.52.59', __USER_DATA__ . '/' . '10108215518995891' . '/' . '16.04.12.20.44.40__10108215518995891' . $extACE );
 
 //Get the raw post data
 $json = file_get_contents($pathToData);
@@ -59,10 +55,8 @@ $data = json_decode($json);
         
         $db = new DatabaseConnector();
         $db->insert($scan);
-        $db->insert($scan1);
-        $db->insert($scan2);
-        print_r($db->selectAllUsers());
-        print_r($db->selectAllScansFromUser($userId));
+        print_r($db->selectAllApplicants());
+        print_r($db->selectAllScansFromApplicant($userId));
 
 
         //Create the dictionary array

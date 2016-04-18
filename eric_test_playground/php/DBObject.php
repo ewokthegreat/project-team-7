@@ -7,6 +7,7 @@
  * Time: 4:41 PM
  */
 abstract class DBObject {
+    
     abstract public function getTableName();
     
     public function getProperties() {

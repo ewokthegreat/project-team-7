@@ -7,7 +7,7 @@
  * Time: 3:21 PM
  * Update: today
  */
-class Scan extends DBObject{
+class Scan extends DBObject implements JsonSerializable {
     /**
      * Scan constructor.
      * @param $scanID
@@ -43,6 +43,18 @@ class Scan extends DBObject{
     protected $score;
     protected $date;
     protected $path;
+
+    public function jsonSerialize() {
+        $props = array();
+
+        foreach ($this as $key => $value) {
+            if(!($key === 'applicantID')) {
+                $props[$key] = $value;
+            }
+        }
+
+        return $props;
+    }
 
     public function getTableName() {
         return 'scan';

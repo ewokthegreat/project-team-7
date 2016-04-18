@@ -27,23 +27,27 @@ class DatabaseConnector {
     private $pdo;
     private $query;
 
-    public function insert($scan) {
-        $props = $scan->getProperties();
-        $tableName = $scan->getTableName();
-        
-        foreach($props as $field => $value) {
-            $ins[] = ':' . $field;
-        }
-        
-        $ins = implode(',', $ins);
-        $fields = implode(',', array_keys($props));
+    public function insert($obj) {
+        if($obj instanceOf DBObject) {
+            $props = $obj->getProperties();
+            $tableName = $obj->getTableName();
 
-        try {
-            $sql = "INSERT INTO $tableName ($fields) VALUES ($ins)";
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute($scan->getProperties());
-        } catch(PDOException $e) {
-            echo $e->getMessage();
+            foreach ($props as $field => $value) {
+                $ins[] = ':' . $field;
+            }
+
+            $ins = implode(',', $ins);
+            $fields = implode(',', array_keys($props));
+
+            try {
+                $sql = "INSERT INTO $tableName ($fields) VALUES ($ins)";
+                $stmt = $this->pdo->prepare($sql);
+                $stmt->execute($obj->getProperties());
+            } catch (PDOException $e) {
+                echo $e->getMessage();
+            }
+        } else {
+            throw new Exception('Parameter must be of type DBObject');
         }
     }
 
@@ -51,30 +55,39 @@ class DatabaseConnector {
      * @param $applicantID
      * @return mixed
      */
-    public function selectUser($applicantID) {
+    public function selectApplicant($applicantID) {
         $sql = "SELECT * FROM applicant WHERE applicantID = :applicantID";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['applicantID' => $applicantID]);
-        $user = $stmt->fetch();
-        
-        return $user;
+        $applicant = $stmt->fetch();
+
+        return $applicant;
     }
 
     /**
      * @return array
      */
-    public function selectAllUsers() {
-        $sql = "SELECT * FROM applicant";
-        $allUsersArray = $this->pdo->query($sql)->fetchAll(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'applicant');
+    public function selectAllApplicants() {
 
-        return $allUsersArray;
+        $sql = "SELECT * FROM applicant WHERE applicantID != 999";
+
+        $allApplicantsArray = $this->pdo->query($sql)->fetchAll(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'applicant');
+
+        return $allApplicantsArray;
     }
-    
-    public function selectAllScansFromUser($applicantID) {
-        $sql = "SELECT * FROM scan";
-        $scanForUserArray = $this->pdo->query($sql)->fetchAll(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'scan');
-        
-        return $scanForUserArray;
+
+    public function selectAllScansFromApplicant($applicantID) {
+        $sql = "SELECT * FROM scan WHERE applicantID = $applicantID";
+        $scanForApplicantArray = $this->pdo->query($sql)->fetchAll(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'scan');
+
+        return $scanForApplicantArray;
+    }
+
+    public function createAllUserSummaryObject() {
+        $sql = "SELECT * FROM applicant JOIN scan ON applicant.applicantID = scan.applicantID";
+        $userSummaryObject = $this->pdo->query($sql)->fetchAll();
+
+        return $userSummaryObject;
     }
 
     /**

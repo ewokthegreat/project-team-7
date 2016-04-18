@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html>
 <head>
@@ -43,67 +42,21 @@
         </div>
         <div>
             <table class="overview-table">
+                
                 <thead>
                 <tr>
                     <td>Id</td>
                     <td>Avatar</td>
-                    <td>Username</td>
-                    <td>User's email</td>
-                    <td>Activated ?</td>
-                    <td>Score</td>
+                    <td>First Name</td>
+                    <td>Last Name</td>
+                    <td>Email</td>
                     <td>Profile Link</td>
                     <td>Report Link</td>
                 </tr>
                 </thead>
-                <tr class="active">
-                    <td>1</td>
-                    <td class="avatar">
-                        <img src="avatars/1.jpg" />
-                    </td>
-                    <td>test</td>
-                    <td>NOT VISIBLE IN THE DEMO</td>
-                    <td>Yes</td>
-                    <td>5</td>
-                    <td>
-                        <a href="#">Profile</a>
-                    </td>
-                    <td>
-                        <a href="#">Report</a>
-                    </td>
-                </tr>
-                <tr class="active">
-                    <td>2</td>
-                    <td class="avatar">
-                        <img src="avatars/2.jpg" />
-                    </td>
-                    <td>jj</td>
-                    <td>NOT VISIBLE IN THE DEMO</td>
-                    <td>Yes</td>
-                    <td>2</td>
-                    <td>
-                        <a href="#">Profile</a>
-                    </td>
-                    <td>
-                        <a href="#">Report</a>
-                    </td>
-                </tr>
-                <tr class="inactive">
-                    <td>3</td>
-                    <td class="avatar">
-                        <img src="avatars/default.jpg" />
-                    </td>
-                    <td>benspanda</td>
-                    <td>NOT VISIBLE IN THE DEMO</td>
-                    <td>No</td>
-                    <td>1</td>
-                    <td>
-                        <a href="#">Profile</a>
-                    </td>
-                    <td>
-                        <a href="#">Report</a>
-                    </td>
-                </tr>
-
+                
+                <tbody id="all-applicant-list">
+                </tbody>
             </table>
         </div>
     </div>
@@ -111,5 +64,52 @@
     <div class="footer"></div>
 </div><!-- close class="wrapper" -->
 
+<script type="application/javascript" src="js/lib/mustache.js"></script>
+<script type="application/javascript" src="js/admin.js"></script>
+
+<script id="all-applicant-template" type="x-tmpl-mustache">
+
+{{ #applicants }}
+<tr class="active">
+    <td class="id">{{ applicantID }}</td>
+    <td class="avatar">
+        <img src="{{ profilePicture }}" />
+    </td>
+    <td>{{ firstName }}</td>
+    <td>{{ lastName }}</td>
+    <td>{{ email }}</td>
+    <td>
+        <a href="{{ profileLink }}">Profile</a>
+    </td>
+    <td>
+        <a class="report-link" data-id="{{ applicantID }}" href="#">Report</a>
+    </td>
+</tr>
+<tr id="scans" class="hide"></tr>
+{{ /applicants }}
+
+</script><!--/#all-applicant-template-->
+
+<script id="applicant-scan-template" type="x-tmpl-mustache">
+    <table class="scan-table">
+        <thead>
+            <tr>
+                <td>ID</td>
+                <td>Date</td>
+                <td>Link</td>
+                <td>Score</td>
+            </tr>
+        </thead>
+        <tbody id="applicant-scan-data"></tbody>
+    </table>
+    {{ #scans }}
+    <tr>
+        <td>{{ scanID }}</td>
+        <td>{{ date }}</td>
+        <td>{{ link }}</td>
+        <td>{{ score }}</td>
+    </tr>
+    {{ /scans }}
+</script>
 </body>
 </html>
