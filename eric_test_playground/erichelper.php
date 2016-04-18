@@ -61,7 +61,7 @@ $data = json_decode($json);
 
 
         //Create the report
-        $report = new ReportGenerator($dictionaries, $data);
+        $report = new ReportGenerator($dictionaries, $data, $userId, $pathToData);
         ?>
     </pre>
 </div>
