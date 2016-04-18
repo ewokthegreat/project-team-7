@@ -6,22 +6,97 @@
  * Date: 4/12/2016
  * Time: 5:04 AM
  */
-class ReportGenerator
-{
+class ReportGenerator implements JsonSerializable {
     private $dictionaryData;
     private $postDataArray;
     private $flaggedPostArray;
+    private $userId;
+    private $pathToData;
+
     /**
      * ReportGenerator constructor.
      * @param $dictionaryData
      * @param $postData
      */
-    public function __construct($dictionaryData, $postData)
+    public function __construct($dictionaryData, $postData, $userId, $pathToData)
     {
         $this->setDictionaryData($dictionaryData);
         $this->setPostDataArray($postData);
-        $this->populateFlaggedPostArray();
-        $this->runTestOutput();
+        echo date("Y-m-d H:i:sO");
+        echo '<br/>';
+        $this->getLastPostDate();
+        //$this->populateFlaggedPostArray();
+        //$this->runTestOutput();
+    }
+
+    public function getFirstPostDate() {
+        $firstDate = $this->postDataArray[0]->getDate();
+
+        print_r($firstDate);
+        return $firstDate;
+    }
+
+    public function getLastPostDate() {
+        $sizeOfPosts = sizeof($this->postDataArray);
+        $lastPost = $this->postDataArray[$sizeOfPosts - 1]->getDate();
+
+        print_r($lastPost);
+        return $lastPost;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getFlaggedPostArray()
+    {
+        return $this->flaggedPostArray;
+    }
+
+    /**
+     * @param mixed $flaggedPostArray
+     * @return ReportGenerator
+     */
+    public function setFlaggedPostArray($flaggedPostArray)
+    {
+        $this->flaggedPostArray = $flaggedPostArray;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUserId()
+    {
+        return $this->userId;
+    }
+
+    /**
+     * @param mixed $userId
+     * @return ReportGenerator
+     */
+    public function setUserId($userId)
+    {
+        $this->userId = $userId;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPathToData()
+    {
+        return $this->pathToData;
+    }
+
+    /**
+     * @param mixed $pathToData
+     * @return ReportGenerator
+     */
+    public function setPathToData($pathToData)
+    {
+        $this->pathToData = $pathToData;
+        return $this;
     }
 
     /**
@@ -62,6 +137,15 @@ class ReportGenerator
     {
         $this->dictionaryData = $dictionaryData;
         return $this;
+    }
+
+    public function jsonSerialize() {
+        $props = array();
+        foreach($this as $key => $value) {
+            $props[$key] = $value;
+        }
+
+        return $props;
     }
 
     /**
