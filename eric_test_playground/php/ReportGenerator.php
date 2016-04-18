@@ -10,7 +10,7 @@ class ReportGenerator
 {
     private $dictionaryData;
     private $postDataArray;
-
+    private $flaggedPostArray;
     /**
      * ReportGenerator constructor.
      * @param $dictionaryData
@@ -20,7 +20,8 @@ class ReportGenerator
     {
         $this->setDictionaryData($dictionaryData);
         $this->setPostDataArray($postData);
-        $this->doAlgorithm();
+        $this->populateFlaggedPostArray();
+        $this->runTestOutput();
     }
 
     /**
@@ -66,64 +67,92 @@ class ReportGenerator
     /**
      * @return array of flagged posts
      */
-    private function doAlgorithm() {
+    private function populateFlaggedPostArray() {
         $startTime = microtime(true);
         $flaggedPosts = array();
        // $isPlayerNames = false;
 
-        echo "Adam Testing";
-
         foreach ($this->getPostDataArray() as $currentPost) {// iterate through each post
             $flaggedInstances = array(); //create flagdict word array
             foreach ($this->getDictionaryData() as $currentDict) { //iterate through each dictionary
-                if ($currentDict->getName() === 'nflPlayers') { //if dictionary is nfl players
-                    foreach ($currentDict->getDictionaryArray() as $dictWord) {
-                        if (strpos(strtolower($currentPost->getAllWordsAsString()), strtolower($dictWord)) !== FALSE) { // if matches a players name
+                foreach ($currentDict->getDictionaryArray() as $dictWord) { //iterate through each word in dictionary
+                    if ($currentDict->getName() === 'nflPlayers') { //if dictionary is nfl players
+                        //strpos method will be used o match the dict word to the entire message as a string
+                        if (strpos(strtolower($currentPost->getAllWordsAsString()), strtolower($dictWord)) !== FALSE) {
                             array_push($flaggedInstances,
-                                new FlaggedInstance($currentDict->getName(),
+                                new FlaggedWord($currentDict->getName(),
                                     $currentDict->getWeight(),
                                     strtolower($dictWord)));
                         }
-                    }
-                } else { //the dictionary is not a nfl players dictionary/
-                    foreach ($currentDict->getDictionaryArray() as $dictWord) { //get all words out of the dictionary
-                        foreach ($currentPost->getWordArray() as $currentPostWord) { //get word array
-                            if (strtolower($currentPostWord) === strtolower($dictWord)) {
+                    } else { //the dictionary is not a nfl players dictionary/
+                        foreach ($currentPost->getWordArray() as $currentPostWord) { //iterate through each word in the post
+                            if (strtolower($currentPostWord) === strtolower($dictWord)) { //match word by word
                                 array_push($flaggedInstances,
-                                    new FlaggedInstance($currentDict->getName(),
+                                    new FlaggedWord($currentDict->getName(),
                                         $currentDict->getWeight(),
                                         strtolower($dictWord)));
-                                break;
+                                //break; //Uncomment this if you want to avoid duplicate dictionary words per post.
                             }
                         }
                     }
                 }
             }
-            if (!empty($flaggedInstances)) {
+            if (!empty($flaggedInstances)) { //if the algo picks up on any posts that are flagged as football, push to the array
                 array_push($flaggedPosts,
-                    new AlgoResult($currentPost, $flaggedInstances));
+                    new FlaggedPost($currentPost, $flaggedInstances));
             }
         }
 
+        echo 'Elapsed Time: ' . (microtime(true) - $startTime) . "seconds";
+        $this->flaggedPostArray = $flaggedPosts;
+        return $flaggedPosts;
+    }
+
+    public function runTestOutput() {
+        echo '<pre>';
+        echo "Percentage of flagged posts: ";
+        $flaggedPostPercentage = $this->getPercentageOfFlaggedPosts();
+        echo $flaggedPostPercentage;
+        echo '<br/>';
+
 
         echo '<pre>';
+        echo "Average weight per post: ";
+        echo self::getAverageWeightPerFlaggedPosts($this->flaggedPostArray);
+        echo '<br/>';
+        $flaggedWordArray = self::getFlaggedWordsAndFrequency($this->flaggedPostArray);
 
-        $flaggedWordArray = self::getFlaggedWordsAndFrequency($flaggedPosts);
+        //get nflTeam dict
+        $nflTeamDict = null;
+        foreach ($this->getDictionaryData() as $currentDict) { //iterate through each dictionaryecho "Favorite Team: ";
+            if ($currentDict->getName() === 'nflTeams') { //if dictionary is nfl players
+                $nflTeamDict = $currentDict;
+                break;
+            }
+        }
+
+        echo self::getFavoriteTeam($flaggedWordArray, $nflTeamDict);
+        echo '<br/>';
+
+        //$flaggedWordArray = self::getFlaggedWordsAndFrequency($flaggedPosts);
         print_r(self::getSortedFlaggedWordsArray($flaggedWordArray));
-
-        self::sortFlaggedPostArray($flaggedPosts);
-        foreach ($flaggedPosts as $post) {
+        self::sortFlaggedPostArray($this->flaggedPostArray);
+        foreach ($this->flaggedPostArray as $post) {
             print_r("Score: ");
-            //this is a regular function call form the object.
+            //this is a regular function call form the object. yep.
             print_r($post->getTotalWeight());
             echo '<br/>';
             print_r($post);
             echo '<br/>';
         }
         echo '</pre>';
+    }
 
-        echo 'Elapsed Time: ' . (microtime(true) - $startTime) . "seconds";
-        return $flaggedPosts;
+    public function getPercentageOfFlaggedPosts() {
+        $allPostsTotal = sizeof($this->postDataArray);
+        $flaggedPostTotal = sizeof($this->flaggedPostArray);
+
+        return ($flaggedPostTotal / (float) $allPostsTotal);
     }
 
     /**
@@ -180,8 +209,7 @@ class ReportGenerator
      * I am using amperstand to signify I will be doing a pass by reference
      * @param $flaggedPostArray
      */
-    public static function sortFlaggedPostArray(&$flaggedPostArray)
-    {
+    public static function sortFlaggedPostArray(&$flaggedPostArray) {
         $arrayLength = sizeof($flaggedPostArray);
 
         //bubble sort algorithm
@@ -194,14 +222,38 @@ class ReportGenerator
                 }
             }
         }
+    }
 
+    public static function getAverageWeightPerFlaggedPosts($flaggedPostArray) {
+        $sum = 0.0;
+        $numberOfFlaggedPosts = sizeof($flaggedPostArray);
+
+        foreach ($flaggedPostArray as $flaggedPost) { //iterate through each post
+            $sum += $flaggedPost->getTotalWeight();
+        }
+        return ($sum / $numberOfFlaggedPosts);
+    }
+
+    public static function getFavoriteTeam($flaggedWordArrayWithFrequency, $nflTeamDictioanry) {
+        arsort($flaggedWordArrayWithFrequency); //sort flagged words first
+
+        //create array containing all keys
+        $keyArray = array_keys($flaggedWordArrayWithFrequency);
+
+        foreach ($keyArray as $key) { //iterate through every key in word array
+            foreach ($nflTeamDictioanry->getDictionaryArray() as $dictWord) { //cycle through each word in the dictionary
+                if (strtolower($key) === strtolower($dictWord)) {
+                    return $dictWord;
+                }
+            }
+        }
+        return "No favorite team";
     }
 }
 
-class AlgoResult
-{
-    private $postData;
-    private $flaggedWords = array();
+class FlaggedPost {
+    private $postData; //an instance of post object
+    private $flaggedWords = array(); //a list of flagged words and associated information per post
 
     public function __construct($postData, $flaggedWords)
     {
@@ -240,11 +292,10 @@ class AlgoResult
     }
 }
 
-class FlaggedInstance
-{
-    private $dataDictName;
-    private $dictWeight;
-    private $flaggedWord;
+class FlaggedWord {
+    private $dataDictName; //corresponding dict name
+    private $dictWeight; //corresponding weight per word
+    private $flaggedWord; //actual flagged word string
 
     public function __construct($dataDictName, $dictWeight, $flaggedWord)
     {
