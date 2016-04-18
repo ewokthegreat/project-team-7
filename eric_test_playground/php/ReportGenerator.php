@@ -6,6 +6,9 @@
  * Date: 4/12/2016
  * Time: 5:04 AM
  */
+
+include_once 'Report.php';
+
 class ReportGenerator implements JsonSerializable {
     private $dictionaryData;
     private $postDataArray;
@@ -22,21 +25,60 @@ class ReportGenerator implements JsonSerializable {
     {
         $this->setDictionaryData($dictionaryData);
         $this->setPostDataArray($postData);
-        echo date("Y-m-d H:i:sO");
-        echo '<br/>';
-        $this->getLastPostDate();
-        //$this->populateFlaggedPostArray();
+        $this->setUserId($userId);
+        $this->setPathToData($pathToData);
+        //$this->getFirstPostDate();
+        //$this->getLastPostDate();
+        //$this->sortPostDataArrayByDate();
+
+        $this->populateFlaggedPostArray();
         //$this->runTestOutput();
+
+        $this->getReportObject();
     }
 
-    public function getFirstPostDate() {
+    public function getReportObject() {
+        $pathToDataArray = explode('/', $this->pathToData);
+        $size = sizeof($pathToDataArray);
+        $timeStamp = $pathToDataArray[$size - 1];
+
+        $cleanTimeStamp = explode('__', $timeStamp);
+
+        self::sortFlaggedPostArray($this->flaggedPostArray);
+
+        $flaggedWordArray = self::getFlaggedWordsAndFrequency($this->flaggedPostArray);
+
+        $nflTeamDict = null;
+        foreach ($this->getDictionaryData() as $currentDict) { //iterate through each dictionaryecho "Favorite Team: ";
+            if ($currentDict->getName() === 'nflTeams') { //if dictionary is nfl players
+                $nflTeamDict = $currentDict;
+                break;
+            }
+        }
+
+        $report = new Report($this->userId,
+            $this->pathToData,
+            $cleanTimeStamp,
+            $this->getLatestPostDate(),
+            $this->getOldestPostDate(),
+            $this->flaggedPostArray,
+            $this->getPercentageOfFlaggedPosts(),
+            self::getSortedFlaggedWordsArray($flaggedWordArray),
+            $this->getAverageWeightPerFlaggedPosts($this->flaggedPostArray),
+            $this->getFavoriteTeam($flaggedWordArray, $nflTeamDict ));
+
+        print_r($report);
+        return $report;
+    }
+
+    public function getLatestPostDate() {
         $firstDate = $this->postDataArray[0]->getDate();
 
         print_r($firstDate);
         return $firstDate;
     }
 
-    public function getLastPostDate() {
+    public function getOldestPostDate() {
         $sizeOfPosts = sizeof($this->postDataArray);
         $lastPost = $this->postDataArray[$sizeOfPosts - 1]->getDate();
 

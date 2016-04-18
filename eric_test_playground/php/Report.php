@@ -14,7 +14,7 @@ class Report implements jsonSerializable {
     private $lastPostDate;
     private $sortedByWeightFlaggedPostsArray;
     private $percentageOfFlaggedPosts;
-    private $totalWeightOfAllFlaggedPosts;
+   // private $totalWeightOfAllFlaggedPosts;
     private $sortedByWeightFlaggedWordsAndFrequencyArray;
     private $averageWeightOfFlaggedPost;
     private $favoriteTeam;
@@ -28,12 +28,11 @@ class Report implements jsonSerializable {
      * @param $firstPostDate
      * @param $sortedByWeightFlaggedPostsArray
      * @param $percentageOfFlaggedPosts
-     * @param $totalWeightOfAllFlaggedPosts
      * @param $sortedByWeightFlaggedWordsAndFrequencyArray
      * @param $averageWeightOfFlaggedPost
      * @param $favoriteTeam
      */
-    public function __construct($userID, $pathToReportData, $dateGenerated, $lastPostDate, $firstPostDate, $sortedByWeightFlaggedPostsArray, $percentageOfFlaggedPosts, $totalWeightOfAllFlaggedPosts, $sortedByWeightFlaggedWordsAndFrequencyArray, $averageWeightOfFlaggedPost, $favoriteTeam)
+    public function __construct($userID, $pathToReportData, $dateGenerated, $lastPostDate, $firstPostDate, $sortedByWeightFlaggedPostsArray, $percentageOfFlaggedPosts, $sortedByWeightFlaggedWordsAndFrequencyArray, $averageWeightOfFlaggedPost, $favoriteTeam)
     {
         $this->userID = $userID;
         $this->pathToReportData = $pathToReportData;
@@ -42,7 +41,6 @@ class Report implements jsonSerializable {
         $this->firstPostDate = $firstPostDate;
         $this->sortedByWeightFlaggedPostsArray = $sortedByWeightFlaggedPostsArray;
         $this->percentageOfFlaggedPosts = $percentageOfFlaggedPosts;
-        $this->totalWeightOfAllFlaggedPosts = $totalWeightOfAllFlaggedPosts;
         $this->sortedByWeightFlaggedWordsAndFrequencyArray = $sortedByWeightFlaggedWordsAndFrequencyArray;
         $this->averageWeightOfFlaggedPost = $averageWeightOfFlaggedPost;
         $this->favoriteTeam = $favoriteTeam;
@@ -50,12 +48,8 @@ class Report implements jsonSerializable {
 
     public function jsonSerialize() {
         $props = array();
-<<<<<<< HEAD
 
         foreach ($this as $key => $value) {
-=======
-        foreach($this as $key => $value) {
->>>>>>> ad4e4753da5b91d43b8c16e0def2ea79e477a796
             $props[$key] = $value;
         }
 
