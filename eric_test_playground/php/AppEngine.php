@@ -10,12 +10,17 @@ class AppEngine
 {
     /**
      * AppEngine constructor.
+     * @param $wordBank
      */
-    public function __construct() {
+    public function __construct($wordBank) {
+        $this->wordBank = $wordBank;
         $this->db = new DatabaseConnector();
+        $this->reportGenerator = new ReportGenerator();
+        $this->reportGenerator->setDictionaryData($wordBank);
         $this->fb = $this->createServiceClass();
         $this->token = $this->getAccessToken();
         $this->user = $this->generateUserData();
+        $this->queryTimeline();
     }
 
     /**
@@ -40,36 +45,6 @@ class AppEngine
         $callback($response);
     }
 
-    /**
-     * @param $data
-     */
-    public function writeGraphResponseToDiskAsJSON($data) {
-        $this->makeGraphRequest('/me?fields=id', function($response) use($data) {
-            $user = json_decode($response->getGraphUser());
-            $userID = $user->id;
-
-            $dateString = date('y.m.d.G.i.s__');
-            $pathToUserData = __RAW_USER_DATA__ . '/' . $userID;
-            $userDataFileName = $dateString . $userID . '.json';
-
-            echo "'\n'" . 'PATHTOUSERDATA = ' . $pathToUserData . "'\n'";
-            echo "'\n'" . 'USERDATAFILENAME = ' . $userDataFileName . "'\n'";
-
-            if(!file_exists($pathToUserData)) {
-                mkdir($pathToUserData);
-                file_put_contents($pathToUserData . '/' . $userDataFileName, json_encode($data));
-            } else {
-                echo 'Directory already exists, attempting to write file!';
-                if(!file_exists($pathToUserData . '/' . $userDataFileName)) {
-                    file_put_contents($pathToUserData . '/' . $userDataFileName, json_encode($data));
-                } else {
-                    echo 'A file with that name already exists!';
-                }
-
-            }
-        });
-    }
-
     private $fb;
     private $id = '1679655878969496';
     private $secret = '74ab0d53fbe6e26d3f001bc7f31cfcea';
@@ -77,8 +52,45 @@ class AppEngine
     private $token;
     private $user;
     private $db;
+    private $reportGenerator;
+    private $wordBank;
+
+    /**
+     * @return ReportGenerator
+     */
+    public function getReportGenerator()
+    {
+        return $this->reportGenerator;
+    }
+
+    /**
+     * @param ReportGenerator $reportGenerator
+     * @return AppEngine
+     */
+    public function setReportGenerator($reportGenerator)
+    {
+        $this->reportGenerator = $reportGenerator;
+        return $this;
+    }
 
 
+    /**
+     * @return mixed
+     */
+    public function getRawPostData()
+    {
+        return $this->rawPostData;
+    }
+
+    /**
+     * @param mixed $rawPostData
+     * @return AppEngine
+     */
+    public function setRawPostData($rawPostData)
+    {
+        $this->rawPostData = $rawPostData;
+        return $this;
+    }
     /**
      * @return \Facebook\Facebook
      */
@@ -225,8 +237,72 @@ class AppEngine
             $profilePicture = $user->picture->url;
             $userData = new Applicant($applicantID, $fbAuthToken, $firstName, $lastName,
                 $email, $profileLink, $password, $isAdmin, $profilePicture);
-
+            $this->getReportGenerator()->setUserId($applicantID);
             $db->insert($userData);
+        });
+    }
+
+    /**
+     * @param $data
+     */
+    private function writeGraphResponseToDiskAsJSON($data) {
+        $this->makeGraphRequest('/me?fields=id', function($response) use($data) {
+            $user = json_decode($response->getGraphUser());
+            $userID = $user->id;
+
+            $dateString = date('y.m.d.G.i.s__');
+            $pathToUserData = __USER_DATA__ . '/' . $userID;
+            $userDataFileName = $dateString . $userID . '.json';
+            $path = $pathToUserData . '/' . $userDataFileName;
+
+            echo "'\n'" . 'PATHTOUSERDATA = ' . $pathToUserData . "'\n'";
+            echo "'\n'" . 'USERDATAFILENAME = ' . $userDataFileName . "'\n'";
+
+            if(!file_exists($pathToUserData)) {
+                mkdir($pathToUserData);
+                if(file_put_contents($path, json_encode($data))) {
+                    $this->getReportGenerator()->setPathToData($path);
+                    echo "'\n' File created successfully! '\n'";
+                };
+            } else {
+                echo "'\n' Directory already exists, attempting to write file! '\n'";
+                if(!file_exists($path)) {
+                    if(file_put_contents($path, json_encode($data))) {
+                        $this->getReportGenerator()->setPathToData($path);
+                        echo "'\n' File created successfully! '\n'";
+                    };
+                } else {
+                    echo "'\n' A file with that name already exists! '\n'";
+                }
+
+            }
+        });
+    }
+
+    /**
+     *
+     */
+    private function queryTimeline() {
+        $this->makeGraphRequest('/me/posts?limit=100', function($response) {
+            $fb = $this->getFb();
+            $posts_response = $response->getGraphEdge();
+            $rawPostData = array();
+
+            if ($fb->next($posts_response)) {
+                $response_array = $posts_response->asArray();
+                $rawPostData = array_merge($rawPostData, $response_array);
+
+                while ($posts_response = $fb->next($posts_response)) {
+                    $response_array = $posts_response->asArray();
+                    $rawPostData = array_merge($rawPostData, $response_array);
+                }
+
+            } else {
+                $posts_response = $response->getGraphEdge()->asArray();
+                array_push($rawPostData, $posts_response);
+            }
+
+            self::writeGraphResponseToDiskAsJSON($rawPostData);
         });
     }
 

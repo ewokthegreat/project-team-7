@@ -8,6 +8,7 @@
     _requestScript('php/applicantLoader.php', _populateApplicantTable, data);
 
     function _requestScript(scriptPath, callback, data) {
+        console.log(data);
         var xhr = new XMLHttpRequest();
         xhr.open('post', scriptPath);
         xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
@@ -40,7 +41,7 @@
 
         var template = document.getElementById('applicant-scan-template').innerHTML;
         var target = document.getElementById(elementId);
-        target.classList.toggle('hide');
+        // target.classList.toggle('hide');
 
         Mustache.parse(template);
 
@@ -50,6 +51,7 @@
 
     function _handleReportLinkClicks() {
         var reportLinkArray = document.getElementsByClassName('report-link');
+
         for(var i = 0; i < reportLinkArray.length; i++) {
             var currentLink = reportLinkArray[i];
 
@@ -57,6 +59,7 @@
                 console.log('CLICK');
                 console.log(this.dataset.id);
                 var data = { id: this.dataset.id };
+                console.log(data);
                 _requestScript('php/scanLoader.php', _populateScanTable, data);
             });
         }

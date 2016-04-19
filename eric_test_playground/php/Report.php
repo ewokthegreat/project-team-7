@@ -49,7 +49,7 @@ class Report implements jsonSerializable {
         $this->favoriteTeam = $favoriteTeam;
         $this->firstFlaggedPostDate = $firstFlaggedPostDate;
         $this->lastFlaggedPostDate = $lastFlaggedPostDate;
-        $this->postsperYear = $flaggedPostsPerYear;
+        $this->flaggedPostsPerYear = $flaggedPostsPerYear;
         $this->sortedByWeightFlaggedPostsArray = $sortedByWeightFlaggedPostsArray;
         $this->sortedByWeightFlaggedWordsAndFrequencyArray = $sortedByWeightFlaggedWordsAndFrequencyArray;
     }

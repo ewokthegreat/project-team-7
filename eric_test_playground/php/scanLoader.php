@@ -31,9 +31,9 @@ $obj = new stdClass();
 $obj->userID = $userID;
 $obj->scanData = $scanData;
 
-trace($obj);
+sendData($obj);
 
-function trace($data) {
+function sendData($data) {
     print_r(json_encode($data));
 }
 

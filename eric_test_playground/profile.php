@@ -83,13 +83,14 @@
     <td class="profile-link">
         <a href="{{ profileLink }}">Profile</a>
     </td>
-    <td class="report-link">
+    <td>
         <a class="report-link" data-id="{{ applicantID }}" href="#">Report</a>
     </td>
 </tr>
 
 <tr>
-    <td colspan="7">
+    <td></td>
+    <td colspan="6">
         <table class="scan-table">
             <tr>
                 <td>ID</td>

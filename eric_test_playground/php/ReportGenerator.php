@@ -17,27 +17,40 @@ class ReportGenerator implements JsonSerializable
     private $userId;
     private $pathToData;
 
-    /**
-     * ReportGenerator constructor.
-     * @param $dictionaryData
-     * @param $postData
-     */
-    public function __construct($dictionaryData, $postData, $userId, $pathToData)
-    {
-        $this->setDictionaryData($dictionaryData);
-        $this->setPostDataArray($postData);
-        $this->setUserId($userId);
-        $this->setPathToData($pathToData);
-        //$this->getFirstPostDate();
-        //$this->getLastPostDate();
-        //$this->sortPostDataArrayByDate();
-
-        $this->populateFlaggedPostArray();
-        //$this->runTestOutput();
-
-        $this->getReportObject();
+//    /**
+//     * ReportGenerator constructor.
+//     * @param $dictionaryData
+//     * @param $postData
+//     */
+//    public function __construct($dictionaryData, $postData, $userId, $pathToData)
+//    {
+//        $this->setDictionaryData($dictionaryData);
+//        $this->setPostDataArray($postData);
+//        $this->setUserId($userId);
+//        $this->setPathToData($pathToData);
+//        //$this->getFirstPostDate();
+//        //$this->getLastPostDate();
+//        //$this->sortPostDataArrayByDate();
+//
+//        $this->populateFlaggedPostArray();
+//        //$this->runTestOutput();
+//
+//        $this->getReportObject();
+//    }
+//
+    private function fetchRawPostData() {
+        $path = $this->getPathToData();
+        $postDataJSON = file_get_contents($path);
+        $rawPostData = json_decode($postDataJSON);
+        $this->setPostDataArray($rawPostData);
     }
-
+    
+    public function init() {
+        $this->fetchRawPostData();
+        $this->populateFlaggedPostArray();
+        print_r($this->getReportObject());
+    }
+    
     public function getReportObject()
     {
         $pathToDataArray = explode('/', $this->pathToData);
@@ -60,8 +73,8 @@ class ReportGenerator implements JsonSerializable
         }
 
         $report = new Report($this->userId,
-            $finalTimeStamp,
             $this->pathToData,
+            $finalTimeStamp,
             $this->getFirstPostDate(),
             $this->getLastPostDate(),
             $this->getPercentageOfFlaggedPosts(),
@@ -151,6 +164,7 @@ class ReportGenerator implements JsonSerializable
 
     /**
      * @param $data
+     * @return array
      */
     private function setPostDataArray($data)
     {
@@ -160,7 +174,7 @@ class ReportGenerator implements JsonSerializable
             array_push($postDataArray, new PostData($post));
         }
 
-        $this->postDataArray = $postDataArray;
+        return $this->postDataArray = $postDataArray;
     }
 
     /**
