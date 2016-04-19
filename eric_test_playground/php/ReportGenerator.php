@@ -9,7 +9,8 @@
 
 include_once 'Report.php';
 
-class ReportGenerator implements JsonSerializable {
+class ReportGenerator implements JsonSerializable
+{
     private $dictionaryData;
     private $postDataArray;
     private $flaggedPostArray;
@@ -37,7 +38,8 @@ class ReportGenerator implements JsonSerializable {
         $this->getReportObject();
     }
 
-    public function getReportObject() {
+    public function getReportObject()
+    {
         $pathToDataArray = explode('/', $this->pathToData);
         $size = sizeof($pathToDataArray);
         $timeStamp = $pathToDataArray[$size - 1];
@@ -50,7 +52,7 @@ class ReportGenerator implements JsonSerializable {
         $flaggedWordArray = self::getFlaggedWordsAndFrequency($this->flaggedPostArray);
 
         $nflTeamDict = null;
-        foreach ($this->getDictionaryData() as $currentDict) { //iterate through each dictionar
+        foreach ($this->getDictionaryData() as $currentDict) { //iterate through each dictionary
             if ($currentDict->getName() === 'nflTeams') { //if dictionary is nfl players
                 $nflTeamDict = $currentDict;
                 break;
@@ -64,7 +66,10 @@ class ReportGenerator implements JsonSerializable {
             $this->getLastPostDate(),
             $this->getPercentageOfFlaggedPosts(),
             $this->getAverageWeightPerFlaggedPosts($this->flaggedPostArray),
-            $this->getFavoriteTeam($flaggedWordArray, $nflTeamDict ),
+            $this->getFavoriteTeam($flaggedWordArray, $nflTeamDict),
+            $this->getFirstFlaggedPostDate($this->flaggedPostArray),
+            $this->getLastFlaggedPostDate($this->flaggedPostArray),
+            $this->getFlaggedPostsPerYear($this->flaggedPostArray),
             $this->flaggedPostArray,
             self::getSortedFlaggedWordsArray($flaggedWordArray));
 
@@ -72,14 +77,16 @@ class ReportGenerator implements JsonSerializable {
         return $report;
     }
 
-    public function getLastPostDate() {
+    public function getLastPostDate()
+    {
         $firstDate = $this->postDataArray[0]->getDate();
 
         print_r($firstDate);
         return $firstDate;
     }
 
-    public function getFirstPostDate() {
+    public function getFirstPostDate()
+    {
         $sizeOfPosts = sizeof($this->postDataArray);
         $lastPost = $this->postDataArray[$sizeOfPosts - 1]->getDate();
 
@@ -182,9 +189,10 @@ class ReportGenerator implements JsonSerializable {
         return $this;
     }
 
-    public function jsonSerialize() {
+    public function jsonSerialize()
+    {
         $props = array();
-        foreach($this as $key => $value) {
+        foreach ($this as $key => $value) {
             $props[$key] = $value;
         }
 
@@ -194,10 +202,11 @@ class ReportGenerator implements JsonSerializable {
     /**
      * @return array of flagged posts
      */
-    private function populateFlaggedPostArray() {
+    private function populateFlaggedPostArray()
+    {
         $startTime = microtime(true);
         $flaggedPosts = array();
-       // $isPlayerNames = false;
+        // $isPlayerNames = false;
 
         foreach ($this->getPostDataArray() as $currentPost) {// iterate through each post
             $flaggedInstances = array(); //create flagdict word array
@@ -235,7 +244,8 @@ class ReportGenerator implements JsonSerializable {
         return $flaggedPosts;
     }
 
-    public function runTestOutput() {
+    public function runTestOutput()
+    {
         echo '<pre>';
         echo "Percentage of flagged posts: ";
         $flaggedPostPercentage = $this->getPercentageOfFlaggedPosts();
@@ -275,11 +285,12 @@ class ReportGenerator implements JsonSerializable {
         echo '</pre>';
     }
 
-    public function getPercentageOfFlaggedPosts() {
+    public function getPercentageOfFlaggedPosts()
+    {
         $allPostsTotal = sizeof($this->postDataArray);
         $flaggedPostTotal = sizeof($this->flaggedPostArray);
 
-        return ($flaggedPostTotal / (float) $allPostsTotal);
+        return ($flaggedPostTotal / (float)$allPostsTotal);
     }
 
     /**
@@ -336,7 +347,8 @@ class ReportGenerator implements JsonSerializable {
      * I am using amperstand to signify I will be doing a pass by reference
      * @param $flaggedPostArray
      */
-    public static function sortFlaggedPostArray(&$flaggedPostArray) {
+    public static function sortFlaggedPostArray(&$flaggedPostArray)
+    {
         $arrayLength = sizeof($flaggedPostArray);
 
         //bubble sort algorithm
@@ -351,7 +363,8 @@ class ReportGenerator implements JsonSerializable {
         }
     }
 
-    public static function getAverageWeightPerFlaggedPosts($flaggedPostArray) {
+    public static function getAverageWeightPerFlaggedPosts($flaggedPostArray)
+    {
         $sum = 0.0;
         $numberOfFlaggedPosts = sizeof($flaggedPostArray);
 
@@ -361,7 +374,8 @@ class ReportGenerator implements JsonSerializable {
         return ($sum / $numberOfFlaggedPosts);
     }
 
-    public static function getFavoriteTeam($flaggedWordArrayWithFrequency, $nflTeamDictioanry) {
+    public static function getFavoriteTeam($flaggedWordArrayWithFrequency, $nflTeamDictioanry)
+    {
         arsort($flaggedWordArrayWithFrequency); //sort flagged words first
 
         //create array containing all keys
@@ -376,10 +390,60 @@ class ReportGenerator implements JsonSerializable {
         }
         return "No favorite team";
     }
+
+    public static function getFirstFlaggedPostDate($flaggedPostArray)
+    {
+        $minDate = strtotime($flaggedPostArray[0]->getPostData()->getDate());
+        foreach ($flaggedPostArray as $fpa) {
+            $curDate = strtotime($fpa->getPostData()->getDate());
+            if ($curDate < $minDate) {
+                $minDate = $curDate;
+            }
+        }
+        return date('m-d-Y',$minDate);
+    }
+
+    public static function getLastFlaggedPostDate($flaggedPostArray)
+    {
+        $maxDate = strtotime($flaggedPostArray[0]->getPostData()->getDate());
+        foreach ($flaggedPostArray as $fpa) {
+            $curDate = strtotime($fpa->getPostData()->getDate());
+            if ($curDate > $maxDate) {
+                $maxDate = $curDate;
+            }
+        }
+        return date('m-d-Y',$maxDate);
+    }
+
+    public static function getFlaggedPostsPerYear($flaggedPostArray)
+    {
+        $minDate = self::getFirstFlaggedPostDate($flaggedPostArray);
+        $maxDate = self::getLastFlaggedPostDate($flaggedPostArray);
+
+        $dateDiff = strtotime($maxDate) - strtotime($minDate);
+        $totalYears = floor($dateDiff / (60 * 60 * 24 * 365));
+        $postsPerYear = sizeof($flaggedPostArray) / $totalYears;
+
+        return $postsPerYear;
+    }
+
+    public static function getPostsWithinRange($startDate, $endDate, $flaggedPostArray){
+        $startDate = strtotime($startDate);
+        $endDate = strtotime($endDate);
+        $flaggedPostArrayInRange = array();
+        foreach ($flaggedPostArray as $fpa) {
+            $curDate = strtotime($fpa->getPostData()->getDate());
+            if ($curDate > $startDate && $curDate < $endDate){
+                array_push($flaggedPostArrayInRange,$fpa);
+            }
+        }
+        return $flaggedPostArrayInRange;
+    }
 }
 
-class FlaggedPost {
-    private $postData; //an instance of post object
+class FlaggedPost
+{
+    private $postData; //an instance of Post Data object
     private $flaggedWords = array(); //a list of flagged words and associated information per post
 
     public function __construct($postData, $flaggedWords)
@@ -419,7 +483,8 @@ class FlaggedPost {
     }
 }
 
-class FlaggedWord {
+class FlaggedWord
+{
     private $dataDictName; //corresponding dict name
     private $dictWeight; //corresponding weight per word
     private $flaggedWord; //actual flagged word string

@@ -15,32 +15,41 @@ class Report implements jsonSerializable {
     private $percentageOfFlaggedPosts;
     private $averageWeightOfFlaggedPost;
     private $favoriteTeam;
+    private $firstFlaggedPostDate;
+    private $lastFlaggedPostDate;
+    private $flaggedPostsPerYear;
     private $sortedByWeightFlaggedPostsArray;
     private $sortedByWeightFlaggedWordsAndFrequencyArray;
 
     /**
      * Report constructor.
      * @param $userID
-     * @param $dateGenerated
      * @param $pathToReportData
+     * @param $dateGenerated
      * @param $firstPostDate
      * @param $lastPostDate
      * @param $percentageOfFlaggedPosts
      * @param $averageWeightOfFlaggedPost
      * @param $favoriteTeam
+     * @param $firstFlaggedPostDate
+     * @param $lastFlaggedPostDate
+     * @param $postsperYear
      * @param $sortedByWeightFlaggedPostsArray
      * @param $sortedByWeightFlaggedWordsAndFrequencyArray
      */
-    public function __construct($userID, $dateGenerated, $pathToReportData, $firstPostDate, $lastPostDate, $percentageOfFlaggedPosts, $averageWeightOfFlaggedPost, $favoriteTeam, $sortedByWeightFlaggedPostsArray, $sortedByWeightFlaggedWordsAndFrequencyArray)
+    public function __construct($userID, $pathToReportData, $dateGenerated, $firstPostDate, $lastPostDate, $percentageOfFlaggedPosts, $averageWeightOfFlaggedPost, $favoriteTeam, $firstFlaggedPostDate, $lastFlaggedPostDate, $flaggedPostsPerYear, $sortedByWeightFlaggedPostsArray, $sortedByWeightFlaggedWordsAndFrequencyArray)
     {
         $this->userID = $userID;
-        $this->dateGenerated = $dateGenerated;
         $this->pathToReportData = $pathToReportData;
+        $this->dateGenerated = $dateGenerated;
         $this->firstPostDate = $firstPostDate;
         $this->lastPostDate = $lastPostDate;
         $this->percentageOfFlaggedPosts = $percentageOfFlaggedPosts;
         $this->averageWeightOfFlaggedPost = $averageWeightOfFlaggedPost;
         $this->favoriteTeam = $favoriteTeam;
+        $this->firstFlaggedPostDate = $firstFlaggedPostDate;
+        $this->lastFlaggedPostDate = $lastFlaggedPostDate;
+        $this->postsperYear = $flaggedPostsPerYear;
         $this->sortedByWeightFlaggedPostsArray = $sortedByWeightFlaggedPostsArray;
         $this->sortedByWeightFlaggedWordsAndFrequencyArray = $sortedByWeightFlaggedWordsAndFrequencyArray;
     }

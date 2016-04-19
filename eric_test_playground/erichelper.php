@@ -19,8 +19,8 @@ include_once 'php/Report.php';
 
 define('__PROJECT_ROOT__', $_SERVER['DOCUMENT_ROOT']);
 
-$userId = '10208453844209830';
-$fileName = '16.04.10.23.52.59__10208453844209830' . '.json';
+$userId = '10108215518995891';
+$fileName = '16.04.12.20.44.40__10108215518995891' . '.json';
 $pathToData = __PROJECT_ROOT__ . "/.raw_user_data" . '/' . $userId . '/' . $fileName;
 
 //$scan = new Scan($fileName);
