@@ -434,16 +434,16 @@ class ReportGenerator implements JsonSerializable
         return date('m-d-Y',$maxDate);
     }
 
-    public static function getFlaggedPostsPerYear($flaggedPostArray)
+    public function getFlaggedPostsPerYear($flaggedPostArray)
     {
         echo "'\n'***ReportGenerator->getFlaggedPostsPerYear()***'\n'";
 
-        $minDate = self::getFirstFlaggedPostDate($flaggedPostArray);
+        $minDate = $this->getFirstFlaggedPostDate($flaggedPostArray);
         echo "'\n'minDate: $minDate'\n'";
 
-        $maxDate = self::getLastFlaggedPostDate($flaggedPostArray);
+        $maxDate = $this->getLastFlaggedPostDate($flaggedPostArray);
         echo "'\n'maxDate: $maxDate'\n'";
-        
+
         echo "'\n'maxDate-stringToTime: " . strtotime($maxDate) . "'\n'";
         echo "'\n'minDate-stringToTime: " . strtotime($minDate) . "'\n'";
 
@@ -459,7 +459,7 @@ class ReportGenerator implements JsonSerializable
         return $postsPerYear;
     }
 
-    public static function getPostsWithinRange($startDate, $endDate, $flaggedPostArray){
+    public  function getPostsWithinRange($startDate, $endDate, $flaggedPostArray){
         $startDate = strtotime($startDate);
         $endDate = strtotime($endDate);
         $flaggedPostArrayInRange = array();
