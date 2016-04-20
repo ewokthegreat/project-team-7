@@ -6,7 +6,7 @@
  * Date: 4/12/2016
  * Time: 2:02 AM
  */
-class PostData {
+class PostData implements JsonSerializable{
 
     private $id;
     private $date;
@@ -28,6 +28,16 @@ class PostData {
         if(isset($obj->story)) {
             $this->setStory($obj->story);
         }
+    }
+
+    public function jsonSerialize() {
+        $props = array();
+
+        foreach ($this as $key => $value) {
+            $props[$key] = $value;
+        }
+
+        return $props;
     }
 
     /**

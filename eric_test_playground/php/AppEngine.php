@@ -40,7 +40,11 @@ class AppEngine
 
         $this->writeFile($fullPath, $data);
 
+
         $scan = new Scan($filename, $applicantID, '99', $scanDate, $fullPath);
+
+        print_r($scan);
+
         $this->getDb()->insert($scan);
     }
 

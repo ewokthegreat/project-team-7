@@ -9,7 +9,6 @@
 class DatabaseConnector {
 
     function __construct() {
-        trace('DatabaseConnector initialized.');
         $this->dsn = "mysql:host=$this->host;dbname=$this->db;charset=$this->charset";
         $this->pdo = new PDO($this->dsn, $this->user, $this->pass, $this->opt);
     }
@@ -42,8 +41,11 @@ class DatabaseConnector {
 
             try {
                 $sql = "INSERT INTO $tableName ($fields) VALUES ($ins)";
+
+                echo 'This is where the error is:';
                 $stmt = $this->pdo->prepare($sql);
                 $stmt->execute($obj->getProperties());
+
             } catch (PDOException $e) {
                 echo $e->getMessage();
             }

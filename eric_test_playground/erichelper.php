@@ -26,9 +26,9 @@ $pathToData = __PROJECT_ROOT__ . "/.raw_user_data" . '/' . $userId . '/' . $file
 //$scan = new Scan($fileName);
 
 //Get the raw post data
-$json = file_get_contents($pathToData);
+//$json = file_get_contents($pathToData);
 //Convert the raw post data from json to php
-$data = json_decode($json);
+//$data = json_decode($json);
 
 function trace($msg) {
     echo "'\n'****$msg*****'\n'";
@@ -49,28 +49,31 @@ function trace($msg) {
 <div>
     <pre>
         <?php
-        //Create the dictionary array
-        $dictionaries = array();
+        echo strtotime('02-01-2009') . '<<<<------CLARK' . PHP_EOL;
+        echo strtotime('28-10-2008') . '<<<<------ERIC' . PHP_EOL;
 
-        $footballTerms = new DictionaryData("footballTerms", __PROJECT_ROOT__ . "/dictionaries/SpiderWordBank.csv",5);
-        $nflLocations = new DictionaryData("nflLocations",  __PROJECT_ROOT__ . "/dictionaries/nfl_city_state.csv",1);
-        $nflStadiums = new DictionaryData("nflStadiums",  __PROJECT_ROOT__ . "/dictionaries/nfl_stadiums.csv",2);
-        $nflTeams = new DictionaryData("nflTeams",  __PROJECT_ROOT__ . "/dictionaries/nfl_team_names.csv", 4);
-        $nflPlayers = new DictionaryData("nflPlayers",  __PROJECT_ROOT__ . "/dictionaries/nfl_top_players_2015csv.csv",5);
-
-        array_push($dictionaries,$footballTerms);
-        array_push($dictionaries,$nflLocations);
-        array_push($dictionaries,$nflStadiums);
-        array_push($dictionaries,$nflTeams);
-        array_push($dictionaries,$nflPlayers);
-
-        //Create the report
-        $reportGenerator = new ReportGenerator();
-        $reportGenerator->setDictionaryData($dictionaries);
-        $reportGenerator->setPathToData($pathToData);
-        $report = $reportGenerator->init(); //<-----Here is the report object. please take it
-
-        print_r($report); // <--------------------Report object is be printed out
+//        //Create the dictionary array
+//        $dictionaries = array();
+//
+//        $footballTerms = new DictionaryData("footballTerms", __PROJECT_ROOT__ . "/dictionaries/SpiderWordBank.csv",5);
+//        $nflLocations = new DictionaryData("nflLocations",  __PROJECT_ROOT__ . "/dictionaries/nfl_city_state.csv",1);
+//        $nflStadiums = new DictionaryData("nflStadiums",  __PROJECT_ROOT__ . "/dictionaries/nfl_stadiums.csv",2);
+//        $nflTeams = new DictionaryData("nflTeams",  __PROJECT_ROOT__ . "/dictionaries/nfl_team_names.csv", 4);
+//        $nflPlayers = new DictionaryData("nflPlayers",  __PROJECT_ROOT__ . "/dictionaries/nfl_top_players_2015csv.csv",5);
+//
+//        array_push($dictionaries,$footballTerms);
+//        array_push($dictionaries,$nflLocations);
+//        array_push($dictionaries,$nflStadiums);
+//        array_push($dictionaries,$nflTeams);
+//        array_push($dictionaries,$nflPlayers);
+//
+//        //Create the report
+//        $reportGenerator = new ReportGenerator();
+//        $reportGenerator->setDictionaryData($dictionaries);
+//        $reportGenerator->setPathToData($pathToData);
+//        $report = $reportGenerator->init(); //<-----Here is the report object. please take it
+//
+//        print_r($report); // <--------------------Report object is be printed out
         ?>
     </pre>
 </div>

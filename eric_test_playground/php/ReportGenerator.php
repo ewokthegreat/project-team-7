@@ -422,7 +422,7 @@ class ReportGenerator implements JsonSerializable
                 $minDate = $curDate;
             }
         }
-        return date('m-d-Y',$minDate);
+        return date('d-m-Y',$minDate);
     }
 
     public  function getLastFlaggedPostDate($flaggedPostArray)
@@ -434,7 +434,7 @@ class ReportGenerator implements JsonSerializable
                 $maxDate = $curDate;
             }
         }
-        return date('m-d-Y',$maxDate);
+        return date('d-m-Y',$maxDate);
     }
 
     public function getFlaggedPostsPerYear($flaggedPostArray)

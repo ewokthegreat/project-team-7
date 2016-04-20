@@ -115,7 +115,7 @@
 <tr>
     <td>{{ scanID }}</td>
     <td>{{ date }}</td>
-    <td>{{ link }}</td>
+    <td><a class="view-report" data-path="{{ path }}" href="#">View</a></td>
     <td>{{ score }}</td>
 </tr>
 {{ /scans }}
