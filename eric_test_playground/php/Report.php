@@ -18,6 +18,7 @@ class Report implements jsonSerializable {
     private $firstFlaggedPostDate;
     private $lastFlaggedPostDate;
     private $flaggedPostsPerYear;
+    private $bubbleGraphData;
     private $sortedByWeightFlaggedPostsArray;
     private $sortedByWeightFlaggedWordsAndFrequencyArray;
 
@@ -34,14 +35,12 @@ class Report implements jsonSerializable {
      * @param $firstFlaggedPostDate
      * @param $lastFlaggedPostDate
      * @param $flaggedPostsPerYear
+     * @param $bubbleGraphData
      * @param $sortedByWeightFlaggedPostsArray
      * @param $sortedByWeightFlaggedWordsAndFrequencyArray
      */
-    public function __construct($userID, $pathToReportData, $dateGenerated, $firstPostDate,
-                                $lastPostDate, $percentageOfFlaggedPosts, $averageWeightOfFlaggedPost,
-                                $favoriteTeam, $firstFlaggedPostDate, $lastFlaggedPostDate, $flaggedPostsPerYear,
-                                $sortedByWeightFlaggedPostsArray, $sortedByWeightFlaggedWordsAndFrequencyArray) {
-        trace('Report initialized.');
+    public function __construct($userID, $pathToReportData, $dateGenerated, $firstPostDate, $lastPostDate, $percentageOfFlaggedPosts, $averageWeightOfFlaggedPost, $favoriteTeam, $firstFlaggedPostDate, $lastFlaggedPostDate, $flaggedPostsPerYear, $bubbleGraphData, $sortedByWeightFlaggedPostsArray, $sortedByWeightFlaggedWordsAndFrequencyArray)
+    {
         $this->userID = $userID;
         $this->pathToReportData = $pathToReportData;
         $this->dateGenerated = $dateGenerated;
@@ -53,6 +52,7 @@ class Report implements jsonSerializable {
         $this->firstFlaggedPostDate = $firstFlaggedPostDate;
         $this->lastFlaggedPostDate = $lastFlaggedPostDate;
         $this->flaggedPostsPerYear = $flaggedPostsPerYear;
+        $this->bubbleGraphData = $bubbleGraphData;
         $this->sortedByWeightFlaggedPostsArray = $sortedByWeightFlaggedPostsArray;
         $this->sortedByWeightFlaggedWordsAndFrequencyArray = $sortedByWeightFlaggedWordsAndFrequencyArray;
     }
