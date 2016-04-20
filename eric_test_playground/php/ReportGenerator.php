@@ -78,7 +78,8 @@ class ReportGenerator implements JsonSerializable
 
         $test = $this->flaggedPostArray;
 
-        $report = new Report($this->userId,
+        $report = new Report(
+            $this->userId,
             $this->pathToData,
             $finalTimeStamp,
             $this->getFirstPostDate(),
@@ -478,37 +479,32 @@ class ReportGenerator implements JsonSerializable
 
     public function getBubbleData($flaggedPostArray)
     {
+        echo "'\n'INSIDE BUBBLE ARRAY'\n'";
+
         $bubbleDataArray = array();
-        $flaggedWordsArray = array();
-
-        //set up nested associative arrays
-        //give them variables ^
-        //get data dict name
-        //see if key of dict name is in bubbledataarray
-        //if it is, add current word and occurance key -> value to array under dict name
-        //if not, create new key value pair with data dict name and add current word and occurance like ^
-
-
 
         foreach ($flaggedPostArray as $flaggedPost) {
             foreach ($flaggedPost->getFlaggedWords() as $flaggedWordObject) {
-                if (isset($bubbleDataArray[$flaggedWordObject->getDataDictName])){
+                $dictName = $flaggedWordObject->getDataDictName();
+                $flaggedWord = $flaggedWordObject->getFlaggedWord();
 
+                //Check if key => value exists for dataDictionary
+                if (!isset($bubbleDataArray[$dictName])){
+                    $bubbleDataArray[$dictName] = array();
                 }
 
-                $flaggedWord = $flaggedWordObject->getFlaggedWord();
                 //Sees if the word already exists in the flagged word array
-                if (isset($flaggedWordsArray[$flaggedWord])) {
+                if (isset($bubbleDataArray[$dictName][$flaggedWord])) {
                     //if it exists, increment the word array
-                    $flaggedWordsArray[$flaggedWord]++;
+                    $bubbleDataArray[$dictName][$flaggedWord]++;
                     //if it doesn't exists, then add it to the word array
                 } else {
-                    $flaggedWordsArray[$flaggedWord] = 1;
+                    $bubbleDataArray[$dictName][$flaggedWord] = 1;
                 }
             }
         }
-
-        return $flaggedWordsArray;
+        print_r($bubbleDataArray);
+        return $bubbleDataArray;
     }
 }
 
