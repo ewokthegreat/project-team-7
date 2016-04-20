@@ -33,12 +33,12 @@ class Report implements jsonSerializable {
      * @param $favoriteTeam
      * @param $firstFlaggedPostDate
      * @param $lastFlaggedPostDate
-     * @param $postsperYear
+     * @param $flaggedPostsPerYear
      * @param $sortedByWeightFlaggedPostsArray
      * @param $sortedByWeightFlaggedWordsAndFrequencyArray
      */
-    public function __construct($userID, $pathToReportData, $dateGenerated, $firstPostDate, $lastPostDate, $percentageOfFlaggedPosts, $averageWeightOfFlaggedPost, $favoriteTeam, $firstFlaggedPostDate, $lastFlaggedPostDate, $flaggedPostsPerYear, $sortedByWeightFlaggedPostsArray, $sortedByWeightFlaggedWordsAndFrequencyArray)
-    {
+    public function __construct($userID, $pathToReportData, $dateGenerated, $firstPostDate, $lastPostDate, $percentageOfFlaggedPosts, $averageWeightOfFlaggedPost, $favoriteTeam, $firstFlaggedPostDate, $lastFlaggedPostDate, $flaggedPostsPerYear, $sortedByWeightFlaggedPostsArray, $sortedByWeightFlaggedWordsAndFrequencyArray) {
+        trace('Report initialized.');
         $this->userID = $userID;
         $this->pathToReportData = $pathToReportData;
         $this->dateGenerated = $dateGenerated;
@@ -64,4 +64,239 @@ class Report implements jsonSerializable {
 
         return $props;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getUserID()
+    {
+        return $this->userID;
+    }
+
+    /**
+     * @param mixed $userID
+     * @return Report
+     */
+    public function setUserID($userID)
+    {
+        $this->userID = $userID;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPathToReportData()
+    {
+        return $this->pathToReportData;
+    }
+
+    /**
+     * @param mixed $pathToReportData
+     * @return Report
+     */
+    public function setPathToReportData($pathToReportData)
+    {
+        $this->pathToReportData = $pathToReportData;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDateGenerated()
+    {
+        return $this->dateGenerated;
+    }
+
+    /**
+     * @param mixed $dateGenerated
+     * @return Report
+     */
+    public function setDateGenerated($dateGenerated)
+    {
+        $this->dateGenerated = $dateGenerated;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFirstPostDate()
+    {
+        return $this->firstPostDate;
+    }
+
+    /**
+     * @param mixed $firstPostDate
+     * @return Report
+     */
+    public function setFirstPostDate($firstPostDate)
+    {
+        $this->firstPostDate = $firstPostDate;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastPostDate()
+    {
+        return $this->lastPostDate;
+    }
+
+    /**
+     * @param mixed $lastPostDate
+     * @return Report
+     */
+    public function setLastPostDate($lastPostDate)
+    {
+        $this->lastPostDate = $lastPostDate;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPercentageOfFlaggedPosts()
+    {
+        return $this->percentageOfFlaggedPosts;
+    }
+
+    /**
+     * @param mixed $percentageOfFlaggedPosts
+     * @return Report
+     */
+    public function setPercentageOfFlaggedPosts($percentageOfFlaggedPosts)
+    {
+        $this->percentageOfFlaggedPosts = $percentageOfFlaggedPosts;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAverageWeightOfFlaggedPost()
+    {
+        return $this->averageWeightOfFlaggedPost;
+    }
+
+    /**
+     * @param mixed $averageWeightOfFlaggedPost
+     * @return Report
+     */
+    public function setAverageWeightOfFlaggedPost($averageWeightOfFlaggedPost)
+    {
+        $this->averageWeightOfFlaggedPost = $averageWeightOfFlaggedPost;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFavoriteTeam()
+    {
+        return $this->favoriteTeam;
+    }
+
+    /**
+     * @param mixed $favoriteTeam
+     * @return Report
+     */
+    public function setFavoriteTeam($favoriteTeam)
+    {
+        $this->favoriteTeam = $favoriteTeam;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFirstFlaggedPostDate()
+    {
+        return $this->firstFlaggedPostDate;
+    }
+
+    /**
+     * @param mixed $firstFlaggedPostDate
+     * @return Report
+     */
+    public function setFirstFlaggedPostDate($firstFlaggedPostDate)
+    {
+        $this->firstFlaggedPostDate = $firstFlaggedPostDate;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastFlaggedPostDate()
+    {
+        return $this->lastFlaggedPostDate;
+    }
+
+    /**
+     * @param mixed $lastFlaggedPostDate
+     * @return Report
+     */
+    public function setLastFlaggedPostDate($lastFlaggedPostDate)
+    {
+        $this->lastFlaggedPostDate = $lastFlaggedPostDate;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFlaggedPostsPerYear()
+    {
+        return $this->flaggedPostsPerYear;
+    }
+
+    /**
+     * @param mixed $flaggedPostsPerYear
+     * @return Report
+     */
+    public function setFlaggedPostsPerYear($flaggedPostsPerYear)
+    {
+        $this->flaggedPostsPerYear = $flaggedPostsPerYear;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSortedByWeightFlaggedPostsArray()
+    {
+        return $this->sortedByWeightFlaggedPostsArray;
+    }
+
+    /**
+     * @param mixed $sortedByWeightFlaggedPostsArray
+     * @return Report
+     */
+    public function setSortedByWeightFlaggedPostsArray($sortedByWeightFlaggedPostsArray)
+    {
+        $this->sortedByWeightFlaggedPostsArray = $sortedByWeightFlaggedPostsArray;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSortedByWeightFlaggedWordsAndFrequencyArray()
+    {
+        return $this->sortedByWeightFlaggedWordsAndFrequencyArray;
+    }
+
+    /**
+     * @param mixed $sortedByWeightFlaggedWordsAndFrequencyArray
+     * @return Report
+     */
+    public function setSortedByWeightFlaggedWordsAndFrequencyArray($sortedByWeightFlaggedWordsAndFrequencyArray)
+    {
+        $this->sortedByWeightFlaggedWordsAndFrequencyArray = $sortedByWeightFlaggedWordsAndFrequencyArray;
+        return $this;
+    }
+
 }

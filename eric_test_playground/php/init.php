@@ -24,6 +24,10 @@ include_once 'Scan.php';
 include_once 'Applicant.php';
 include_once 'DatabaseConnector.php';
 
+function trace($msg) {
+    echo "'\n'****$msg*****'\n'";
+}
+
 $dictionaries = array();
 
 $footballTerms = new DictionaryData("footballTerms", __PROJECT_ROOT__ . "/dictionaries/SpiderWordBank.csv",5);
@@ -39,4 +43,6 @@ array_push($dictionaries,$nflTeams);
 array_push($dictionaries,$nflPlayers);
 
 $app = new AppEngine($dictionaries);
-$app->getReportGenerator()->init();
+$app->init();
+//$reportGenerator = $app->getReportGenerator();
+//$report = $reportGenerator->init();

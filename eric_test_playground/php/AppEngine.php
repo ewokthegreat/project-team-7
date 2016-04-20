@@ -13,6 +13,7 @@ class AppEngine
      * @param $wordBank
      */
     public function __construct($wordBank) {
+        trace("AppEngine Initialized");
         $this->wordBank = $wordBank;
         $this->db = new DatabaseConnector();
         $this->reportGenerator = new ReportGenerator();
@@ -20,9 +21,28 @@ class AppEngine
         $this->fb = $this->createServiceClass();
         $this->token = $this->getAccessToken();
         $this->user = $this->generateUserData();
-        $this->queryTimeline();
+
     }
 
+    public function init() {
+        $this->queryTimeline();
+        $report = $this->getReportGenerator()->init();
+        $this->saveAceData($report);
+    }
+
+    private function saveAceData($data) {
+        $applicantID = $data->getUserID();
+        $scanDate = $data->getDateGenerated();
+        $dirPath = __USER_DATA__ . '/' . $applicantID;
+        $filename = $scanDate . '__' . $applicantID;
+        $extension = '.ace';
+        $fullPath = $dirPath . '/' . $filename . $extension;
+
+        $this->writeFile($fullPath, $data);
+
+        $scan = new Scan($filename, $applicantID, '99', $scanDate, $fullPath);
+        $this->getDb()->insert($scan);
+    }
     /**
      * @param $requestString
      * @param $callback
@@ -54,6 +74,7 @@ class AppEngine
     private $db;
     private $reportGenerator;
     private $wordBank;
+    private $scan;
 
     /**
      * @return ReportGenerator
@@ -241,6 +262,15 @@ class AppEngine
             $db->insert($userData);
         });
     }
+    private function writeFile($path, $data) {
+        if(file_put_contents($path, json_encode($data))) {
+            $this->getReportGenerator()->setPathToData($path);
+            trace('File operation successful.');
+        } else {
+            trace('A file with that name already exists!');
+        };
+
+    }
 
     /**
      * @param $data
@@ -255,26 +285,12 @@ class AppEngine
             $userDataFileName = $dateString . $userID . '.json';
             $path = $pathToUserData . '/' . $userDataFileName;
 
-            echo "'\n'" . 'PATHTOUSERDATA = ' . $pathToUserData . "'\n'";
-            echo "'\n'" . 'USERDATAFILENAME = ' . $userDataFileName . "'\n'";
-
             if(!file_exists($pathToUserData)) {
                 mkdir($pathToUserData);
-                if(file_put_contents($path, json_encode($data))) {
-                    $this->getReportGenerator()->setPathToData($path);
-                    echo "'\n' File created successfully! '\n'";
-                };
+                $this->writeFile($path, $data);
             } else {
                 echo "'\n' Directory already exists, attempting to write file! '\n'";
-                if(!file_exists($path)) {
-                    if(file_put_contents($path, json_encode($data))) {
-                        $this->getReportGenerator()->setPathToData($path);
-                        echo "'\n' File created successfully! '\n'";
-                    };
-                } else {
-                    echo "'\n' A file with that name already exists! '\n'";
-                }
-
+                $this->writeFile($path, $data);
             }
         });
     }

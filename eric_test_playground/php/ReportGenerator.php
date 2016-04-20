@@ -37,7 +37,10 @@ class ReportGenerator implements JsonSerializable
 //
 //        $this->getReportObject();
 //    }
-//
+    public function __construct() {
+        trace('ReportGenerator initialized.');
+    }
+
     private function fetchRawPostData() {
         $path = $this->getPathToData();
         $postDataJSON = file_get_contents($path);
@@ -48,10 +51,11 @@ class ReportGenerator implements JsonSerializable
     public function init() {
         $this->fetchRawPostData();
         $this->populateFlaggedPostArray();
-        print_r($this->getReportObject());
+        
+        return $this->getReportObject();
     }
     
-    public function getReportObject()
+    private function getReportObject()
     {
         $pathToDataArray = explode('/', $this->pathToData);
         $size = sizeof($pathToDataArray);
@@ -255,6 +259,7 @@ class ReportGenerator implements JsonSerializable
 
         echo 'Elapsed Time: ' . (microtime(true) - $startTime) . "seconds";
         $this->flaggedPostArray = $flaggedPosts;
+        
         return $flaggedPosts;
     }
 
@@ -431,12 +436,25 @@ class ReportGenerator implements JsonSerializable
 
     public static function getFlaggedPostsPerYear($flaggedPostArray)
     {
+        echo "'\n'***ReportGenerator->getFlaggedPostsPerYear()***'\n'";
+
         $minDate = self::getFirstFlaggedPostDate($flaggedPostArray);
+        echo "'\n'minDate: $minDate'\n'";
+
         $maxDate = self::getLastFlaggedPostDate($flaggedPostArray);
+        echo "'\n'maxDate: $maxDate'\n'";
+        
+        echo "'\n'maxDate-stringToTime: " . strtotime($maxDate) . "'\n'";
+        echo "'\n'minDate-stringToTime: " . strtotime($minDate) . "'\n'";
 
         $dateDiff = strtotime($maxDate) - strtotime($minDate);
+        echo "'\n'dateDiff: $dateDiff'\n'";
+
         $totalYears = floor($dateDiff / (60 * 60 * 24 * 365));
+        echo "'\n'totalYears: $totalYears'\n'";
+
         $postsPerYear = sizeof($flaggedPostArray) / $totalYears;
+        echo "'\n'postsPerYear: $postsPerYear'\n'";
 
         return $postsPerYear;
     }

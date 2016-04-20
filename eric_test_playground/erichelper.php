@@ -29,6 +29,10 @@ $pathToData = __PROJECT_ROOT__ . "/.raw_user_data" . '/' . $userId . '/' . $file
 $json = file_get_contents($pathToData);
 //Convert the raw post data from json to php
 $data = json_decode($json);
+
+function trace($msg) {
+    echo "'\n'****$msg*****'\n'";
+}
 ?>
 
 <!doctype HTML>
@@ -61,8 +65,10 @@ $data = json_decode($json);
         array_push($dictionaries,$nflPlayers);
 
         //Create the report
-        $reportGenerator = new ReportGenerator($dictionaries, $data, $userId, $pathToData);
-        $report =  $reportGenerator->getReportObject(); //<-----Here is the report object. please take it
+        $reportGenerator = new ReportGenerator();
+        $reportGenerator->setDictionaryData($dictionaries);
+        $reportGenerator->setPathToData($pathToData);
+        $report = $reportGenerator->init(); //<-----Here is the report object. please take it
 
         print_r($report); // <--------------------Report object is be printed out
         ?>

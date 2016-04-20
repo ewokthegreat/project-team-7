@@ -9,6 +9,7 @@
 class DatabaseConnector {
 
     function __construct() {
+        trace('DatabaseConnector initialized.');
         $this->dsn = "mysql:host=$this->host;dbname=$this->db;charset=$this->charset";
         $this->pdo = new PDO($this->dsn, $this->user, $this->pass, $this->opt);
     }
