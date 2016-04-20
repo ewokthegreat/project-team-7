@@ -64,7 +64,6 @@ class ReportGenerator implements JsonSerializable
         $cleanTimeStamp = explode('__', $timeStamp);
         $finalTimeStamp = $cleanTimeStamp[0];
 
-
         self::sortFlaggedPostArray($this->flaggedPostArray);
 
         $flaggedWordArray = self::getFlaggedWordsAndFrequency($this->flaggedPostArray);
@@ -262,6 +261,7 @@ class ReportGenerator implements JsonSerializable
         echo 'Elapsed Time: ' . (microtime(true) - $startTime) . "seconds";
 
         $this->flaggedPostArray = $flaggedPosts;
+        
         return $flaggedPosts;
     }
 
@@ -437,16 +437,16 @@ class ReportGenerator implements JsonSerializable
         return date('m-d-Y',$maxDate);
     }
 
-    public  function getFlaggedPostsPerYear($flaggedPostArray)
+    public function getFlaggedPostsPerYear($flaggedPostArray)
     {
         echo "'\n'***ReportGenerator->getFlaggedPostsPerYear()***'\n'";
 
-        $minDate = self::getFirstFlaggedPostDate($flaggedPostArray);
+        $minDate = $this->getFirstFlaggedPostDate($flaggedPostArray);
         echo "'\n'minDate: $minDate'\n'";
 
-        $maxDate = self::getLastFlaggedPostDate($flaggedPostArray);
+        $maxDate = $this->getLastFlaggedPostDate($flaggedPostArray);
         echo "'\n'maxDate: $maxDate'\n'";
-        
+
         echo "'\n'maxDate-stringToTime: " . strtotime($maxDate) . "'\n'";
         echo "'\n'minDate-stringToTime: " . strtotime($minDate) . "'\n'";
 
