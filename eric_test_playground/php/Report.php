@@ -37,7 +37,10 @@ class Report implements jsonSerializable {
      * @param $sortedByWeightFlaggedPostsArray
      * @param $sortedByWeightFlaggedWordsAndFrequencyArray
      */
-    public function __construct($userID, $pathToReportData, $dateGenerated, $firstPostDate, $lastPostDate, $percentageOfFlaggedPosts, $averageWeightOfFlaggedPost, $favoriteTeam, $firstFlaggedPostDate, $lastFlaggedPostDate, $flaggedPostsPerYear, $sortedByWeightFlaggedPostsArray, $sortedByWeightFlaggedWordsAndFrequencyArray) {
+    public function __construct($userID, $pathToReportData, $dateGenerated, $firstPostDate,
+                                $lastPostDate, $percentageOfFlaggedPosts, $averageWeightOfFlaggedPost,
+                                $favoriteTeam, $firstFlaggedPostDate, $lastFlaggedPostDate, $flaggedPostsPerYear,
+                                $sortedByWeightFlaggedPostsArray, $sortedByWeightFlaggedWordsAndFrequencyArray) {
         trace('Report initialized.');
         $this->userID = $userID;
         $this->pathToReportData = $pathToReportData;

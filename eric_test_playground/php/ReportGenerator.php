@@ -64,6 +64,7 @@ class ReportGenerator implements JsonSerializable
         $cleanTimeStamp = explode('__', $timeStamp);
         $finalTimeStamp = $cleanTimeStamp[0];
 
+
         self::sortFlaggedPostArray($this->flaggedPostArray);
 
         $flaggedWordArray = self::getFlaggedWordsAndFrequency($this->flaggedPostArray);
@@ -76,6 +77,8 @@ class ReportGenerator implements JsonSerializable
             }
         }
 
+        $test = $this->flaggedPostArray;
+
         $report = new Report($this->userId,
             $this->pathToData,
             $finalTimeStamp,
@@ -87,10 +90,9 @@ class ReportGenerator implements JsonSerializable
             $this->getFirstFlaggedPostDate($this->flaggedPostArray),
             $this->getLastFlaggedPostDate($this->flaggedPostArray),
             $this->getFlaggedPostsPerYear($this->flaggedPostArray),
-            $this->flaggedPostArray,
+            $test,
             self::getSortedFlaggedWordsArray($flaggedWordArray));
 
-//        print_r($report);
         return $report;
     }
 
@@ -258,51 +260,51 @@ class ReportGenerator implements JsonSerializable
         }
 
         echo 'Elapsed Time: ' . (microtime(true) - $startTime) . "seconds";
+
         $this->flaggedPostArray = $flaggedPosts;
-        
         return $flaggedPosts;
     }
 
-    public function runTestOutput()
-    {
-        echo '<pre>';
-        echo "Percentage of flagged posts: ";
-        $flaggedPostPercentage = $this->getPercentageOfFlaggedPosts();
-        echo $flaggedPostPercentage;
-        echo '<br/>';
-
-
-        echo '<pre>';
-        echo "Average weight per post: ";
-        echo self::getAverageWeightPerFlaggedPosts($this->flaggedPostArray);
-        echo '<br/>';
-        $flaggedWordArray = self::getFlaggedWordsAndFrequency($this->flaggedPostArray);
-
-        //get nflTeam dict
-        $nflTeamDict = null;
-        foreach ($this->getDictionaryData() as $currentDict) { //iterate through each dictionaryecho "Favorite Team: ";
-            if ($currentDict->getName() === 'nflTeams') { //if dictionary is nfl players
-                $nflTeamDict = $currentDict;
-                break;
-            }
-        }
-
-        echo self::getFavoriteTeam($flaggedWordArray, $nflTeamDict);
-        echo '<br/>';
-
-        //$flaggedWordArray = self::getFlaggedWordsAndFrequency($flaggedPosts);
-        print_r(self::getSortedFlaggedWordsArray($flaggedWordArray));
-        self::sortFlaggedPostArray($this->flaggedPostArray);
-        foreach ($this->flaggedPostArray as $post) {
-            print_r("Score: ");
-            //this is a regular function call form the object. yep.
-            print_r($post->getTotalWeight());
-            echo '<br/>';
-            print_r($post);
-            echo '<br/>';
-        }
-        echo '</pre>';
-    }
+//    public function runTestOutput()
+//    {
+//        echo '<pre>';
+//        echo "Percentage of flagged posts: ";
+//        $flaggedPostPercentage = $this->getPercentageOfFlaggedPosts();
+//        echo $flaggedPostPercentage;
+//        echo '<br/>';
+//
+//
+//        echo '<pre>';
+//        echo "Average weight per post: ";
+//        echo self::getAverageWeightPerFlaggedPosts($this->flaggedPostArray);
+//        echo '<br/>';
+//        $flaggedWordArray = self::getFlaggedWordsAndFrequency($this->flaggedPostArray);
+//
+//        //get nflTeam dict
+//        $nflTeamDict = null;
+//        foreach ($this->getDictionaryData() as $currentDict) { //iterate through each dictionaryecho "Favorite Team: ";
+//            if ($currentDict->getName() === 'nflTeams') { //if dictionary is nfl players
+//                $nflTeamDict = $currentDict;
+//                break;
+//            }
+//        }
+//
+//        echo self::getFavoriteTeam($flaggedWordArray, $nflTeamDict);
+//        echo '<br/>';
+//
+//        //$flaggedWordArray = self::getFlaggedWordsAndFrequency($flaggedPosts);
+//        print_r(self::getSortedFlaggedWordsArray($flaggedWordArray));
+//        self::sortFlaggedPostArray($this->flaggedPostArray);
+//        foreach ($this->flaggedPostArray as $post) {
+//            print_r("Score: ");
+//            //this is a regular function call form the object. yep.
+//            print_r($post->getTotalWeight());
+//            echo '<br/>';
+//            print_r($post);
+//            echo '<br/>';
+//        }
+//        echo '</pre>';
+//    }
 
     public function getPercentageOfFlaggedPosts()
     {
@@ -317,7 +319,7 @@ class ReportGenerator implements JsonSerializable
      * @return int This function returns the total weight of a post, by adding all the weights of all
      * the flagged words in a post.
      */
-    public static function getTotalWeightOfFlaggedPost($flaggedPost)
+    public  function getTotalWeightOfFlaggedPost($flaggedPost)
     {
         $flaggedWordsList = $flaggedPost->getFlaggedWords();
 
@@ -334,7 +336,7 @@ class ReportGenerator implements JsonSerializable
      * @param $flaggedPostArray
      * @return array
      */
-    public static function getFlaggedWordsAndFrequency($flaggedPostArray)
+    public  function getFlaggedWordsAndFrequency($flaggedPostArray)
     {
         $flaggedWordsArray = array();
         //sort through all flagd posts array
@@ -355,9 +357,10 @@ class ReportGenerator implements JsonSerializable
         return $flaggedWordsArray;
     }
 
-    public static function getSortedFlaggedWordsArray($flaggedWordArray)
+    public  function getSortedFlaggedWordsArray($flaggedWordArray)
     {
         arsort($flaggedWordArray);
+        
         return $flaggedWordArray;
     }
 
@@ -366,7 +369,7 @@ class ReportGenerator implements JsonSerializable
      * I am using amperstand to signify I will be doing a pass by reference
      * @param $flaggedPostArray
      */
-    public static function sortFlaggedPostArray(&$flaggedPostArray)
+    public  function sortFlaggedPostArray($flaggedPostArray)
     {
         $arrayLength = sizeof($flaggedPostArray);
 
@@ -382,7 +385,7 @@ class ReportGenerator implements JsonSerializable
         }
     }
 
-    public static function getAverageWeightPerFlaggedPosts($flaggedPostArray)
+    public  function getAverageWeightPerFlaggedPosts($flaggedPostArray)
     {
         $sum = 0.0;
         $numberOfFlaggedPosts = sizeof($flaggedPostArray);
@@ -393,7 +396,7 @@ class ReportGenerator implements JsonSerializable
         return ($sum / $numberOfFlaggedPosts);
     }
 
-    public static function getFavoriteTeam($flaggedWordArrayWithFrequency, $nflTeamDictioanry)
+    public  function getFavoriteTeam($flaggedWordArrayWithFrequency, $nflTeamDictioanry)
     {
         arsort($flaggedWordArrayWithFrequency); //sort flagged words first
 
@@ -410,7 +413,7 @@ class ReportGenerator implements JsonSerializable
         return "No favorite team";
     }
 
-    public static function getFirstFlaggedPostDate($flaggedPostArray)
+    public  function getFirstFlaggedPostDate($flaggedPostArray)
     {
         $minDate = strtotime($flaggedPostArray[0]->getPostData()->getDate());
         foreach ($flaggedPostArray as $fpa) {
@@ -422,7 +425,7 @@ class ReportGenerator implements JsonSerializable
         return date('m-d-Y',$minDate);
     }
 
-    public static function getLastFlaggedPostDate($flaggedPostArray)
+    public  function getLastFlaggedPostDate($flaggedPostArray)
     {
         $maxDate = strtotime($flaggedPostArray[0]->getPostData()->getDate());
         foreach ($flaggedPostArray as $fpa) {
@@ -434,7 +437,7 @@ class ReportGenerator implements JsonSerializable
         return date('m-d-Y',$maxDate);
     }
 
-    public static function getFlaggedPostsPerYear($flaggedPostArray)
+    public  function getFlaggedPostsPerYear($flaggedPostArray)
     {
         echo "'\n'***ReportGenerator->getFlaggedPostsPerYear()***'\n'";
 
@@ -459,7 +462,7 @@ class ReportGenerator implements JsonSerializable
         return $postsPerYear;
     }
 
-    public static function getPostsWithinRange($startDate, $endDate, $flaggedPostArray){
+    public  function getPostsWithinRange($startDate, $endDate, $flaggedPostArray){
         $startDate = strtotime($startDate);
         $endDate = strtotime($endDate);
         $flaggedPostArrayInRange = array();
@@ -473,10 +476,19 @@ class ReportGenerator implements JsonSerializable
     }
 }
 
-class FlaggedPost
+class FlaggedPost implements JsonSerializable
 {
     private $postData; //an instance of Post Data object
     private $flaggedWords = array(); //a list of flagged words and associated information per post
+
+    public function jsonSerialize() {
+        $props = array();
+
+        foreach ($this as $key => $value) {
+                $props[$key] = $value;
+            }
+        return $props;
+    }
 
     public function __construct($postData, $flaggedWords)
     {
@@ -515,12 +527,21 @@ class FlaggedPost
     }
 }
 
-class FlaggedWord
+class FlaggedWord implements JsonSerializable
 {
     private $dataDictName; //corresponding dict name
     private $dictWeight; //corresponding weight per word
     private $flaggedWord; //actual flagged word string
 
+    public function jsonSerialize() {
+        $props = array();
+
+        foreach ($this as $key => $value) {
+            $props[$key] = $value;
+        }
+        return $props;
+    }
+    
     public function __construct($dataDictName, $dictWeight, $flaggedWord)
     {
         $this->setDataDictName($dataDictName);

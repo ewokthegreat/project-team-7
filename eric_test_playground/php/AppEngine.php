@@ -43,6 +43,20 @@ class AppEngine
         $scan = new Scan($filename, $applicantID, '99', $scanDate, $fullPath);
         $this->getDb()->insert($scan);
     }
+
+    /**
+     * @param $path
+     * @param $data
+     */
+    private function writeFile($path, $data) {
+        if(file_put_contents($path, json_encode($data))) {
+            $this->getReportGenerator()->setPathToData($path);
+            trace('File operation successful.');
+        } else {
+            trace('A file with that name already exists!');
+        };
+
+    }
     /**
      * @param $requestString
      * @param $callback
@@ -261,15 +275,6 @@ class AppEngine
             $this->getReportGenerator()->setUserId($applicantID);
             $db->insert($userData);
         });
-    }
-    private function writeFile($path, $data) {
-        if(file_put_contents($path, json_encode($data))) {
-            $this->getReportGenerator()->setPathToData($path);
-            trace('File operation successful.');
-        } else {
-            trace('A file with that name already exists!');
-        };
-
     }
 
     /**
