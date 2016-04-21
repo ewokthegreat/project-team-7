@@ -39,13 +39,11 @@ class Report implements jsonSerializable {
      * @param $sortedByWeightFlaggedPostsArray
      * @param $sortedByWeightFlaggedWordsAndFrequencyArray
      */
-    public function __construct($userID, $pathToReportData, $dateGenerated, $firstPostDate, $lastPostDate, $percentageOfFlaggedPosts, $averageWeightOfFlaggedPost, $favoriteTeam, $firstFlaggedPostDate, $lastFlaggedPostDate, $flaggedPostsPerYear, $bubbleGraphData, $sortedByWeightFlaggedPostsArray, $sortedByWeightFlaggedWordsAndFrequencyArray)
+    public function __construct($userID, $pathToReportData, $dateGenerated, $percentageOfFlaggedPosts, $averageWeightOfFlaggedPost, $favoriteTeam, $firstFlaggedPostDate, $lastFlaggedPostDate, $flaggedPostsPerYear, $bubbleGraphData, $sortedByWeightFlaggedPostsArray, $sortedByWeightFlaggedWordsAndFrequencyArray)
     {
         $this->userID = $userID;
         $this->pathToReportData = $pathToReportData;
         $this->dateGenerated = $dateGenerated;
-        $this->firstPostDate = $firstPostDate;
-        $this->lastPostDate = $lastPostDate;
         $this->percentageOfFlaggedPosts = $percentageOfFlaggedPosts;
         $this->averageWeightOfFlaggedPost = $averageWeightOfFlaggedPost;
         $this->favoriteTeam = $favoriteTeam;
@@ -122,13 +120,6 @@ class Report implements jsonSerializable {
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getFirstPostDate()
-    {
-        return $this->firstPostDate;
-    }
 
     /**
      * @param mixed $firstPostDate
@@ -140,13 +131,7 @@ class Report implements jsonSerializable {
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getLastPostDate()
-    {
-        return $this->lastPostDate;
-    }
+
 
     /**
      * @param mixed $lastPostDate
