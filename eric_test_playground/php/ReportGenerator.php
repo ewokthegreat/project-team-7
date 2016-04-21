@@ -45,6 +45,9 @@ class ReportGenerator implements JsonSerializable
         $path = $this->getPathToData();
         $postDataJSON = file_get_contents($path);
         $rawPostData = json_decode($postDataJSON);
+        if(!is_object($rawPostData[0])) {
+            $rawPostData = $rawPostData[0];
+        }
         $this->setPostDataArray($rawPostData);
     }
     
