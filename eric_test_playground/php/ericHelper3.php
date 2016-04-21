@@ -29,11 +29,18 @@ $db = new DatabaseConnector();
 
 $aceFile = file_get_contents('../.raw_user_data/10208453844209830/16.04.20.15.33.51__10208453844209830.ace');
 $rawAce = json_decode($aceFile);
+
 $userID = $rawAce->userID;
 $flaggedPostArray = $rawAce->sortedByWeightFlaggedPostsArray;
-
+$dateString = generateDateString('y.m.d.G.i.s', $rawAce->dateGenerated);
 $user = $db->selectApplicant($userID);
 
+function generateDateString($format, $date) {
+    $parsedDate = date_parse_from_format($format, $date);
+    $dateString = $parsedDate['month'] . '-' . $parsedDate['day'] . '-' . $parsedDate['year'];
+
+    return $dateString;
+}
 ?>
 
 <!DOCTYPE html>
@@ -53,7 +60,7 @@ $user = $db->selectApplicant($userID);
     <div id="profile-info">
         <h3 id="profile-name"><?=$user['firstName'] . ' ' . $user['lastName']?></h3>
         <div id="profile-email"><?=$user['email']?></div>
-        <div id="profile-scan-date"><?=$rawAce->dateGenerated?></div>
+        <div id="profile-scan-date"><?=$dateString?></div>
         <a id="profile-link" href="<?=$user['profileLink']?>">FB Profile</a>
     </div><!--/#profile-info-->
 </div><!--/#profile-summary-->
@@ -62,11 +69,17 @@ $user = $db->selectApplicant($userID);
 <h1>Summary</h1>
     <dl>
     <?php
-    $skip = array('userID', 'pathToReportData', 'dateGenerated', 'sortedByWeightFlaggedPostsArray', 'sortedByWeightFlaggedWordsAndFrequencyArray');
+    $skip = array('userID', 'pathToReportData', 'dateGenerated',
+                  'sortedByWeightFlaggedPostsArray', 'sortedByWeightFlaggedWordsAndFrequencyArray');
+    $dates = array('firstPostDate', 'lastPostDate');
+    $format = 'Y-m-d';
     foreach($rawAce as $key => $value) {
         if(in_array($key, $skip)) {
             continue;
+        } else if(in_array($key, $dates)) {
+            
         } else {
+
             echo "<dt>$key</dt><dd>$value</dd>";
         }
     }
