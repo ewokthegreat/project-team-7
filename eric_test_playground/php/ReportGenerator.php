@@ -468,7 +468,7 @@ class ReportGenerator implements JsonSerializable
     }
 
     public function getIntervalFlaggedPosts() {
-        $intervalFlaggedPostArray = array(); //Get empty array
+        $intervalFlaggedPostArray = array(); //Get empty array.
 
         //Sort flagged post array before processing,
         usort($this->flaggedPostArray, function ($a, $b) {
