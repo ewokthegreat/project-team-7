@@ -28,8 +28,6 @@ class ReportGenerator implements JsonSerializable
 //        $this->setPostDataArray($postData);
 //        $this->setUserId($userId);
 //        $this->setPathToData($pathToData);
-//        //$this->getFirstPostDate();
-//        //$this->getLastPostDate();
 //        //$this->sortPostDataArrayByDate();
 //
 //        $this->populateFlaggedPostArray();
@@ -45,13 +43,16 @@ class ReportGenerator implements JsonSerializable
         $path = $this->getPathToData();
         $postDataJSON = file_get_contents($path);
         $rawPostData = json_decode($postDataJSON);
+        if(!is_object($rawPostData[0])) {
+            $rawPostData = $rawPostData[0];
+        }
         $this->setPostDataArray($rawPostData);
     }
     
     public function init() {
         $this->fetchRawPostData();
         $this->populateFlaggedPostArray();
-        
+
         return $this->getReportObject();
     }
     
@@ -78,40 +79,40 @@ class ReportGenerator implements JsonSerializable
 
         $test = $this->flaggedPostArray;
 
-        $report = new Report(
-            $this->userId,
-            $this->pathToData,
-            $finalTimeStamp,
-            $this->getFirstPostDate(),
-            $this->getLastPostDate(),
-            $this->getPercentageOfFlaggedPosts(),
-            $this->getAverageWeightPerFlaggedPosts($this->flaggedPostArray),
-            $this->getFavoriteTeam($flaggedWordArray, $nflTeamDict),
-            $this->getFirstFlaggedPostDate($this->flaggedPostArray),
-            $this->getLastFlaggedPostDate($this->flaggedPostArray),
-            $this->getFlaggedPostsPerYear($this->flaggedPostArray),
-            $this->getBubbleData($this->flaggedPostArray),
-            $test,
-            self::getSortedFlaggedWordsArray($flaggedWordArray));
+        if (!isset($test) || empty($test)) {
 
-        return $report;
-    }
+            $report = new Report(
+                $this->userId,
+                $this->pathToData,
+                $finalTimeStamp,
+                0,
+                0,
+                "No Team",
+                date("01-01-1999"),
+                date("01-01-1999"),
+                0,
+                array("Empty"),
+                array("Empty"),
+                array("Empty"));
 
-    public function getLastPostDate()
-    {
-        $firstDate = $this->postDataArray[0]->getDate();
+            return $report;
+        } else {
+            $report = new Report(
+                $this->userId,
+                $this->pathToData,
+                $finalTimeStamp,
+                $this->getPercentageOfFlaggedPosts(),
+                $this->getAverageWeightPerFlaggedPosts($this->flaggedPostArray),
+                $this->getFavoriteTeam($flaggedWordArray, $nflTeamDict),
+                $this->getFirstFlaggedPostDate($this->flaggedPostArray),
+                $this->getLastFlaggedPostDate($this->flaggedPostArray),
+                $this->getFlaggedPostsPerYear($this->flaggedPostArray),
+                $this->getBubbleData($this->flaggedPostArray),
+                $test,
+                self::getSortedFlaggedWordsArray($flaggedWordArray));
+            return $report;
+        }
 
-        print_r($firstDate);
-        return $firstDate;
-    }
-
-    public function getFirstPostDate()
-    {
-        $sizeOfPosts = sizeof($this->postDataArray);
-        $lastPost = $this->postDataArray[$sizeOfPosts - 1]->getDate();
-
-        print_r($lastPost);
-        return $lastPost;
     }
 
 

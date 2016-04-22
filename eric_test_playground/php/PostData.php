@@ -18,6 +18,7 @@ class PostData implements JsonSerializable{
      * @param $obj
      */
     public function __construct($obj) {
+        //print_r($obj);
         $this->setId($obj->id);
         $this->setDate($obj->created_time->date);
 
