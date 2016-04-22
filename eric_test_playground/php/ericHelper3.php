@@ -41,6 +41,28 @@ function generateDateString($format, $date) {
 
     return $dateString;
 }
+
+function getIntervalFlaggedPosts($posts) {
+    $intervalFlaggedPostArray = array(); //Get empty array
+
+    foreach($posts as $flaggedPost) { //Iterate through all flagged post data
+        $date_m_d = date("F Y", strtotime($flaggedPost->getPostData()->getDate())); //convert flagged post data into 'Month Year" format.
+
+        //Check if key => value exists for intervalFlaggedPostArray
+        if (isset($intervalFlaggedPostArray[$date_m_d])) {
+            //If this month and day already exists, increment the word array
+            $intervalFlaggedPostArray[$date_m_d]++;
+        } else { //This month and date combination is not in the array yet
+            $intervalFlaggedPostArray[$date_m_d] = 1;
+        }
+    }
+
+    //Sorts the day array before returning it
+    ksort($intervalFlaggedPostArray);
+
+    return $intervalFlaggedPostArray;
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -49,7 +71,7 @@ function generateDateString($format, $date) {
     <meta charset="UTF-8">
     <title>Title</title>
 
-    <link rel="stylesheet" href="../css/repot-beta.css">
+    <link rel="stylesheet" href="../css/report-beta.css">
 </head>
 <body>
 
@@ -67,19 +89,31 @@ function generateDateString($format, $date) {
 
 <div id="post-data-summary">
 <h1>Summary</h1>
-    <dl>
+    <dl class="inline">
     <?php
     $skip = array('userID', 'pathToReportData', 'dateGenerated',
                   'sortedByWeightFlaggedPostsArray', 'sortedByWeightFlaggedWordsAndFrequencyArray');
-    $dates = array('firstPostDate', 'lastPostDate');
-    $format = 'Y-m-d';
+
+    $postDatesformat = 'Y-m-d ';
+    $postDates = array('firstPostDate', 'lastPostDate');
+
+    $flaggedPostDatesFormat = 'd-m-Y';
+    $flaggedPostDates = array('firstFlaggedPostDate', 'lastFlaggedPostDate');
+
     foreach($rawAce as $key => $value) {
         if(in_array($key, $skip)) {
             continue;
-        } else if(in_array($key, $dates)) {
-            
-        } else {
 
+        } else if(in_array($key, $postDates)) {
+            $dateString = generateDateString($postDatesformat, $value);
+
+            echo "<dt>$key</dt><dd>$dateString</dd>";
+
+        } else if(in_array($key, $flaggedPostDates)) {
+            $dateString = generateDateString($flaggedPostDatesFormat, $value);
+
+            echo "<dt>$key</dt><dd>$dateString</dd>";
+        } else {
             echo "<dt>$key</dt><dd>$value</dd>";
         }
     }
@@ -100,5 +134,7 @@ function generateDateString($format, $date) {
     </pre>
 </div><!--/#test-output-->
 
+<script type="text/javascript" src="../js/lib/d3.js"></script>
+<script type="text/javascript" src="../js/report.js"></script>
 </body>
 </html>
