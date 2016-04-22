@@ -53,6 +53,8 @@ class ReportGenerator implements JsonSerializable
         $this->fetchRawPostData();
         $this->populateFlaggedPostArray();
 
+        $this->getIntervalFlaggedPosts();
+
         return $this->getReportObject();
     }
     
@@ -463,6 +465,32 @@ class ReportGenerator implements JsonSerializable
         echo "'\n'postsPerYear: $postsPerYear'\n'";
 
         return $postsPerYear;
+    }
+
+    public function getIntervalFlaggedPosts() {
+        $intervalFlaggedPostArray = array(); //Get empty array
+
+        //Sort flagged post array before processing
+        usort($this->flaggedPostArray, function ($a, $b) {
+            $t1 = strtotime($a->getPostData()->getDate());
+            $t2 = strtotime($b->getPostData()->getDate());
+            return $t1 - $t2;
+        });
+
+        foreach($this->flaggedPostArray as $flaggedPost) { //Iterate through all flagged post data
+            $date_m_d = date("F Y", strtotime($flaggedPost->getPostData()->getDate())); //convert flagged post data into 'Month Year" format.
+
+            //Check if key => value exists for intervalFlaggedPostArray
+            if (isset($intervalFlaggedPostArray[$date_m_d])) {
+                //If this month and day already exists, increment the word array
+                $intervalFlaggedPostArray[$date_m_d]++;
+            } else { //This month and date combination is not in the array yet
+                $intervalFlaggedPostArray[$date_m_d] = 1;
+            }
+        }
+
+        print_r($intervalFlaggedPostArray);
+        return $intervalFlaggedPostArray;
     }
 
     public  function getPostsWithinRange($startDate, $endDate, $flaggedPostArray){
