@@ -39,11 +39,8 @@ class AppEngine
         $fullPath = $dirPath . '/' . $filename . $extension;
 
         $this->writeFile($fullPath, $data);
-
-
+        
         $scan = new Scan($filename, $applicantID, '99', $scanDate, $fullPath);
-
-        print_r($scan);
 
         $this->getDb()->insert($scan);
     }
@@ -333,7 +330,7 @@ class AppEngine
                 $posts_response = $response->getGraphEdge()->asArray();
                 array_push($rawPostData, $posts_response);
             }
-            print_r($rawPostData);
+            
             self::writeGraphResponseToDiskAsJSON($rawPostData);
         });
     }

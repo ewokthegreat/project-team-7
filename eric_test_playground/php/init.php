@@ -45,5 +45,5 @@ array_push($dictionaries,$nflPlayers);
 $app = new AppEngine($dictionaries);
 $app->init();
 
-//$reportGenerator = $app->getReportGenerator();
-//$report = $reportGenerator->init();
+$reportGenerator = $app->getReportGenerator();
+$report = $reportGenerator->init();

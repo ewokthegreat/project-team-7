@@ -33,7 +33,7 @@ class ReportGenerator implements JsonSerializable
     public function init() {
         $this->fetchRawPostData();
         $this->populateFlaggedPostArray();
-        print_r($this->getIntervalFlaggedPosts());
+        $this->getIntervalFlaggedPosts();
 
         return $this->getReportObject();
     }
@@ -508,7 +508,7 @@ class ReportGenerator implements JsonSerializable
                 }
             }
         }
-        print_r($bubbleDataArray);
+        
         return $bubbleDataArray;
     }
 }

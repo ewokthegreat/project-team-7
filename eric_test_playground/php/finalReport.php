@@ -19,6 +19,7 @@ define('__USER_DATA__', __PROJECT_ROOT__ . '/' . '.raw_user_data');
 //include_once __PHP_SCRIPTS__ . '/' . 'ReportGenerator.php';
 //include_once __PHP_SCRIPTS__ . '/' . 'Scan.php';
 //include_once __PHP_SCRIPTS__ . '/' . 'Applicant.php';
+
 include_once 'DatabaseConnector.php';
 
 
@@ -26,7 +27,9 @@ function trace($msg) {
     print_r(json_encode($msg));
 }
 
-$aceFile = file_get_contents('../.raw_user_data/10208453844209830/16.04.22.22.04.56__10208453844209830.ace');
+///eric_test_playground/.raw_user_data/10208453844209830/16.04.23.16.58.46__10208453844209830.ace
+//$aceFile = file_get_contents('../.raw_user_data/10208453844209830/16.04.22.22.04.56__10208453844209830.ace');
+$aceFile = file_get_contents('../.raw_user_data/10208453844209830/16.04.23.16.58.46__10208453844209830.ace');
 $rawAce = json_decode($aceFile);
 $bubbleGraphData = $rawAce->bubbleGraphData;
 trace($bubbleGraphData);
