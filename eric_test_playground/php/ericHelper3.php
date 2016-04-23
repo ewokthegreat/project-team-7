@@ -100,7 +100,8 @@ function generateDateString($format, $date) {
 <div id="test-output">
     <pre>
         <?php
-        print_r($rawAce);
+        print_r(json_encode($rawAce->bubbleGraphData));
+        print_r($flaggedPostArray);
         ?>
     </pre>
 </div><!--/#test-output-->
