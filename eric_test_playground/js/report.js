@@ -54,7 +54,6 @@
         }
 
         recurse(null, root);
-
         return {children: classes};
     }
 

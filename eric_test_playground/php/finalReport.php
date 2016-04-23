@@ -29,9 +29,4 @@ function trace($msg) {
 $aceFile = file_get_contents('../.raw_user_data/10208453844209830/16.04.22.22.04.56__10208453844209830.ace');
 $rawAce = json_decode($aceFile);
 $bubbleGraphData = $rawAce->bubbleGraphData;
-
-$flare = new stdClass();
-$flare->name = "flare";
-$flare->children = array();
-
 trace($bubbleGraphData);

@@ -20,7 +20,19 @@ define('__USER_DATA__', __PROJECT_ROOT__ . '/' . '.raw_user_data');
 //include_once __PHP_SCRIPTS__ . '/' . 'Scan.php';
 //include_once __PHP_SCRIPTS__ . '/' . 'Applicant.php';
 include_once 'DatabaseConnector.php';
-
+require_once('../libs/Mustache/Autoloader.php');
+Mustache_Autoloader::register();
+$mustache = new Mustache_Engine;
+$postTemplate =
+    "Date: {{date}}".PHP_EOL.
+    "Post Text: {{message}}".PHP_EOL.
+    "Descriptive Text: {{story}}".PHP_EOL.
+    "Flagged Words:".PHP_EOL.
+    "{{#flaggedWords}}
+    {{#.}}
+    {{flaggedWord}}".PHP_EOL.
+    "{{/.}}
+    {{/flaggedWords}}";
 
 function trace($msg) {
     echo "<pre>****$msg*****</pre>";
@@ -100,7 +112,13 @@ function generateDateString($format, $date) {
 <div id="test-output">
     <pre>
         <?php
-        print_r(json_encode($rawAce->bubbleGraphData));
+        echo "".PHP_EOL;
+        $counter = 1;
+        foreach ($flaggedPostArray as $currentPost){
+            echo "Post #" . $counter . PHP_EOL;
+            echo $mustache->render($postTemplate,$currentPost->postData);
+            $counter++;
+        }
         print_r($flaggedPostArray);
         ?>
     </pre>

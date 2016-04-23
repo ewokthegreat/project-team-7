@@ -49,5 +49,13 @@ dl.inline dt:after {
     content: ': ';
 }
 text {
-    font: 10px sans-serif;
+    font: 30px sans-serif;
+    font-weight: bold;
+}
+text::first-letter {
+    text-transform: capitalize;
+}
+circle {
+    stroke: grey;
+    stroke-width: 1;
 }
