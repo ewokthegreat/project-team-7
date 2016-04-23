@@ -17,24 +17,6 @@ class ReportGenerator implements JsonSerializable
     private $userId;
     private $pathToData;
 
-//    /**
-//     * ReportGenerator constructor.
-//     * @param $dictionaryData
-//     * @param $postData
-//     */
-//    public function __construct($dictionaryData, $postData, $userId, $pathToData)
-//    {
-//        $this->setDictionaryData($dictionaryData);
-//        $this->setPostDataArray($postData);
-//        $this->setUserId($userId);
-//        $this->setPathToData($pathToData);
-//        //$this->sortPostDataArrayByDate();
-//
-//        $this->populateFlaggedPostArray();
-//        //$this->runTestOutput();
-//
-//        $this->getReportObject();
-//    }
     public function __construct() {
     }
 
@@ -78,8 +60,6 @@ class ReportGenerator implements JsonSerializable
             }
         }
 
-        $test = $this->flaggedPostArray;
-
         if (!isset($test) || empty($test)) {
 
             $report = new Report(
@@ -109,7 +89,7 @@ class ReportGenerator implements JsonSerializable
                 $this->getLastFlaggedPostDate($this->flaggedPostArray),
                 $this->getFlaggedPostsPerYear($this->flaggedPostArray),
                 $this->getBubbleData($this->flaggedPostArray),
-                $test,
+                $this->flaggedPostArray,
                 self::getSortedFlaggedWordsArray($flaggedWordArray));
             return $report;
         }
@@ -269,47 +249,9 @@ class ReportGenerator implements JsonSerializable
         return $flaggedPosts;
     }
 
-//    public function runTestOutput()
-//    {
-//        echo '<pre>';
-//        echo "Percentage of flagged posts: ";
-//        $flaggedPostPercentage = $this->getPercentageOfFlaggedPosts();
-//        echo $flaggedPostPercentage;
-//        echo '<br/>';
-//
-//
-//        echo '<pre>';
-//        echo "Average weight per post: ";
-//        echo self::getAverageWeightPerFlaggedPosts($this->flaggedPostArray);
-//        echo '<br/>';
-//        $flaggedWordArray = self::getFlaggedWordsAndFrequency($this->flaggedPostArray);
-//
-//        //get nflTeam dict
-//        $nflTeamDict = null;
-//        foreach ($this->getDictionaryData() as $currentDict) { //iterate through each dictionaryecho "Favorite Team: ";
-//            if ($currentDict->getName() === 'nflTeams') { //if dictionary is nfl players
-//                $nflTeamDict = $currentDict;
-//                break;
-//            }
-//        }
-//
-//        echo self::getFavoriteTeam($flaggedWordArray, $nflTeamDict);
-//        echo '<br/>';
-//
-//        //$flaggedWordArray = self::getFlaggedWordsAndFrequency($flaggedPosts);
-//        print_r(self::getSortedFlaggedWordsArray($flaggedWordArray));
-//        self::sortFlaggedPostArray($this->flaggedPostArray);
-//        foreach ($this->flaggedPostArray as $post) {
-//            print_r("Score: ");
-//            //this is a regular function call form the object. yep.
-//            print_r($post->getTotalWeight());
-//            echo '<br/>';
-//            print_r($post);
-//            echo '<br/>';
-//        }
-//        echo '</pre>';
-//    }
-
+    /**
+     * @return float
+     */
     public function getPercentageOfFlaggedPosts()
     {
         $allPostsTotal = sizeof($this->postDataArray);
@@ -361,7 +303,11 @@ class ReportGenerator implements JsonSerializable
         return $flaggedWordsArray;
     }
 
-    public  function getSortedFlaggedWordsArray($flaggedWordArray)
+    /**
+     * @param $flaggedWordArray
+     * @return mixed
+     */
+    public function getSortedFlaggedWordsArray($flaggedWordArray)
     {
         arsort($flaggedWordArray);
         
@@ -373,7 +319,7 @@ class ReportGenerator implements JsonSerializable
      * I am using amperstand to signify I will be doing a pass by reference
      * @param $flaggedPostArray
      */
-    public  function sortFlaggedPostArray($flaggedPostArray)
+    public function sortFlaggedPostArray($flaggedPostArray)
     {
         $arrayLength = sizeof($flaggedPostArray);
 
@@ -389,7 +335,11 @@ class ReportGenerator implements JsonSerializable
         }
     }
 
-    public  function getAverageWeightPerFlaggedPosts($flaggedPostArray)
+    /**
+     * @param $flaggedPostArray
+     * @return float
+     */
+    public function getAverageWeightPerFlaggedPosts($flaggedPostArray)
     {
         $sum = 0.0;
         $numberOfFlaggedPosts = sizeof($flaggedPostArray);
@@ -400,7 +350,12 @@ class ReportGenerator implements JsonSerializable
         return ($sum / $numberOfFlaggedPosts);
     }
 
-    public  function getFavoriteTeam($flaggedWordArrayWithFrequency, $nflTeamDictioanry)
+    /**
+     * @param $flaggedWordArrayWithFrequency
+     * @param $nflTeamDictioanry
+     * @return string
+     */
+    public function getFavoriteTeam($flaggedWordArrayWithFrequency, $nflTeamDictioanry)
     {
         arsort($flaggedWordArrayWithFrequency); //sort flagged words first
 
@@ -417,7 +372,11 @@ class ReportGenerator implements JsonSerializable
         return "No favorite team";
     }
 
-    public  function getFirstFlaggedPostDate($flaggedPostArray)
+    /**
+     * @param $flaggedPostArray
+     * @return bool|string
+     */
+    public function getFirstFlaggedPostDate($flaggedPostArray)
     {
         $minDate = strtotime($flaggedPostArray[0]->getPostData()->getDate());
         foreach ($flaggedPostArray as $fpa) {
@@ -429,6 +388,10 @@ class ReportGenerator implements JsonSerializable
         return date('d-m-Y',$minDate);
     }
 
+    /**
+     * @param $flaggedPostArray
+     * @return bool|string
+     */
     public  function getLastFlaggedPostDate($flaggedPostArray)
     {
         $maxDate = strtotime($flaggedPostArray[0]->getPostData()->getDate());
@@ -441,6 +404,10 @@ class ReportGenerator implements JsonSerializable
         return date('d-m-Y',$maxDate);
     }
 
+    /**
+     * @param $flaggedPostArray
+     * @return float
+     */
     public function getFlaggedPostsPerYear($flaggedPostArray)
     {
         echo "'\n'***ReportGenerator->getFlaggedPostsPerYear()***'\n'";
@@ -466,6 +433,9 @@ class ReportGenerator implements JsonSerializable
         return $postsPerYear;
     }
 
+    /**
+     * @return array
+     */
     public function getIntervalFlaggedPosts() {
         $intervalFlaggedPostArray = array(); //Get empty array.
 
@@ -487,11 +457,15 @@ class ReportGenerator implements JsonSerializable
                 $intervalFlaggedPostArray[$date_m_d] = 1;
             }
         }
-
-        print_r($intervalFlaggedPostArray);
         return $intervalFlaggedPostArray;
     }
 
+    /**
+     * @param $startDate
+     * @param $endDate
+     * @param $flaggedPostArray
+     * @return array
+     */
     public  function getPostsWithinRange($startDate, $endDate, $flaggedPostArray){
         $startDate = strtotime($startDate);
         $endDate = strtotime($endDate);
@@ -505,6 +479,10 @@ class ReportGenerator implements JsonSerializable
         return $flaggedPostArrayInRange;
     }
 
+    /**
+     * @param $flaggedPostArray
+     * @return array
+     */
     public function getBubbleData($flaggedPostArray)
     {
         echo "'\n'INSIDE BUBBLE ARRAY'\n'";
@@ -536,6 +514,9 @@ class ReportGenerator implements JsonSerializable
     }
 }
 
+/**
+ * Class FlaggedPost
+ */
 class FlaggedPost implements JsonSerializable
 {
     private $postData; //an instance of Post Data object
@@ -587,6 +568,9 @@ class FlaggedPost implements JsonSerializable
     }
 }
 
+/**
+ * Class FlaggedWord
+ */
 class FlaggedWord implements JsonSerializable
 {
     private $dataDictName; //corresponding dict name

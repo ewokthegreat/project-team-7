@@ -39,6 +39,7 @@ function trace($msg) {
 }
 $db = new DatabaseConnector();
 ///eric_test_playground/.raw_user_data/10208453844209830/16.04.22.22.04.56__10208453844209830.ace
+//../.raw_user_data/10208453844209830/16.04.22.22.04.56__10208453844209830.ace
 
 $aceFile = file_get_contents('../.raw_user_data/10208453844209830/16.04.22.22.04.56__10208453844209830.ace');
 $rawAce = json_decode($aceFile);
@@ -55,6 +56,44 @@ function generateDateString($format, $date) {
     return $dateString;
 }
 
+function createEmptyFreqArray($data) {
+    $frequencyArray = array();
+
+    for($i = 0; $i < sizeof($data); $i++) {
+        $currentPost = $data[$i];
+        $currentPostDate = $currentPost->postData->date;
+
+        $arr = array();
+
+        $parsedDate = DateTime::createFromFormat('Y-m-d G:i:s.u', $currentPostDate);
+        $currentYear = $parsedDate->format('y');
+        $currentMonth = $parsedDate->format('m');
+
+        if(!isset($frequencyArray[$currentYear])) {
+            for($x = 1; $x < 13; $x++) {
+                $arr[$x] = 0;
+            }
+            $frequencyArray[$currentYear] = $arr;
+        }
+    }
+
+    return $frequencyArray;
+}
+
+function populateFreqArray($data) {
+    $arr = createEmptyFreqArray($data);
+
+    for($i = 0; $i < sizeof($data); $i++) {
+        $currentPost = $data[$i];
+        $currentPostDate = $currentPost->postData->date;
+
+        $parsedDate = DateTime::createFromFormat('Y-m-d G:i:s.u', $currentPostDate);
+        $currentYear = $parsedDate->format('y');
+        $currentMonth = $parsedDate->format('m');
+    }
+    print_r($arr);
+
+}
 ?>
 
 <!DOCTYPE html>
@@ -110,21 +149,32 @@ function generateDateString($format, $date) {
 </div><!--/#post-data-detail-->
 
 <div id="test-output">
+        <?php
+//        echo "".PHP_EOL;
+//        $counter = 1;
+//        foreach ($flaggedPostArray as $currentPost){
+//            echo "Post #" . $counter . PHP_EOL;
+//            echo $mustache->render($postTemplate,$currentPost->postData);
+//            $counter++;
+//        }
+//        print_r($flaggedPostArray);
+        echo '<h1>Frequency per month method.</h1>' . PHP_EOL;
+        ?>
     <pre>
         <?php
-        echo "".PHP_EOL;
-        $counter = 1;
-        foreach ($flaggedPostArray as $currentPost){
-            echo "Post #" . $counter . PHP_EOL;
-            echo $mustache->render($postTemplate,$currentPost->postData);
-            $counter++;
-        }
-        print_r($flaggedPostArray);
+        print_r(populateFreqArray($flaggedPostArray));
+
+//        $date = DateTime::createFromFormat('j-M-Y', '15-Feb-2009');
+//        echo '15-Feb-2009: ' . $date->format('Y-m-d') .PHP_EOL;
+//
+//        $inDate = '2008-10-28 02:34:17.000000';
+//        $date = DateTime::createFromFormat('Y-m-d G:i:s.u', $inDate);
+//        echo $inDate . ': ' . $date->format('m-y') .PHP_EOL;
         ?>
     </pre>
 </div><!--/#test-output-->
 
-<script type="text/javascript" src="../js/lib/d3.js"></script>
-<script type="text/javascript" src="../js/report.js"></script>
+<!--<script type="text/javascript" src="../js/lib/d3.js"></script>-->
+<!--<script type="text/javascript" src="../js/report.js"></script>-->
 </body>
 </html>
