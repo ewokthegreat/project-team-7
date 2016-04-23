@@ -17,27 +17,30 @@ class ReportGenerator implements JsonSerializable
     private $userId;
     private $pathToData;
 
-    public function __construct() {
+    public function __construct()
+    {
     }
 
-    private function fetchRawPostData() {
+    private function fetchRawPostData()
+    {
         $path = $this->getPathToData();
         $postDataJSON = file_get_contents($path);
         $rawPostData = json_decode($postDataJSON);
-        if(!is_object($rawPostData[0])) {
+        if (!is_object($rawPostData[0])) {
             $rawPostData = $rawPostData[0];
         }
         $this->setPostDataArray($rawPostData);
     }
-    
-    public function init() {
+
+    public function init()
+    {
         $this->fetchRawPostData();
         $this->populateFlaggedPostArray();
         $this->getIntervalFlaggedPosts();
 
         return $this->getReportObject();
     }
-    
+
     private function getReportObject()
     {
         $pathToDataArray = explode('/', $this->pathToData);
@@ -244,7 +247,7 @@ class ReportGenerator implements JsonSerializable
         echo 'Elapsed Time: ' . (microtime(true) - $startTime) . "seconds";
 
         $this->flaggedPostArray = $flaggedPosts;
-        
+
         return $flaggedPosts;
     }
 
@@ -264,7 +267,7 @@ class ReportGenerator implements JsonSerializable
      * @return int This function returns the total weight of a post, by adding all the weights of all
      * the flagged words in a post.
      */
-    public  function getTotalWeightOfFlaggedPost($flaggedPost)
+    public function getTotalWeightOfFlaggedPost($flaggedPost)
     {
         $flaggedWordsList = $flaggedPost->getFlaggedWords();
 
@@ -281,7 +284,7 @@ class ReportGenerator implements JsonSerializable
      * @param $flaggedPostArray
      * @return array
      */
-    public  function getFlaggedWordsAndFrequency($flaggedPostArray)
+    public function getFlaggedWordsAndFrequency($flaggedPostArray)
     {
         $flaggedWordsArray = array();
         //sort through all flagd posts array
@@ -309,7 +312,7 @@ class ReportGenerator implements JsonSerializable
     public function getSortedFlaggedWordsArray($flaggedWordArray)
     {
         arsort($flaggedWordArray);
-        
+
         return $flaggedWordArray;
     }
 
@@ -384,14 +387,14 @@ class ReportGenerator implements JsonSerializable
                 $minDate = $curDate;
             }
         }
-        return date('d-m-Y',$minDate);
+        return date('d-m-Y', $minDate);
     }
 
     /**
      * @param $flaggedPostArray
      * @return bool|string
      */
-    public  function getLastFlaggedPostDate($flaggedPostArray)
+    public function getLastFlaggedPostDate($flaggedPostArray)
     {
         $maxDate = strtotime($flaggedPostArray[0]->getPostData()->getDate());
         foreach ($flaggedPostArray as $fpa) {
@@ -400,7 +403,7 @@ class ReportGenerator implements JsonSerializable
                 $maxDate = $curDate;
             }
         }
-        return date('d-m-Y',$maxDate);
+        return date('d-m-Y', $maxDate);
     }
 
     /**
@@ -435,8 +438,12 @@ class ReportGenerator implements JsonSerializable
     /**
      * @return array
      */
-    public function getIntervalFlaggedPosts() {
+    public function getIntervalFlaggedPosts()
+    {
         $intervalFlaggedPostArray = array(); //Get empty array.
+        $firstDate = $this->getFirstFlaggedPostDate($this->flaggedPostArray);
+        $lastDate = $this->getLastFlaggedPostDate($this->flaggedPostArray);
+        $dateRangeArray = $this->createDateRangeArray($firstDate, $lastDate);
 
         //Sort flagged post array before processing,
         usort($this->flaggedPostArray, function ($a, $b) {
@@ -445,18 +452,44 @@ class ReportGenerator implements JsonSerializable
             return $t1 - $t2;
         });
 
-        foreach($this->flaggedPostArray as $flaggedPost) { //Iterate through all flagged post data
-            $date_m_d = date("F Y", strtotime($flaggedPost->getPostData()->getDate())); //convert flagged post data into 'Month Year" format.
 
-            //Check if key => value exists for intervalFlaggedPostArray
-            if (isset($intervalFlaggedPostArray[$date_m_d])) {
-                //If this month and day already exists, increment the word array
-                $intervalFlaggedPostArray[$date_m_d]++;
-            } else { //This month and date combination is not in the array yet
-                $intervalFlaggedPostArray[$date_m_d] = 1;
+        foreach ($this->flaggedPostArray as $flaggedPost) { //Iterate through all flagged post data
+            $date_m_d = date("F Y", strtotime($flaggedPost->getPostData()->getDate())); //convert flagged post data into 'Month Year" format.
+            foreach ($dateRangeArray as $curDate) {
+                if (in_array($curDate,$date_m_d)){
+                    //Check if key => value exists for intervalFlaggedPostArray
+                    if (isset($intervalFlaggedPostArray[$date_m_d])) {
+                        //If this month and day already exists, increment the word array
+                        $intervalFlaggedPostArray[$date_m_d]++;
+                    } else { //This month and date combination is not in the array yet
+                        $intervalFlaggedPostArray[$date_m_d] = 1;
+                    }
+                } else {
+                    $intervalFlaggedPostArray[$curDate] = 0;
+                }
             }
         }
-        return $intervalFlaggedPostArray;
+        print_r($intervalFlaggedPostArray);
+        return array_values($intervalFlaggedPostArray);
+    }
+
+    public function createDateRangeArray($dateFrom, $dateTo)
+    {
+        $rangeArray = array();
+
+        $parsedFrom = DateTime::createFromFormat('d-m-y', $dateFrom);
+        $parsedTo = DateTime::createFromFormat('d-m-y', $dateTo);
+        $dateFrom = $parsedFrom->format("F Y");
+        $dateTo = $parsedTo->format("F Y");
+
+        if ($dateTo >= $dateFrom) {
+            array_push($rangeArray, $dateFrom);
+            while ($dateFrom < $dateTo) {
+                $dateFrom += 86400;
+                array_push($rangeArray, $dateFrom);
+            }
+        }
+        return $rangeArray;
     }
 
     /**
@@ -465,18 +498,19 @@ class ReportGenerator implements JsonSerializable
      * @param $flaggedPostArray
      * @return array
      */
-    public  function getPostsWithinRange($startDate, $endDate, $flaggedPostArray){
-        $startDate = strtotime($startDate);
-        $endDate = strtotime($endDate);
-        $flaggedPostArrayInRange = array();
-        foreach ($flaggedPostArray as $fpa) {
-            $curDate = strtotime($fpa->getPostData()->getDate());
-            if ($curDate > $startDate && $curDate < $endDate){
-                array_push($flaggedPostArrayInRange,$fpa);
-            }
-        }
-        return $flaggedPostArrayInRange;
-    }
+//    public function getPostsWithinRange($startDate, $endDate, $flaggedPostArray)
+//    {
+//        $startDate = strtotime($startDate);
+//        $endDate = strtotime($endDate);
+//        $flaggedPostArrayInRange = array();
+//        foreach ($flaggedPostArray as $fpa) {
+//            $curDate = strtotime($fpa->getPostData()->getDate());
+//            if ($curDate > $startDate && $curDate < $endDate) {
+//                array_push($flaggedPostArrayInRange, $fpa);
+//            }
+//        }
+//        return $flaggedPostArrayInRange;
+//    }
 
     /**
      * @param $flaggedPostArray
@@ -494,7 +528,7 @@ class ReportGenerator implements JsonSerializable
                 $flaggedWord = $flaggedWordObject->getFlaggedWord();
 
                 //Check if key => value exists for dataDictionary
-                if (!isset($bubbleDataArray[$dictName])){
+                if (!isset($bubbleDataArray[$dictName])) {
                     $bubbleDataArray[$dictName] = array();
                 }
 
@@ -521,12 +555,13 @@ class FlaggedPost implements JsonSerializable
     private $postData; //an instance of Post Data object
     private $flaggedWords = array(); //a list of flagged words and associated information per post
 
-    public function jsonSerialize() {
+    public function jsonSerialize()
+    {
         $props = array();
 
         foreach ($this as $key => $value) {
-                $props[$key] = $value;
-            }
+            $props[$key] = $value;
+        }
         return $props;
     }
 
@@ -576,7 +611,8 @@ class FlaggedWord implements JsonSerializable
     private $dictWeight; //corresponding weight per word
     private $flaggedWord; //actual flagged word string
 
-    public function jsonSerialize() {
+    public function jsonSerialize()
+    {
         $props = array();
 
         foreach ($this as $key => $value) {
@@ -584,7 +620,7 @@ class FlaggedWord implements JsonSerializable
         }
         return $props;
     }
-    
+
     public function __construct($dataDictName, $dictWeight, $flaggedWord)
     {
         $this->setDataDictName($dataDictName);
