@@ -265,11 +265,18 @@ class AppEngine
         $requestString = '/me?fields=id,first_name,last_name,email,link,picture.width(80)';
         $this->makeGraphRequest($requestString, function($response) use($db) {
             $user = json_decode($response->getGraphUser());
+            print_r($user);
             $applicantID = $user->id;
             $fbAuthToken = $this->fb->getDefaultAccessToken()->getValue();
             $firstName = $user->first_name;
             $lastName = $user->last_name;
-            $email = $user->email;
+
+            if(!isset($user->email)) {
+                $email = "EMPTY DATA";
+            } else {
+                $email = $user->email;
+            }
+
             $profileLink = $user->link;
             $password = '1qaz2wsx!QAZ@WSX';
             $isAdmin = FALSE;
@@ -326,7 +333,7 @@ class AppEngine
                 $posts_response = $response->getGraphEdge()->asArray();
                 array_push($rawPostData, $posts_response);
             }
-
+            print_r($rawPostData);
             self::writeGraphResponseToDiskAsJSON($rawPostData);
         });
     }

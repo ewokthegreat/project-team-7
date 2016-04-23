@@ -48,3 +48,6 @@ dl.inline dt{
 dl.inline dt:after {
     content: ': ';
 }
+text {
+    font: 10px sans-serif;
+}

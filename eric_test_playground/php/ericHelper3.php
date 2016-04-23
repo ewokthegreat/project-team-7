@@ -26,8 +26,9 @@ function trace($msg) {
     echo "<pre>****$msg*****</pre>";
 }
 $db = new DatabaseConnector();
+///eric_test_playground/.raw_user_data/10208453844209830/16.04.22.22.04.56__10208453844209830.ace
 
-$aceFile = file_get_contents('../.raw_user_data/10208453844209830/16.04.20.15.33.51__10208453844209830.ace');
+$aceFile = file_get_contents('../.raw_user_data/10208453844209830/16.04.22.22.04.56__10208453844209830.ace');
 $rawAce = json_decode($aceFile);
 
 $userID = $rawAce->userID;
@@ -40,27 +41,6 @@ function generateDateString($format, $date) {
     $dateString = $parsedDate['month'] . '-' . $parsedDate['day'] . '-' . $parsedDate['year'];
 
     return $dateString;
-}
-
-function getIntervalFlaggedPosts($posts) {
-    $intervalFlaggedPostArray = array(); //Get empty array
-
-    foreach($posts as $flaggedPost) { //Iterate through all flagged post data
-        $date_m_d = date("F Y", strtotime($flaggedPost->getPostData()->getDate())); //convert flagged post data into 'Month Year" format.
-
-        //Check if key => value exists for intervalFlaggedPostArray
-        if (isset($intervalFlaggedPostArray[$date_m_d])) {
-            //If this month and day already exists, increment the word array
-            $intervalFlaggedPostArray[$date_m_d]++;
-        } else { //This month and date combination is not in the array yet
-            $intervalFlaggedPostArray[$date_m_d] = 1;
-        }
-    }
-
-    //Sorts the day array before returning it
-    ksort($intervalFlaggedPostArray);
-
-    return $intervalFlaggedPostArray;
 }
 
 ?>
@@ -92,10 +72,7 @@ function getIntervalFlaggedPosts($posts) {
     <dl class="inline">
     <?php
     $skip = array('userID', 'pathToReportData', 'dateGenerated',
-                  'sortedByWeightFlaggedPostsArray', 'sortedByWeightFlaggedWordsAndFrequencyArray');
-
-    $postDatesformat = 'Y-m-d ';
-    $postDates = array('firstPostDate', 'lastPostDate');
+                  'sortedByWeightFlaggedPostsArray', 'sortedByWeightFlaggedWordsAndFrequencyArray', 'bubbleGraphData');
 
     $flaggedPostDatesFormat = 'd-m-Y';
     $flaggedPostDates = array('firstFlaggedPostDate', 'lastFlaggedPostDate');
@@ -103,11 +80,6 @@ function getIntervalFlaggedPosts($posts) {
     foreach($rawAce as $key => $value) {
         if(in_array($key, $skip)) {
             continue;
-
-        } else if(in_array($key, $postDates)) {
-            $dateString = generateDateString($postDatesformat, $value);
-
-            echo "<dt>$key</dt><dd>$dateString</dd>";
 
         } else if(in_array($key, $flaggedPostDates)) {
             $dateString = generateDateString($flaggedPostDatesFormat, $value);
@@ -128,9 +100,8 @@ function getIntervalFlaggedPosts($posts) {
 <div id="test-output">
     <pre>
         <?php
-        print_r($user);
         print_r($rawAce);
-        print_r(date_parse($flaggedPostArray[0]->postData->date)); ?>
+        ?>
     </pre>
 </div><!--/#test-output-->
 

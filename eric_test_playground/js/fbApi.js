@@ -37,7 +37,7 @@ window.fbAsyncInit = function() {
             alert('Not logged in to Social Spider app.')
         } else {
             alert('Not logged in to Facebook.');
-            FB.login(statusChangeCallback, {scope: 'public_profile,email'});
+            FB.login(statusChangeCallback, {scope: 'public_profile, email, user_posts'});
         }
     };
 

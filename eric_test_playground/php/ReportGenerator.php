@@ -36,7 +36,6 @@ class ReportGenerator implements JsonSerializable
 //        $this->getReportObject();
 //    }
     public function __construct() {
-        trace('ReportGenerator initialized.');
     }
 
     private function fetchRawPostData() {

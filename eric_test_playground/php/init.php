@@ -19,6 +19,11 @@ require_once 'Applicant.php';
 require_once 'Scan.php';
 require_once 'DatabaseConnector.php';
 require_once 'AppEngine.php';
+require_once 'ReportGenerator.php';
+
+function trace($msg) {
+    echo "<pre>****$msg*****</pre>";
+}
 
 $app = new AppEngine();
 $db = $app->getDb();
@@ -42,7 +47,7 @@ function getAllPosts($app) {
             }
 
         } else {
-            $total_posts = $response->getGrageEdge();
+            $total_posts = $response->getGraphEdge();
 //            $posts_response = $response->getGraphEdge()->asArray();
 //            echo json_encode($posts_response);
         }
