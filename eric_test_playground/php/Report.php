@@ -21,14 +21,13 @@ class Report implements jsonSerializable {
     private $bubbleGraphData;
     private $sortedByWeightFlaggedPostsArray;
     private $sortedByWeightFlaggedWordsAndFrequencyArray;
+    private $intervalFlaggedPosts;
 
     /**
      * Report constructor.
      * @param $userID
      * @param $pathToReportData
      * @param $dateGenerated
-     * @param $firstPostDate
-     * @param $lastPostDate
      * @param $percentageOfFlaggedPosts
      * @param $averageWeightOfFlaggedPost
      * @param $favoriteTeam
@@ -38,8 +37,9 @@ class Report implements jsonSerializable {
      * @param $bubbleGraphData
      * @param $sortedByWeightFlaggedPostsArray
      * @param $sortedByWeightFlaggedWordsAndFrequencyArray
+     * @param $intervalFlaggedPosts
      */
-    public function __construct($userID, $pathToReportData, $dateGenerated, $percentageOfFlaggedPosts, $averageWeightOfFlaggedPost, $favoriteTeam, $firstFlaggedPostDate, $lastFlaggedPostDate, $flaggedPostsPerYear, $bubbleGraphData, $sortedByWeightFlaggedPostsArray, $sortedByWeightFlaggedWordsAndFrequencyArray)
+    public function __construct($userID, $pathToReportData, $dateGenerated, $percentageOfFlaggedPosts, $averageWeightOfFlaggedPost, $favoriteTeam, $firstFlaggedPostDate, $lastFlaggedPostDate, $flaggedPostsPerYear, $bubbleGraphData, $sortedByWeightFlaggedPostsArray, $sortedByWeightFlaggedWordsAndFrequencyArray, $intervalFlaggedPosts)
     {
         $this->userID = $userID;
         $this->pathToReportData = $pathToReportData;
@@ -53,6 +53,7 @@ class Report implements jsonSerializable {
         $this->bubbleGraphData = $bubbleGraphData;
         $this->sortedByWeightFlaggedPostsArray = $sortedByWeightFlaggedPostsArray;
         $this->sortedByWeightFlaggedWordsAndFrequencyArray = $sortedByWeightFlaggedWordsAndFrequencyArray;
+        $this->intervalFlaggedPosts = $intervalFlaggedPosts;
     }
 
 
@@ -286,5 +287,38 @@ class Report implements jsonSerializable {
         $this->sortedByWeightFlaggedWordsAndFrequencyArray = $sortedByWeightFlaggedWordsAndFrequencyArray;
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getBubbleGraphData()
+    {
+        return $this->bubbleGraphData;
+    }
+
+    /**
+     * @param mixed $bubbleGraphData
+     */
+    public function setBubbleGraphData($bubbleGraphData)
+    {
+        $this->bubbleGraphData = $bubbleGraphData;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIntervalFlaggedPosts()
+    {
+        return $this->intervalFlaggedPosts;
+    }
+
+    /**
+     * @param mixed $intervalFlaggedPosts
+     */
+    public function setIntervalFlaggedPosts($intervalFlaggedPosts)
+    {
+        $this->intervalFlaggedPosts = $intervalFlaggedPosts;
+    }
+
 
 }

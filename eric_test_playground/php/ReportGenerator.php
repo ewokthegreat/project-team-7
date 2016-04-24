@@ -78,6 +78,7 @@ class ReportGenerator implements JsonSerializable
                 0,
                 array("Empty"),
                 array("Empty"),
+                array("Empty"),
                 array("Empty"));
 
             return $report;
@@ -94,7 +95,8 @@ class ReportGenerator implements JsonSerializable
                 $this->getFlaggedPostsPerYear($this->flaggedPostArray),
                 $this->getBubbleData($this->flaggedPostArray),
                 $test,
-                self::getSortedFlaggedWordsArray($flaggedWordArray));
+                self::getSortedFlaggedWordsArray($flaggedWordArray),
+                $this->getIntervalFlaggedPosts());
 
             print_r($report);
 
@@ -445,7 +447,7 @@ class ReportGenerator implements JsonSerializable
      */
     public function getIntervalFlaggedPosts()
     {
-        $intervalFlaggedPostArray = array(); //Get empty array.
+       // $intervalFlaggedPostArray = array(); //Get empty array.
         $firstDate = $this->getFirstFlaggedPostDate($this->flaggedPostArray);
         $lastDate = $this->getLastFlaggedPostDate($this->flaggedPostArray);
         $dateRangeArray = $this->createDateRangeArray($firstDate, $lastDate);
@@ -466,7 +468,8 @@ class ReportGenerator implements JsonSerializable
         }
         print_r(PHP_EOL."This is Line Graph Array: ".PHP_EOL);
         print_r($dateRangeArray);
-        return array_values($intervalFlaggedPostArray);
+//        return array_values($dateRangeArray);
+        return $dateRangeArray;
     }
 
     public function createDateRangeArray($dateFrom, $dateTo)
