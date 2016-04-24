@@ -222,8 +222,8 @@ class ReportGenerator implements JsonSerializable
             $flaggedInstances = array(); //create flagdict word array
             foreach ($this->getDictionaryData() as $currentDict) { //iterate through each dictionary
                 foreach ($currentDict->getDictionaryArray() as $dictWord) { //iterate through each word in dictionary
-                    if ($currentDict->getName() === 'nflPlayers') { //if dictionary is nfl players
-                        //strpos method will be used o match the dict word to the entire message as a string
+                    if ($currentDict->getName() === 'nflPlayers' || $currentDict->getName() === 'footballPhrases') { //if dictionary is nfl players
+                        //strpos method will be used to match the dict word to the entire message as a string
                         if (strpos(strtolower($currentPost->getAllWordsAsString()), strtolower($dictWord)) !== FALSE) {
                             array_push($flaggedInstances,
                                 new FlaggedWord($currentDict->getName(),
