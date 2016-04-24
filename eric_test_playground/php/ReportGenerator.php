@@ -496,8 +496,17 @@ class ReportGenerator implements JsonSerializable
             }
             //iterate through months
             for ($i = $month; $i <= 12; $i++) {
+
+                //Checks to see if the length string is less then 2. if it is, it adds a leading 0
+                if (strlen($i) < 2) {
+                    $formmattedMonth = strval(0) . $i;
+                } else {
+                    $formmattedMonth = $i;
+                }
+
                 //Stores, as string, Month as number and year as number
-                $tempStringDate = strval($i) . " " . strval($year);
+                $tempStringDate = $formmattedMonth . " " . strval($year);
+
                 //Add new key to array (string date) and set value initial frequency, which is 0.
                 $rangeArray[$tempStringDate] = 0;
 
