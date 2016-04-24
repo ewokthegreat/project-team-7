@@ -2,11 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Report Beta</title>
 
     <link rel="stylesheet" href="css/report-beta.css">
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css" type="text/css" media="all" />
+
 </head>
 <body>
+
+<div id="d3-test-area" class="content-box">
+    <h1>D3 Test Area</h1>
+</div><!--/#d3-test-area-->
+
+<div id="freq-line-graph" class="content-box">
+    <h1>Flagged Post Frequency Per Month</h1>
+
+    <div id="freq-graph" class="aGraph"></div>
+    <div id="freq-slider-range" style="width: 80%; margin-left:10%; margin-right:10%"></div>
+
+</div><!--/#line-graph-->
 
 <div id="profile-summary">
     <div id="profile-picture">
@@ -20,16 +34,26 @@
     </div><!--/#profile-info-->
 </div><!--/#profile-summary-->
 
-<div id="post-data-summary">
+<div id="post-data-summary" class="content-box">
     <h1>Summary</h1>
 </div><!--/#post-data-summary-->
 
-<div id="post-data-detail">
-    <h1>Detail</h1>
+<div id="post-data-detail" class="content-box">
+    <h1>Bubble Graph</h1>
 </div><!--/#post-data-detail-->
+<div id="random-line-graph" class="content-box">
+    <h1>Line Graph</h1>
+
+    <div id="graph" class="aGraph"></div>
+    <div id="slider-range" style="width: 80%; margin-left:10%; margin-right:10%"></div>
+
+</div><!--/#line-graph-->
 
 <script type="text/javascript" src="js/lib/d3.js"></script>
-<script type="text/javascript" src="js/report2.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"></script>
+<script type="text/javascript" src="js/bubbleChart.js"></script>
+<script type="text/javascript" src="js/lineGraph.js"></script>
 
 </body>
 </html>

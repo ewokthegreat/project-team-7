@@ -2,6 +2,9 @@ h1,h2,h3,h4,h5 {
     margin: 0;
     padding: 0;
 }
+.content-box {
+    border: 1px solid black;
+}
 
 #profile-summary {
     display: flex;
@@ -21,14 +24,6 @@ h1,h2,h3,h4,h5 {
     margin: 0 0 0 5px;
     width: 250px;
 }
-#post-data-summary {
-    border: 1px solid black;
-}
-
-#post-data-detail {
-    border: 1px solid black;
-}
-
 dl.inline dd {
     display: inline;
     margin: 0;
@@ -48,9 +43,9 @@ dl.inline dt{
 dl.inline dt:after {
     content: ': ';
 }
-text {
-    font: 30px sans-serif;
-    font-weight: bold;
+.content-box text {
+    font: 10px sans-serif;
+    font-weight: bolder;
 }
 text::first-letter {
     text-transform: capitalize;
@@ -58,4 +53,32 @@ text::first-letter {
 circle {
     stroke: grey;
     stroke-width: 1;
+}
+
+/* Line Graph Styles */
+path {
+    stroke: steelblue;
+    stroke-width: 1;
+    fill: none;
+}
+
+.axis {
+    shape-rendering: crispEdges;
+}
+
+.x.axis line {
+    stroke: lightgrey;
+}
+
+.x.axis .minor {
+    stroke-opacity: .5;
+}
+
+.x.axis path {
+    display: none;
+}
+
+.y.axis line, .y.axis path {
+    fill: none;
+    stroke: #000;
 }

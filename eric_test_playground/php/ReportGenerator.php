@@ -26,6 +26,7 @@ class ReportGenerator implements JsonSerializable
         $path = $this->getPathToData();
         $postDataJSON = file_get_contents($path);
         $rawPostData = json_decode($postDataJSON);
+        print_r($rawPostData);
         if (!is_object($rawPostData[0])) {
             $rawPostData = $rawPostData[0];
         }
@@ -62,6 +63,8 @@ class ReportGenerator implements JsonSerializable
             }
         }
 
+        $test = $this->flaggedPostArray;
+
         if (!isset($test) || empty($test)) {
 
             $report = new Report(
@@ -91,7 +94,7 @@ class ReportGenerator implements JsonSerializable
                 $this->getLastFlaggedPostDate($this->flaggedPostArray),
                 $this->getFlaggedPostsPerYear($this->flaggedPostArray),
                 $this->getBubbleData($this->flaggedPostArray),
-                $this->flaggedPostArray,
+                $test,
                 self::getSortedFlaggedWordsArray($flaggedWordArray));
             return $report;
         }
@@ -445,6 +448,9 @@ class ReportGenerator implements JsonSerializable
         $lastDate = $this->getLastFlaggedPostDate($this->flaggedPostArray);
         $dateRangeArray = $this->createDateRangeArray($firstDate, $lastDate);
 
+        print_r(PHP_EOL."This is date range array:".PHP_EOL);
+        print_r($dateRangeArray);
+
         //Sort flagged post array before processing,
         usort($this->flaggedPostArray, function ($a, $b) {
             $t1 = strtotime($a->getPostData()->getDate());
@@ -456,7 +462,7 @@ class ReportGenerator implements JsonSerializable
         foreach ($this->flaggedPostArray as $flaggedPost) { //Iterate through all flagged post data
             $date_m_d = date("F Y", strtotime($flaggedPost->getPostData()->getDate())); //convert flagged post data into 'Month Year" format.
             foreach ($dateRangeArray as $curDate) {
-                if (in_array($curDate,$date_m_d)){
+                if ($curDate === $date_m_d){
                     //Check if key => value exists for intervalFlaggedPostArray
                     if (isset($intervalFlaggedPostArray[$date_m_d])) {
                         //If this month and day already exists, increment the word array
@@ -469,6 +475,7 @@ class ReportGenerator implements JsonSerializable
                 }
             }
         }
+        print_r(PHP_EOL."This is Line Graph Array: ".PHP_EOL);
         print_r($intervalFlaggedPostArray);
         return array_values($intervalFlaggedPostArray);
     }
@@ -477,18 +484,26 @@ class ReportGenerator implements JsonSerializable
     {
         $rangeArray = array();
 
-        $parsedFrom = DateTime::createFromFormat('d-m-y', $dateFrom);
-        $parsedTo = DateTime::createFromFormat('d-m-y', $dateTo);
-        $dateFrom = $parsedFrom->format("F Y");
-        $dateTo = $parsedTo->format("F Y");
+        $parsedFrom = DateTime::createFromFormat('d-m-Y', $dateFrom);
+        $parsedTo = DateTime::createFromFormat('d-m-Y', $dateTo);
+        print_r("Date From ".$dateFrom);
+        print_r("Date To ".$dateTo);
 
-        if ($dateTo >= $dateFrom) {
-            array_push($rangeArray, $dateFrom);
-            while ($dateFrom < $dateTo) {
-                $dateFrom += 86400;
-                array_push($rangeArray, $dateFrom);
+        $dateFrom2 = $parsedFrom->format("F Y");
+        $dateTo2 = $parsedTo->format("F Y");
+
+        if ($dateTo2 >= $dateFrom2) {
+            array_push($rangeArray, $dateFrom2);
+            while ($dateFrom2 < $dateTo2) {
+                $dateFrom2 += 86400;
+                array_push($rangeArray, $dateFrom2);
             }
         }
+
+//        while($dateFrom <= ){
+//
+//        }
+
         return $rangeArray;
     }
 

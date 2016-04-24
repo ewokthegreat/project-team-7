@@ -42,7 +42,6 @@ class DatabaseConnector {
             try {
                 $sql = "INSERT INTO $tableName ($fields) VALUES ($ins)";
 
-                echo 'This is where the error is:';
                 $stmt = $this->pdo->prepare($sql);
                 $stmt->execute($obj->getProperties());
 

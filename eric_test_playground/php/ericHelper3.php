@@ -90,9 +90,20 @@ function populateFreqArray($data) {
         $parsedDate = DateTime::createFromFormat('Y-m-d G:i:s.u', $currentPostDate);
         $currentYear = $parsedDate->format('y');
         $currentMonth = $parsedDate->format('m');
-    }
-    print_r($arr);
 
+        foreach($arr as $year => $months) {
+            foreach($months as $month => $count) {
+                if($currentYear == $year) {
+                    if($currentMonth == $month) {
+                        $arr[$year][$month]++;
+                    }
+                }
+            }
+        }
+
+    }
+
+    return($arr);
 }
 ?>
 
@@ -119,57 +130,58 @@ function populateFreqArray($data) {
 </div><!--/#profile-summary-->
 
 <div id="post-data-summary">
-<h1>Summary</h1>
+    <h1>Summary</h1>
     <dl class="inline">
-    <?php
-    $skip = array('userID', 'pathToReportData', 'dateGenerated',
-                  'sortedByWeightFlaggedPostsArray', 'sortedByWeightFlaggedWordsAndFrequencyArray', 'bubbleGraphData');
+        <?php
+        $skip = array('userID', 'pathToReportData', 'dateGenerated',
+            'sortedByWeightFlaggedPostsArray', 'sortedByWeightFlaggedWordsAndFrequencyArray', 'bubbleGraphData');
 
-    $flaggedPostDatesFormat = 'd-m-Y';
-    $flaggedPostDates = array('firstFlaggedPostDate', 'lastFlaggedPostDate');
+        $flaggedPostDatesFormat = 'd-m-Y';
+        $flaggedPostDates = array('firstFlaggedPostDate', 'lastFlaggedPostDate');
 
-    foreach($rawAce as $key => $value) {
-        if(in_array($key, $skip)) {
-            continue;
+        foreach($rawAce as $key => $value) {
+            if(in_array($key, $skip)) {
+                continue;
 
-        } else if(in_array($key, $flaggedPostDates)) {
-            $dateString = generateDateString($flaggedPostDatesFormat, $value);
+            } else if(in_array($key, $flaggedPostDates)) {
+                $dateString = generateDateString($flaggedPostDatesFormat, $value);
 
-            echo "<dt>$key</dt><dd>$dateString</dd>";
-        } else {
-            echo "<dt>$key</dt><dd>$value</dd>";
+                echo "<dt>$key</dt><dd>$dateString</dd>";
+            } else {
+                echo "<dt>$key</dt><dd>$value</dd>";
+            }
         }
-    }
-    ?>
+        ?>
     </dl>
 </div><!--/#post-data-summary-->
 
 <div id="post-data-detail">
-<h1>Detail</h1>
+    <h1>Detail</h1>
 </div><!--/#post-data-detail-->
 
 <div id="test-output">
-        <?php
-//        echo "".PHP_EOL;
-//        $counter = 1;
-//        foreach ($flaggedPostArray as $currentPost){
-//            echo "Post #" . $counter . PHP_EOL;
-//            echo $mustache->render($postTemplate,$currentPost->postData);
-//            $counter++;
-//        }
-//        print_r($flaggedPostArray);
-        echo '<h1>Frequency per month method.</h1>' . PHP_EOL;
-        ?>
+    <?php
+    //        echo "".PHP_EOL;
+    //        $counter = 1;
+    //        foreach ($flaggedPostArray as $currentPost){
+    //            echo "Post #" . $counter . PHP_EOL;
+    //            echo $mustache->render($postTemplate,$currentPost->postData);
+    //            $counter++;
+    //        }
+    //        print_r($flaggedPostArray);
+    echo '<h1>Frequency per month method.</h1>' . PHP_EOL;
+    ?>
     <pre>
         <?php
+        echo "My god it works!!!" . PHP_EOL;
         print_r(populateFreqArray($flaggedPostArray));
 
-//        $date = DateTime::createFromFormat('j-M-Y', '15-Feb-2009');
-//        echo '15-Feb-2009: ' . $date->format('Y-m-d') .PHP_EOL;
-//
-//        $inDate = '2008-10-28 02:34:17.000000';
-//        $date = DateTime::createFromFormat('Y-m-d G:i:s.u', $inDate);
-//        echo $inDate . ': ' . $date->format('m-y') .PHP_EOL;
+        //        $date = DateTime::createFromFormat('j-M-Y', '15-Feb-2009');
+        //        echo '15-Feb-2009: ' . $date->format('Y-m-d') .PHP_EOL;
+        //
+        //        $inDate = '2008-10-28 02:34:17.000000';
+        //        $date = DateTime::createFromFormat('Y-m-d G:i:s.u', $inDate);
+        //        echo $inDate . ': ' . $date->format('m-y') .PHP_EOL;
         ?>
     </pre>
 </div><!--/#test-output-->

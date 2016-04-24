@@ -26,10 +26,14 @@ include_once 'DatabaseConnector.php';
 function trace($msg) {
     print_r(json_encode($msg));
 }
+///eric_test_playground/.raw_user_data/10154129651317806/16.04.22.22.25.52__10154129651317806.ace
+//$aceFile = file_get_contents('../.raw_user_data/10208453844209830/16.04.23.18.27.01__10208453844209830.ace');
+///eric_test_playground/.raw_user_data/10206594946288174/16.04.22.22.11.14__10206594946288174.ace
+///.raw_user_data/10208453844209830/16.04.23.22.31.03__10208453844209830.ace
 
-///eric_test_playground/.raw_user_data/10208453844209830/16.04.23.16.58.46__10208453844209830.ace
-//$aceFile = file_get_contents('../.raw_user_data/10208453844209830/16.04.22.22.04.56__10208453844209830.ace');
-$aceFile = file_get_contents('../.raw_user_data/10208453844209830/16.04.23.16.58.46__10208453844209830.ace');
+$aceFile = file_get_contents('../.raw_user_data/10208453844209830/16.04.23.22.31.03__10208453844209830.ace');
+
 $rawAce = json_decode($aceFile);
+
 $bubbleGraphData = $rawAce->bubbleGraphData;
 trace($bubbleGraphData);
