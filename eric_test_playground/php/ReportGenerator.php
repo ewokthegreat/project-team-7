@@ -26,7 +26,6 @@ class ReportGenerator implements JsonSerializable
         $path = $this->getPathToData();
         $postDataJSON = file_get_contents($path);
         $rawPostData = json_decode($postDataJSON);
-        print_r($rawPostData);
         if (!is_object($rawPostData[0])) {
             $rawPostData = $rawPostData[0];
         }
@@ -79,6 +78,7 @@ class ReportGenerator implements JsonSerializable
                 0,
                 array("Empty"),
                 array("Empty"),
+                array("Empty"),
                 array("Empty"));
 
             return $report;
@@ -95,7 +95,11 @@ class ReportGenerator implements JsonSerializable
                 $this->getFlaggedPostsPerYear($this->flaggedPostArray),
                 $this->getBubbleData($this->flaggedPostArray),
                 $test,
-                self::getSortedFlaggedWordsArray($flaggedWordArray));
+                self::getSortedFlaggedWordsArray($flaggedWordArray),
+                $this->getIntervalFlaggedPosts());
+
+            print_r($report);
+
             return $report;
         }
 
@@ -443,13 +447,10 @@ class ReportGenerator implements JsonSerializable
      */
     public function getIntervalFlaggedPosts()
     {
-        $intervalFlaggedPostArray = array(); //Get empty array.
+       // $intervalFlaggedPostArray = array(); //Get empty array.
         $firstDate = $this->getFirstFlaggedPostDate($this->flaggedPostArray);
         $lastDate = $this->getLastFlaggedPostDate($this->flaggedPostArray);
         $dateRangeArray = $this->createDateRangeArray($firstDate, $lastDate);
-
-        print_r(PHP_EOL."This is date range array:".PHP_EOL);
-        print_r($dateRangeArray);
 
         //Sort flagged post array before processing,
         usort($this->flaggedPostArray, function ($a, $b) {
@@ -460,50 +461,64 @@ class ReportGenerator implements JsonSerializable
 
 
         foreach ($this->flaggedPostArray as $flaggedPost) { //Iterate through all flagged post data
-            $date_m_d = date("F Y", strtotime($flaggedPost->getPostData()->getDate())); //convert flagged post data into 'Month Year" format.
-            foreach ($dateRangeArray as $curDate) {
-                if ($curDate === $date_m_d){
-                    //Check if key => value exists for intervalFlaggedPostArray
-                    if (isset($intervalFlaggedPostArray[$date_m_d])) {
-                        //If this month and day already exists, increment the word array
-                        $intervalFlaggedPostArray[$date_m_d]++;
-                    } else { //This month and date combination is not in the array yet
-                        $intervalFlaggedPostArray[$date_m_d] = 1;
-                    }
-                } else {
-                    $intervalFlaggedPostArray[$curDate] = 0;
-                }
-            }
+            $date_m_d = date("m Y", strtotime($flaggedPost->getPostData()->getDate())); //convert flagged post data into
+                                                                                        // 'Month Year" format.
+            //Increment dateRangeArray frequncy
+            $dateRangeArray[$date_m_d]++;
         }
         print_r(PHP_EOL."This is Line Graph Array: ".PHP_EOL);
-        print_r($intervalFlaggedPostArray);
-        return array_values($intervalFlaggedPostArray);
+        print_r($dateRangeArray);
+//        return array_values($dateRangeArray);
+        return $dateRangeArray;
     }
 
     public function createDateRangeArray($dateFrom, $dateTo)
     {
-        $rangeArray = array();
+        $rangeArray = array(); //array that is being returned
 
-        $parsedFrom = DateTime::createFromFormat('d-m-Y', $dateFrom);
-        $parsedTo = DateTime::createFromFormat('d-m-Y', $dateTo);
-        print_r("Date From ".$dateFrom);
-        print_r("Date To ".$dateTo);
+        $dateTimeFrom = new DateTime($dateFrom);
+        $dateTimeTo = new DateTime($dateTo);
 
-        $dateFrom2 = $parsedFrom->format("F Y");
-        $dateTo2 = $parsedTo->format("F Y");
+        $firstDateMonth = $dateTimeFrom->format('m');
+        $firstDateYear = $dateTimeFrom->format('Y');
 
-        if ($dateTo2 >= $dateFrom2) {
-            array_push($rangeArray, $dateFrom2);
-            while ($dateFrom2 < $dateTo2) {
-                $dateFrom2 += 86400;
-                array_push($rangeArray, $dateFrom2);
+        $lastDateMonth = $dateTimeTo->format('m');
+        $lastDateYear = $dateTimeTo->format('Y');
+
+        $isFirstIteration= True;
+
+        //iterate through years
+        for($year = $firstDateYear; $year <= $lastDateYear; $year++) {
+            //If this is the first time the loop is iterating through months of the first year, set the first month
+            //to the first month that was recieved from the first data. otherwise, set the first month as 1
+            if($isFirstIteration) {
+                $month = $firstDateMonth;
+                $isFirstIteration = False;
+            } else {
+                $month = 1;
+            }
+            //iterate through months
+            for ($i = $month; $i <= 12; $i++) {
+
+                //Checks to see if the length string is less then 2. if it is, it adds a leading 0
+                if (strlen($i) < 2) {
+                    $formmattedMonth = strval(0) . $i;
+                } else {
+                    $formmattedMonth = $i;
+                }
+
+                //Stores, as string, Month as number and year as number
+                $tempStringDate = $formmattedMonth . " " . strval($year);
+
+                //Add new key to array (string date) and set value initial frequency, which is 0.
+                $rangeArray[$tempStringDate] = 0;
+
+                //If the current date matches the current month and current year, breaks out of the loop
+                if ($i == $lastDateMonth && $year == $lastDateYear) {
+                        break 2;
+                }
             }
         }
-
-//        while($dateFrom <= ){
-//
-//        }
-
         return $rangeArray;
     }
 
