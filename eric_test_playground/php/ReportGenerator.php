@@ -95,6 +95,9 @@ class ReportGenerator implements JsonSerializable
                 $this->getBubbleData($this->flaggedPostArray),
                 $test,
                 self::getSortedFlaggedWordsArray($flaggedWordArray));
+
+            print_r($report);
+
             return $report;
         }
 
@@ -459,7 +462,7 @@ class ReportGenerator implements JsonSerializable
 
 
         foreach ($this->flaggedPostArray as $flaggedPost) { //Iterate through all flagged post data
-            $date_m_d = date("F Y", strtotime($flaggedPost->getPostData()->getDate())); //convert flagged post data into 'Month Year" format.
+            $date_m_d = date("m Y", strtotime($flaggedPost->getPostData()->getDate())); //convert flagged post data into 'Month Year" format.
             foreach ($dateRangeArray as $curDate) {
                 if ($curDate === $date_m_d){
                     //Check if key => value exists for intervalFlaggedPostArray
@@ -481,32 +484,48 @@ class ReportGenerator implements JsonSerializable
 
     public function createDateRangeArray($dateFrom, $dateTo)
     {
-        $rangeArray = array();
+        $rangeArray = array(); //array that is being returned
 
-        $parsedFrom = DateTime::createFromFormat('d-m-Y', $dateFrom);
-        $parsedTo = DateTime::createFromFormat('d-m-Y', $dateTo);
-        print_r("Date From ".$dateFrom);
-        print_r("Date To ".$dateTo);
+        $dateTimeFrom = new DateTime($dateFrom);
+        $dateTimeTo = new DateTime($dateTo);
 
-        $dateFrom2 = $parsedFrom->format("F Y");
-        $dateTo2 = $parsedTo->format("F Y");
+        $firstDateMonth = $dateTimeFrom->format('m');
+        $firstDateYear = $dateTimeFrom->format('Y');
 
-        print_r("Date From ".$dateFrom2);
-        print_r("Date To ".$dateTo2);
+        $lastDateMonth = $dateTimeTo->format('m');
+        $lastDateYear = $dateTimeTo->format('Y');
 
-//        if ($dateTo2 >= $dateFrom2) {
-//            array_push($rangeArray, $dateFrom2);
-//            while ($dateFrom2 < $dateTo2) {
-//                $dateFrom2 += 86400;
-//                array_push($rangeArray, $dateFrom2);
-//            }
-//        }
+        $isFirstIteration= True;
 
-//        while(strtotime($dateFrom2) <= strtotime($dateTo2)){
-//            array_push($rangeArray, $dateFrom2);
-//            $dateFrom2 = strtotime("+1 month",$dateFrom2);
-//            $dateFrom2 = $parsedFrom->format("F Y");
-//        }
+        //iterate through years
+        for($year = $firstDateYear; $year <= $lastDateYear; $year++) {
+            //If this is the first time the loop is iterating through months of the first year, set the first month
+            //to the first month that was recieved from the first data. otherwise, set the first month as 1
+            if($isFirstIteration) {
+                $month = $firstDateMonth;
+                $isFirstIteration = False;
+            } else {
+                $month = 1;
+            }
+            //iterate through months
+            for ($i = $month; $i <= 12; $i++) {
+                $tempStringDate = strval($i) . " " . strval($year);
+                #$tempDateTime = new DateTime($tempStringDate);
+                #$rangeArray[$tempDateTime]
+
+                //Add new key to array (string date) and set value initial frequency, which is 0.
+                $rangeArray[$tempStringDate] = 0;
+
+                //If the current date matches the current month and current year, breaks out of the loop
+                if ($i == $lastDateMonth && $year == $lastDateYear) {
+                        break 2;
+                }
+
+            }
+        }
+
+        print_r("Adam's crack at it:");
+        print_r($rangeArray);
 
         return $rangeArray;
     }
