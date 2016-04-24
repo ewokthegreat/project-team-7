@@ -450,9 +450,6 @@ class ReportGenerator implements JsonSerializable
         $lastDate = $this->getLastFlaggedPostDate($this->flaggedPostArray);
         $dateRangeArray = $this->createDateRangeArray($firstDate, $lastDate);
 
-        print_r(PHP_EOL."This is date range array:".PHP_EOL);
-        print_r($dateRangeArray);
-
         //Sort flagged post array before processing,
         usort($this->flaggedPostArray, function ($a, $b) {
             $t1 = strtotime($a->getPostData()->getDate());
@@ -462,23 +459,13 @@ class ReportGenerator implements JsonSerializable
 
 
         foreach ($this->flaggedPostArray as $flaggedPost) { //Iterate through all flagged post data
-            $date_m_d = date("m Y", strtotime($flaggedPost->getPostData()->getDate())); //convert flagged post data into 'Month Year" format.
-            foreach ($dateRangeArray as $curDate) {
-                if ($curDate === $date_m_d){
-                    //Check if key => value exists for intervalFlaggedPostArray
-                    if (isset($intervalFlaggedPostArray[$date_m_d])) {
-                        //If this month and day already exists, increment the word array
-                        $intervalFlaggedPostArray[$date_m_d]++;
-                    } else { //This month and date combination is not in the array yet
-                        $intervalFlaggedPostArray[$date_m_d] = 1;
-                    }
-                } else {
-                    $intervalFlaggedPostArray[$curDate] = 0;
-                }
-            }
+            $date_m_d = date("m Y", strtotime($flaggedPost->getPostData()->getDate())); //convert flagged post data into
+                                                                                        // 'Month Year" format.
+            //Increment dateRangeArray frequncy
+            $dateRangeArray[$date_m_d]++;
         }
         print_r(PHP_EOL."This is Line Graph Array: ".PHP_EOL);
-        print_r($intervalFlaggedPostArray);
+        print_r($dateRangeArray);
         return array_values($intervalFlaggedPostArray);
     }
 
@@ -509,10 +496,8 @@ class ReportGenerator implements JsonSerializable
             }
             //iterate through months
             for ($i = $month; $i <= 12; $i++) {
+                //Stores, as string, Month as number and year as number
                 $tempStringDate = strval($i) . " " . strval($year);
-                #$tempDateTime = new DateTime($tempStringDate);
-                #$rangeArray[$tempDateTime]
-
                 //Add new key to array (string date) and set value initial frequency, which is 0.
                 $rangeArray[$tempStringDate] = 0;
 
@@ -520,13 +505,8 @@ class ReportGenerator implements JsonSerializable
                 if ($i == $lastDateMonth && $year == $lastDateYear) {
                         break 2;
                 }
-
             }
         }
-
-        print_r("Adam's crack at it:");
-        print_r($rangeArray);
-
         return $rangeArray;
     }
 
