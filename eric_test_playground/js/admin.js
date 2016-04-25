@@ -39,6 +39,14 @@
         var applicantObject = {
             applicants: response
         };
+
+        if (_storageAvailable('localStorage')) {
+            console.log('Good to go!');
+            localStorage.setItem('applicants', JSON.stringify(response));
+        } else {
+            console.log('LocalStorage is not available in your browser. Try a different browser.');
+        }
+
         var template = document.getElementById('all-applicant-template').innerHTML;
         var target = document.getElementById('all-applicant-list');
 
@@ -105,6 +113,7 @@
                 console.log('CLICK');
                 console.log(this.dataset.id);
                 var data = { id: this.dataset.id };
+
                 _requestScript('php/scanLoader.php', _populateScanTable, data);
             });
         }
@@ -124,6 +133,7 @@
                 console.log('CLICK');
                 console.log(this.dataset.path);
                 var data = { path: this.dataset.path };
+
                 _requestScript('php/reportLoader.php', _loadReport, data);
             });
         }

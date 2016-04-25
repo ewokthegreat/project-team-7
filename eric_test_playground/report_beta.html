@@ -14,33 +14,44 @@
 </head>
 <body>
 
-<div id="profile-summary" class="panel panel-default">
-    <div id="profile-picture">
-        <img src="avatars/default.jpg"/>
-    </div><!--/#profile-picture-->
-    <div id="profile-info">
-        <h3 id="profile-name"></h3>
-        <div id="profile-email"></div>
-        <div id="profile-scan-date"></div>
-        <a id="profile-link" href="#"></a>
-    </div><!--/#profile-info-->
-</div><!--/#profile-summary-->
+<div class="container-fluid">
+    <div class="row">
 
-<div id="post-data-summary" class="panel panel-default">
-    <h1>Summary</h1>
-</div><!--/#post-data-summary-->
+        <div id="sidebar" class="col-md-3 sidebar">
 
-<div id="bubble-chart" class="panel panel-default">
-    <h1>Bubble Graph Data</h1>
-</div><!--/#post-data-detail-->
+            <div id="profile-summary" class="panel panel-default">
+                <div id="profile-picture" class="center-block dynamic"></div><!--/#profile-picture-->
+                <div id="profile-info" class="text-center">
+                    <div id="first-name" class="dynamic"></div>
+                    <div id="last-name" class="dynamic"></div>
+                    <div id="profile-email" class="dynamic"></div>
+                    <div id="profile-scan-date" class="dynamic"></div>
+                    <a id="profile-link" href="#"  class="dynamic"></a>
+                </div><!--/#profile-info-->
+            </div><!--/#profile-summary-->
 
-<div id="freq-line-graph" class="panel panel-default">
-    <h1>Flagged Post Frequency Per Month</h1>
+        </div><!--/#sidebar-->
 
-    <div id="freq-graph" class="aGraph"></div>
-    <div id="freq-slider-range" style="width: 80%; margin-left:10%; margin-right:10%"></div>
+        <div id="main-content" class="col-md-9 cod-md-offset-3 content">
 
-</div><!--/#line-graph-->
+            <div id="post-data-summary" class="panel panel-default">
+                <h1>Summary</h1>
+            </div><!--/#post-data-summary-->
+
+            <div id="bubble-chart" class="panel panel-default">
+                <h1>Bubble Graph Data</h1>
+            </div><!--/#post-data-detail-->
+
+            <div id="freq-line-graph" class="panel panel-default">
+                <h1>Flagged Post Frequency Per Month</h1>
+
+                <div id="freq-graph" class="aGraph"></div>
+                <div id="freq-slider-range" style="width: 80%; margin-left:10%; margin-right:10%"></div>
+
+            </div><!--/#line-graph-->
+        </div><!--/#main-content-->
+    </div><!--/.row-->
+</div><!--/.container-fluid-->
 
 <script type="text/javascript" src="js/lib/d3.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
