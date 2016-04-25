@@ -5,7 +5,7 @@
  * Date: 4/9/2016
  * Time: 8:07 PM
  * Description: This is the heart of our app. This class calls the Facebook API, facilitates all the
- * calls to the database and persistance of data and also initializes the report class.
+ * calls to the database and persistence of data and also initializes the report class.
  */
 
 class AppEngine
@@ -19,7 +19,6 @@ class AppEngine
     private $db;
     private $reportGenerator;
     private $wordBankArray;
-//    private $scan;
 
     /**
      * AppEngine constructor.
@@ -67,15 +66,16 @@ class AppEngine
 
         //round score
         $score = round($score, 0, PHP_ROUND_HALF_UP);
-
         $scan = new Scan($filename, $applicantID, $score, $scanDate, $fullPath);
 
         $this->getDb()->insert($scan);
     }
 
     /**
-     * @param $path
-     * @param $data
+     * This is responsible for writing the file to the disk, either the .ace file or
+     * the raw JSON file with all the initial posts.
+     * @param $path to where the file is being saved.
+     * @param $data that is being saved to disk, either the Report Data or Raw Post Data.
      */
     private function writeFile($path, $data) {
         if(file_put_contents($path, json_encode($data))) {
@@ -87,7 +87,8 @@ class AppEngine
 
     }
     /**
-     * @param $requestString
+     * Makes a Facebook API call for all post data
+     * @param $requestString the API call string
      * @param $callback
      */
     public function makeGraphRequest($requestString, $callback) {
@@ -108,16 +109,145 @@ class AppEngine
         $callback($response);
     }
 
-//    private $fb;
-//    private $id = '1679655878969496';
-//    private $secret = '74ab0d53fbe6e26d3f001bc7f31cfcea';
-//    private $version = 'v2.5';
-//    private $token;
-//    private $user;
-//    private $db;
-//    private $reportGenerator;
-//    private $wordBank;
-//    private $scan;
+    /**
+     * Instantiates a new Facebook/Facebook service.
+     * This method passes an array of configuration options
+     * to the  constructor, such as the app_id, app_secret and default_graph_version.
+     * @return \Facebook\Facebook
+     */
+    private function createServiceClass() {
+        $fb = new \Facebook\Facebook([
+            'app_id' => $this->id,
+            'app_secret' => $this->secret,
+            'default_graph_version' => $this->version
+        ]);
+
+        return $fb;
+    }
+
+    /**
+     * This method generates all the user data relating to the applicant. It also
+     * insert the applicant into the scan table.
+     * @return void
+     */
+    private function generateUserData() {
+        $db = $this->db;
+
+        $requestString = '/me?fields=id,first_name,last_name,email,link,picture.width(80)';
+        $this->makeGraphRequest($requestString, function($response) use($db) {
+            $user = json_decode($response->getGraphUser());
+            print_r($user);
+            $applicantID = $user->id;
+            $fbAuthToken = $this->fb->getDefaultAccessToken()->getValue();
+            $firstName = $user->first_name;
+            $lastName = $user->last_name;
+
+            if(!isset($user->email)) {
+                $email = "EMPTY DATA";
+            } else {
+                $email = $user->email;
+            }
+
+            $profileLink = $user->link;
+            $password = '1qaz2wsx!QAZ@WSX';
+            $isAdmin = FALSE;
+            $profilePicture = $user->picture->url;
+            $userData = new Applicant($applicantID, $fbAuthToken, $firstName, $lastName,
+                $email, $profileLink, $password, $isAdmin, $profilePicture);
+            $this->getReportGenerator()->setUserId($applicantID);
+            $db->insert($userData);
+        });
+    }
+
+    /**
+     * Writes the graph response to disk as JSON.
+     * @param $data This data either represents the raw JSON post data or the
+     * report object.
+     */
+    private function writeGraphResponseToDiskAsJSON($data) {
+        $this->makeGraphRequest('/me?fields=id', function($response) use($data) {
+            $user = json_decode($response->getGraphUser());
+            $userID = $user->id;
+
+            $dateString = date('y.m.d.G.i.s__');
+            $pathToUserData = __USER_DATA__ . '/' . $userID;
+            $userDataFileName = $dateString . $userID . '.json';
+            $path = $pathToUserData . '/' . $userDataFileName;
+
+            if(!file_exists($pathToUserData)) {
+                mkdir($pathToUserData);
+                $this->writeFile($path, $data);
+            } else {
+                echo "'\n' Directory already exists, attempting to write file! '\n'";
+                $this->writeFile($path, $data);
+            }
+        });
+    }
+
+    /**
+     * Makes a request to pull all post data from user's time line.
+     */
+    private function queryTimeline() {
+        $this->makeGraphRequest('/me/posts?limit=100', function($response) {
+            $fb = $this->getFb();
+            $posts_response = $response->getGraphEdge();
+            $rawPostData = array();
+
+            if ($fb->next($posts_response)) {
+                $response_array = $posts_response->asArray();
+                $rawPostData = array_merge($rawPostData, $response_array);
+
+                while ($posts_response = $fb->next($posts_response)) {
+                    $response_array = $posts_response->asArray();
+                    $rawPostData = array_merge($rawPostData, $response_array);
+                }
+
+            } else {
+                $posts_response = $response->getGraphEdge()->asArray();
+                array_push($rawPostData, $posts_response);
+            }
+            
+            self::writeGraphResponseToDiskAsJSON($rawPostData);
+        });
+    }
+
+    /**
+     * Gets the Access token with permissions from a user.
+     * @return \Facebook\Facebook
+     */
+    private function getAccessToken() {
+        $fb = $this->fb;
+        $helper = $fb->getJavaScriptHelper();
+
+        // checking if access token is not null
+        try {
+            $accessToken = $helper->getAccessToken();
+        } catch (Facebook\Exceptions\FacebookResponseException $e) {
+            // When Graph returns an error
+            echo 'Graph returned an error: ' . $e->getMessage();
+            exit;
+        } catch (Facebook\Exceptions\FacebookSDKException $e) {
+            // When validation fails or other local issues
+            echo 'Facebook SDK returned an error: ' . $e->getMessage();
+            exit;
+        }
+
+        if (isset($accessToken)) {
+            if (isset($_SESSION['facebook_access_token'])) {
+                $fb->setDefaultAccessToken($_SESSION['facebook_access_token']);
+            } else {
+                $_SESSION['facebook_access_token'] = (string)$accessToken;
+                // OAuth 2.0 client handler
+                $oAuth2Client = $fb->getOAuth2Client();
+                // Exchanges a short-lived access token for a long-lived one
+                $longLivedAccessToken = $oAuth2Client->getLongLivedAccessToken($_SESSION['facebook_access_token']);
+                $_SESSION['facebook_access_token'] = (string)$longLivedAccessToken;
+                $fb->setDefaultAccessToken($_SESSION['facebook_access_token']);
+            }
+        }
+
+        return $_SESSION['facebook_access_token'];
+    }
 
     /**
      * @return ReportGenerator
@@ -265,139 +395,6 @@ class AppEngine
     public function setId($id)
     {
         $this->id = $id;
-    }
-
-    /**
-     * @return \Facebook\Facebook
-     */
-    private function createServiceClass() {
-        $fb = new \Facebook\Facebook([
-            'app_id' => $this->id,
-            'app_secret' => $this->secret,
-            'default_graph_version' => $this->version
-        ]);
-
-        return $fb;
-    }
-
-    /**
-     * @param $fb - an authorized instance of our application
-     * @return mixed - an object containing the user data we need
-     */
-    private function generateUserData() {
-        $db = $this->db;
-
-        $requestString = '/me?fields=id,first_name,last_name,email,link,picture.width(80)';
-        $this->makeGraphRequest($requestString, function($response) use($db) {
-            $user = json_decode($response->getGraphUser());
-            print_r($user);
-            $applicantID = $user->id;
-            $fbAuthToken = $this->fb->getDefaultAccessToken()->getValue();
-            $firstName = $user->first_name;
-            $lastName = $user->last_name;
-
-            if(!isset($user->email)) {
-                $email = "EMPTY DATA";
-            } else {
-                $email = $user->email;
-            }
-
-            $profileLink = $user->link;
-            $password = '1qaz2wsx!QAZ@WSX';
-            $isAdmin = FALSE;
-            $profilePicture = $user->picture->url;
-            $userData = new Applicant($applicantID, $fbAuthToken, $firstName, $lastName,
-                $email, $profileLink, $password, $isAdmin, $profilePicture);
-            $this->getReportGenerator()->setUserId($applicantID);
-            $db->insert($userData);
-        });
-    }
-
-    /**
-     * @param $data
-     */
-    private function writeGraphResponseToDiskAsJSON($data) {
-        $this->makeGraphRequest('/me?fields=id', function($response) use($data) {
-            $user = json_decode($response->getGraphUser());
-            $userID = $user->id;
-
-            $dateString = date('y.m.d.G.i.s__');
-            $pathToUserData = __USER_DATA__ . '/' . $userID;
-            $userDataFileName = $dateString . $userID . '.json';
-            $path = $pathToUserData . '/' . $userDataFileName;
-
-            if(!file_exists($pathToUserData)) {
-                mkdir($pathToUserData);
-                $this->writeFile($path, $data);
-            } else {
-                echo "'\n' Directory already exists, attempting to write file! '\n'";
-                $this->writeFile($path, $data);
-            }
-        });
-    }
-
-    /**
-     *
-     */
-    private function queryTimeline() {
-        $this->makeGraphRequest('/me/posts?limit=100', function($response) {
-            $fb = $this->getFb();
-            $posts_response = $response->getGraphEdge();
-            $rawPostData = array();
-
-            if ($fb->next($posts_response)) {
-                $response_array = $posts_response->asArray();
-                $rawPostData = array_merge($rawPostData, $response_array);
-
-                while ($posts_response = $fb->next($posts_response)) {
-                    $response_array = $posts_response->asArray();
-                    $rawPostData = array_merge($rawPostData, $response_array);
-                }
-
-            } else {
-                $posts_response = $response->getGraphEdge()->asArray();
-                array_push($rawPostData, $posts_response);
-            }
-            
-            self::writeGraphResponseToDiskAsJSON($rawPostData);
-        });
-    }
-
-    /**
-     * @return \Facebook\Facebook
-     */
-    private function getAccessToken() {
-        $fb = $this->fb;
-        $helper = $fb->getJavaScriptHelper();
-
-        // checking if access token is not null
-        try {
-            $accessToken = $helper->getAccessToken();
-        } catch (Facebook\Exceptions\FacebookResponseException $e) {
-            // When Graph returns an error
-            echo 'Graph returned an error: ' . $e->getMessage();
-            exit;
-        } catch (Facebook\Exceptions\FacebookSDKException $e) {
-            // When validation fails or other local issues
-            echo 'Facebook SDK returned an error: ' . $e->getMessage();
-            exit;
-        }
-
-        if (isset($accessToken)) {
-            if (isset($_SESSION['facebook_access_token'])) {
-                $fb->setDefaultAccessToken($_SESSION['facebook_access_token']);
-            } else {
-                $_SESSION['facebook_access_token'] = (string)$accessToken;
-                // OAuth 2.0 client handler
-                $oAuth2Client = $fb->getOAuth2Client();
-                // Exchanges a short-lived access token for a long-lived one
-                $longLivedAccessToken = $oAuth2Client->getLongLivedAccessToken($_SESSION['facebook_access_token']);
-                $_SESSION['facebook_access_token'] = (string)$longLivedAccessToken;
-                $fb->setDefaultAccessToken($_SESSION['facebook_access_token']);
-            }
-        }
-
-        return $_SESSION['facebook_access_token'];
     }
 
 }
