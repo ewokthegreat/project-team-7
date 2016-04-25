@@ -8,6 +8,9 @@
  */
 class DatabaseConnector {
 
+    /**
+     * DatabaseConnector constructor.
+     */
     function __construct() {
         $this->dsn = "mysql:host=$this->host;dbname=$this->db;charset=$this->charset";
         $this->pdo = new PDO($this->dsn, $this->user, $this->pass, $this->opt);
@@ -27,6 +30,11 @@ class DatabaseConnector {
     private $pdo;
     private $query;
 
+    /**
+     * Does an insert on the specified object.
+     * @param $obj that is being inserted, either a Scan or Applicant
+     * @throws Exception
+     */
     public function insert($obj) {
         if($obj instanceOf DBObject) {
             $props = $obj->getProperties();
@@ -36,16 +44,39 @@ class DatabaseConnector {
                 $ins[] = ':' . $field;
             }
 
+            $ins_backup = $ins;
+            $primary_column = $ins[0];
+
             $ins = implode(',', $ins);
             $fields = implode(',', array_keys($props));
 
             try {
+                if ($primary_column == ':applicantID') { //Check to see if insert is an applicant's table
+                    $applicantID_value = $props["applicantID"];
+                    $allApplicants = $this->selectAllApplicants();
+
+                    foreach($allApplicants as $applicant) { //iterate through all applicant's to see if there is a match
+                        if($applicant->getApplicantID() == $applicantID_value) { //a match was found
+                            $success_update = $this->updateApplicantTable($tableName, $ins_backup, $props);
+                            if ($success_update) { //if inserted, can terminate early
+                                return;
+                            } else {
+                                throw new PDOException("Update failed for applicant table");
+                            }
+                        }
+                    }
+                }
+
+                //If code reaches here, this does a regular insert. This occurs either
+                //because there is a new applicant or a scan is being inserted into the DB.
                 $sql = "INSERT INTO $tableName ($fields) VALUES ($ins)";
 
                 $stmt = $this->pdo->prepare($sql);
-                $stmt->execute($obj->getProperties());
+                $success = $stmt->execute($obj->getProperties());
 
+                trace("Success: " . $success);
             } catch (PDOException $e) {
+                echo 'This is where the error is:';
                 echo $e->getMessage();
             }
         } else {
@@ -54,8 +85,9 @@ class DatabaseConnector {
     }
 
     /**
-     * @param $applicantID
-     * @return mixed
+     * Gets an applicant from the database by there applicant ID.
+     * @param $applicantID primary key value that will be used to get applicant from table.
+     * @return mixed in most cases returns an Applicant object.
      */
     public function selectApplicant($applicantID) {
         $sql = "SELECT * FROM applicant WHERE applicantID = :applicantID";
@@ -67,7 +99,8 @@ class DatabaseConnector {
     }
 
     /**
-     * @return array
+     * Gets all applicants that are current in data base.
+     * @return array of all instances of Applicants.
      */
     public function selectAllApplicants() {
 
@@ -78,6 +111,11 @@ class DatabaseConnector {
         return $allApplicantsArray;
     }
 
+    /**
+     * Gets all the scans from a particular applicant.
+     * @param $applicantID foreign key value that will be used to get all scans.
+     * @return array of scan objects pertaining to one applicant.
+     */
     public function selectAllScansFromApplicant($applicantID) {
         $sql = "SELECT * FROM scan WHERE applicantID = $applicantID";
         $scanForApplicantArray = $this->pdo->query($sql)->fetchAll(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'scan');
@@ -85,6 +123,10 @@ class DatabaseConnector {
         return $scanForApplicantArray;
     }
 
+    /**
+     * Returns a summary of all applicants with scans.
+     * @return array
+     */
     public function createAllUserSummaryObject() {
         $sql = "SELECT * FROM applicant JOIN scan ON applicant.applicantID = scan.applicantID";
         $userSummaryObject = $this->pdo->query($sql)->fetchAll();
@@ -93,9 +135,197 @@ class DatabaseConnector {
     }
 
     /**
+     * This method does an update on applicant table in case an applicant already exists
+     * in the database.
+     * @param $tableName that will be updated
+     * @param $fieldPlaceholders field names used to update the database
+     * @param $props contains all the finromation to the database
+     * @return bool True if the update was successful, otherwise returns false.
+     */
+    public function updateApplicantTable($tableName, $fieldPlaceholders, $props)
+    {
+        //there is a match, now do an update instead of insert
+        $update_sql = "UPDATE $tableName SET fbAuthToken = $fieldPlaceholders[1],
+                                                                 firstName = $fieldPlaceholders[2],
+                                                                 lastName = $fieldPlaceholders[3],
+                                                                 email = $fieldPlaceholders[4],
+                                                                 profileLink = $fieldPlaceholders[5],
+                                                                 password = $fieldPlaceholders[6],
+                                                                 isAdmin = $fieldPlaceholders[7],
+                                                                 profilePicture = $fieldPlaceholders[8] WHERE applicantID = $fieldPlaceholders[0]";
+
+        $stmt = $this->pdo->prepare($update_sql);
+        $stmt->bindValue(":fbAuthToken", $props["fbAuthToken"]);
+        $stmt->bindValue(":firstName", $props["firstName"]);
+        $stmt->bindValue(":lastName", $props["lastName"]);
+        $stmt->bindValue(":email", $props["email"]);
+        $stmt->bindValue(":profileLink", $props["profileLink"]);
+        $stmt->bindValue(":password", $props["password"]);
+        $stmt->bindValue(":isAdmin", $props["isAdmin"]);
+        $stmt->bindValue(":profilePicture", $props["profilePicture"]);
+        $stmt->bindValue(":applicantID", $props["applicantID"]);
+
+        $success_update = $stmt->execute();
+        trace("Success: " . $success_update);
+
+        return $success_update;
+    }
+
+    /**
      * @param $query
      */
     public function setQuery($query) {
         $this->query = $query;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getQuery() {
+        return $this->query;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHost()
+    {
+        return $this->host;
+    }
+
+    /**
+     * @param string $host
+     * @return DatabaseConnector
+     */
+    public function setHost($host)
+    {
+        $this->host = $host;
+        return $this;
+    }
+
+    /**
+     * @return PDO
+     */
+    public function getPdo()
+    {
+        return $this->pdo;
+    }
+
+    /**
+     * @param PDO $pdo
+     * @return DatabaseConnector
+     */
+    public function setPdo($pdo)
+    {
+        $this->pdo = $pdo;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOpt()
+    {
+        return $this->opt;
+    }
+
+    /**
+     * @param array $opt
+     * @return DatabaseConnector
+     */
+    public function setOpt($opt)
+    {
+        $this->opt = $opt;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCharset()
+    {
+        return $this->charset;
+    }
+
+    /**
+     * @param string $charset
+     * @return DatabaseConnector
+     */
+    public function setCharset($charset)
+    {
+        $this->charset = $charset;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDsn()
+    {
+        return $this->dsn;
+    }
+
+    /**
+     * @param string $dsn
+     * @return DatabaseConnector
+     */
+    public function setDsn($dsn)
+    {
+        $this->dsn = $dsn;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDb()
+    {
+        return $this->db;
+    }
+
+    /**
+     * @param string $db
+     * @return DatabaseConnector
+     */
+    public function setDb($db)
+    {
+        $this->db = $db;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param string $user
+     * @return DatabaseConnector
+     */
+    public function setUser($user)
+    {
+        $this->user = $user;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPass()
+    {
+        return $this->pass;
+    }
+
+    /**
+     * @param string $pass
+     * @return DatabaseConnector
+     */
+    public function setPass($pass)
+    {
+        $this->pass = $pass;
+        return $this;
     }
 }
