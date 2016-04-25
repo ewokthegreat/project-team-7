@@ -5,27 +5,29 @@
  * User: ewokthegreat
  * Date: 4/8/2016
  * Time: 5:55 PM
+ * Description: This is a applicant object. This is essentially the person we are
+ * scanning to see if they are a football person.
  */
 class Applicant extends DBObject implements JsonSerializable {
     /**
      * User constructor.
      * @param $id
      * @param $token
-     * @param $fname
-     * @param $lname
+     * @param $firstName
+     * @param $lastName
      * @param $email
      * @param $link
      * @param $pass
      * @param $admin
      * @param $pic
      */
-    public function __construct($id = null, $token = null, $fname = null, $lname = null,
+    public function __construct($id = null, $token = null, $firstName = null, $lastName = null,
                                 $email = null, $link = null, $pass = null, $admin = null, $pic = null)
     {
         $this->applicantID = $id;
         $this->fbAuthToken = $token;
-        $this->firstName = $fname;
-        $this->lastName = $lname;
+        $this->firstName = $firstName;
+        $this->lastName = $lastName;
         $this->email = $email;
         $this->profileLink = $link;
         $this->password = $pass;
@@ -43,6 +45,10 @@ class Applicant extends DBObject implements JsonSerializable {
     protected $isAdmin;
     protected $profilePicture;
 
+    /**
+     * Specify data which should be serialized to JSON
+     * @return array
+     */
     public function jsonSerialize() {
         $props = array();
 
@@ -58,6 +64,10 @@ class Applicant extends DBObject implements JsonSerializable {
         return $props;
     }
 
+    /**
+     * Return the name of the table in the database.
+     * @return string
+     */
     public function getTableName() {
         return 'applicant';
     }
