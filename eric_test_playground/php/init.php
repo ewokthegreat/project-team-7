@@ -4,7 +4,9 @@
  * User: ewokthegreat
  * Date: 4/9/2016
  * Time: 9:23 PM
- * Upder: NOW
+ * Description: This class serves as the gateway to our app. The first step is create
+ * new DictionaryData objects and pass them into our AppEngine. From here, this class
+ * iniitalizes the ReportGenerator class and generates a report.
  */
 ini_set('display_errors',1);
 error_reporting(E_ALL);
@@ -23,11 +25,18 @@ include_once 'Scan.php';
 include_once 'Applicant.php';
 include_once 'DatabaseConnector.php';
 
+/**
+ * Trace is a debugging function.
+ * @param $msg that will be printed to the console window.
+ * @return void.
+ */
 function trace($msg) {
     echo "'\n'****$msg*****'\n'";
 }
-$dictionaries = array();
+//Create empty dictionary array
+$dictionariesArray = array();
 
+//Create new data dictionary objects from CSV file
 $footballPhrases = new DictionaryData("footballPhrases", __PROJECT_ROOT__ . "/dictionaries/football_phrases.csv",5);
 $footballTerms = new DictionaryData("footballTerms", __PROJECT_ROOT__ . "/dictionaries/SpiderWordBank.csv",5);
 $nflLocations = new DictionaryData("nflLocations",  __PROJECT_ROOT__ . "/dictionaries/nfl_city_state.csv",1);
@@ -35,15 +44,22 @@ $nflStadiums = new DictionaryData("nflStadiums",  __PROJECT_ROOT__ . "/dictionar
 $nflTeams = new DictionaryData("nflTeams",  __PROJECT_ROOT__ . "/dictionaries/nfl_team_names.csv", 4);
 $nflPlayers = new DictionaryData("nflPlayers",  __PROJECT_ROOT__ . "/dictionaries/nfl_top_players_2015csv.csv",5);
 
-array_push($dictionaries,$footballPhrases);
-array_push($dictionaries,$footballTerms);
-array_push($dictionaries,$nflLocations);
-array_push($dictionaries,$nflStadiums);
-array_push($dictionaries,$nflTeams);
-array_push($dictionaries,$nflPlayers);
+//Push all DictionaryData objects to dictionariesArray
+array_push($dictionariesArray,$footballPhrases);
+array_push($dictionariesArray,$footballTerms);
+array_push($dictionariesArray,$nflLocations);
+array_push($dictionariesArray,$nflStadiums);
+array_push($dictionariesArray,$nflTeams);
+array_push($dictionariesArray,$nflPlayers);
 
-$app = new AppEngine($dictionaries);
-$app->init();
+//Instantiate AppEngine
+$appEngine = new AppEngine($dictionariesArray);
 
-$reportGenerator = $app->getReportGenerator();
+//Initialize AppEngine
+$appEngine->init();
+
+//Get reference of ReportGenerator from AppEngine
+$reportGenerator = $appEngine->getReportGenerator();
+
+//Generates and returns the report
 $report = $reportGenerator->init();
