@@ -5,6 +5,8 @@
  * User: ewokthegreat
  * Date: 4/12/2016
  * Time: 5:04 AM
+ * This class is responsible for generating the report that will be converted to
+ * a raw JSON object that will will be used to display the information on the front end.
  */
 
 include_once 'Report.php';
@@ -17,10 +19,16 @@ class ReportGenerator implements JsonSerializable
     private $userId;
     private $pathToData;
 
+    /**
+     * ReportGenerator constructor.
+     */
     public function __construct()
     {
     }
 
+    /**
+     * Sets the $path and and raw post data in this object.
+     */
     private function fetchRawPostData()
     {
         $path = $this->getPathToData();
@@ -32,15 +40,20 @@ class ReportGenerator implements JsonSerializable
         $this->setPostDataArray($rawPostData);
     }
 
+    /**
+     * @return Report the report object that the ReportGenerator generated.
+     */
     public function init()
     {
         $this->fetchRawPostData();
         $this->populateFlaggedPostArray();
-        $this->getIntervalFlaggedPosts();
 
         return $this->getReportObject();
     }
 
+    /**
+     * @return Report the instance of of report object.
+     */
     private function getReportObject()
     {
         $pathToDataArray = explode('/', $this->pathToData);
@@ -62,9 +75,9 @@ class ReportGenerator implements JsonSerializable
             }
         }
 
-        $test = $this->flaggedPostArray;
+        $sortedByWeightFlaggedPostArray = $this->flaggedPostArray;
 
-        if (!isset($test) || empty($test)) {
+        if (!isset($sortedByWeightFlaggedPostArray) || empty($sortedByWeightFlaggedPostArray)) {
 
             $report = new Report(
                 $this->userId,
@@ -94,11 +107,11 @@ class ReportGenerator implements JsonSerializable
                 $this->getLastFlaggedPostDate($this->flaggedPostArray),
                 $this->getFlaggedPostsPerYear($this->flaggedPostArray),
                 $this->getBubbleData($this->flaggedPostArray),
-                $test,
+                $sortedByWeightFlaggedPostArray,
                 self::getSortedFlaggedWordsArray($flaggedWordArray),
                 $this->getIntervalFlaggedPosts());
 
-            print_r($report);
+//            print_r($report);
 
             return $report;
         }
@@ -107,100 +120,9 @@ class ReportGenerator implements JsonSerializable
 
 
     /**
-     * @return mixed
-     */
-    public function getFlaggedPostArray()
-    {
-        return $this->flaggedPostArray;
-    }
-
-    /**
-     * @param mixed $flaggedPostArray
-     * @return ReportGenerator
-     */
-    public function setFlaggedPostArray($flaggedPostArray)
-    {
-        $this->flaggedPostArray = $flaggedPostArray;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getUserId()
-    {
-        return $this->userId;
-    }
-
-    /**
-     * @param mixed $userId
-     * @return ReportGenerator
-     */
-    public function setUserId($userId)
-    {
-        $this->userId = $userId;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPathToData()
-    {
-        return $this->pathToData;
-    }
-
-    /**
-     * @param mixed $pathToData
-     * @return ReportGenerator
-     */
-    public function setPathToData($pathToData)
-    {
-        $this->pathToData = $pathToData;
-        return $this;
-    }
-
-    /**
-     * @param $data
+     * Used to help convert this class into JSON object.
      * @return array
      */
-    private function setPostDataArray($data)
-    {
-        $postDataArray = array();
-
-        foreach ($data as $post) {
-            array_push($postDataArray, new PostData($post));
-        }
-
-        return $this->postDataArray = $postDataArray;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPostDataArray()
-    {
-        return $this->postDataArray;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getDictionaryData()
-    {
-        return $this->dictionaryData;
-    }
-
-    /**
-     * @param mixed $dictionaryData
-     * @return ReportGenerator
-     */
-    public function setDictionaryData($dictionaryData)
-    {
-        $this->dictionaryData = $dictionaryData;
-        return $this;
-    }
-
     public function jsonSerialize()
     {
         $props = array();
@@ -502,13 +424,13 @@ class ReportGenerator implements JsonSerializable
 
                 //Checks to see if the length string is less then 2. if it is, it adds a leading 0
                 if (strlen($i) < 2) {
-                    $formmattedMonth = strval(0) . $i;
+                    $formattedMonth = strval(0) . $i;
                 } else {
-                    $formmattedMonth = $i;
+                    $formattedMonth = $i;
                 }
 
                 //Stores, as string, Month as number and year as number
-                $tempStringDate = $formmattedMonth . " " . strval($year);
+                $tempStringDate = $formattedMonth . " " . strval($year);
 
                 //Add new key to array (string date) and set value initial frequency, which is 0.
                 $rangeArray[$tempStringDate] = 0;
@@ -575,9 +497,106 @@ class ReportGenerator implements JsonSerializable
         
         return $bubbleDataArray;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getFlaggedPostArray()
+    {
+        return $this->flaggedPostArray;
+    }
+
+    /**
+     * @param mixed $flaggedPostArray
+     * @return ReportGenerator
+     */
+    public function setFlaggedPostArray($flaggedPostArray)
+    {
+        $this->flaggedPostArray = $flaggedPostArray;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUserId()
+    {
+        return $this->userId;
+    }
+
+    /**
+     * @param mixed $userId
+     * @return ReportGenerator
+     */
+    public function setUserId($userId)
+    {
+        $this->userId = $userId;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPathToData()
+    {
+        return $this->pathToData;
+    }
+
+    /**
+     * @param mixed $pathToData
+     * @return ReportGenerator
+     */
+    public function setPathToData($pathToData)
+    {
+        $this->pathToData = $pathToData;
+        return $this;
+    }
+
+    /**
+     * @param $data
+     * @return array
+     */
+    private function setPostDataArray($data)
+    {
+        $postDataArray = array();
+
+        foreach ($data as $post) {
+            array_push($postDataArray, new PostData($post));
+        }
+
+        return $this->postDataArray = $postDataArray;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPostDataArray()
+    {
+        return $this->postDataArray;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDictionaryData()
+    {
+        return $this->dictionaryData;
+    }
+
+    /**
+     * @param mixed $dictionaryData
+     * @return ReportGenerator
+     */
+    public function setDictionaryData($dictionaryData)
+    {
+        $this->dictionaryData = $dictionaryData;
+        return $this;
+    }
 }
 
 /**
+ * Private inner class. This class will store all the flagged posts and associated
+ * flagged words.
  * Class FlaggedPost
  */
 class FlaggedPost implements JsonSerializable
@@ -585,6 +604,21 @@ class FlaggedPost implements JsonSerializable
     private $postData; //an instance of Post Data object
     private $flaggedWords = array(); //a list of flagged words and associated information per post
 
+    /**
+     * FlaggedPost constructor.
+     * @param $postData PostData the post that is being flagged.
+     * @param $flaggedWords FlaggedWord[] list of flagged words
+     */
+    public function __construct($postData, $flaggedWords)
+    {
+        $this->setPostData($postData);
+        $this->setFlaggedWords($flaggedWords);
+    }
+
+    /**
+     * Used to help convert this class into JSON object.
+     * @return array
+     */
     public function jsonSerialize()
     {
         $props = array();
@@ -595,32 +629,11 @@ class FlaggedPost implements JsonSerializable
         return $props;
     }
 
-    public function __construct($postData, $flaggedWords)
-    {
-        $this->setPostData($postData);
-        $this->setFlaggedWords($flaggedWords);
-    }
-
-    public function getPostData()
-    {
-        return $this->postData;
-    }
-
-    public function setPostData($postData)
-    {
-        $this->postData = $postData;
-    }
-
-    public function getFlaggedWords()
-    {
-        return $this->flaggedWords;
-    }
-
-    public function setFlaggedWords($flaggedWords)
-    {
-        $this->flaggedWords = $flaggedWords;
-    }
-
+    /**
+     * This method calculated the total weight of the post by adding all the
+     * words and phrases that are found in the post and adding them together.
+     * @return int the total weight of the post.
+     */
     public function getTotalWeight()
     {
         $totalWeight = 0;
@@ -630,10 +643,44 @@ class FlaggedPost implements JsonSerializable
         }
         return $totalWeight;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getPostData()
+    {
+        return $this->postData;
+    }
+
+    /**
+     * @param mixed $postData
+     */
+    public function setPostData($postData)
+    {
+        $this->postData = $postData;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFlaggedWords()
+    {
+        return $this->flaggedWords;
+    }
+
+    /**
+     * @param array $flaggedWords
+     */
+    public function setFlaggedWords($flaggedWords)
+    {
+        $this->flaggedWords = $flaggedWords;
+    }
 }
 
 /**
  * Class FlaggedWord
+ * Description: This is a private inner class that is used to store all
+ * the flagged words that is associated with a flagged post.
  */
 class FlaggedWord implements JsonSerializable
 {
@@ -641,6 +688,23 @@ class FlaggedWord implements JsonSerializable
     private $dictWeight; //corresponding weight per word
     private $flaggedWord; //actual flagged word string
 
+    /**
+     * FlaggedWord constructor.
+     * @param $dataDictName
+     * @param $dictWeight
+     * @param $flaggedWord
+     */
+    public function __construct($dataDictName, $dictWeight, $flaggedWord)
+    {
+        $this->setDataDictName($dataDictName);
+        $this->setDictWeight($dictWeight);
+        $this->setFlaggedWord($flaggedWord);
+    }
+
+    /**
+     * Used to help convert this class into JSON object.
+     * @return array
+     */
     public function jsonSerialize()
     {
         $props = array();
@@ -651,40 +715,57 @@ class FlaggedWord implements JsonSerializable
         return $props;
     }
 
-    public function __construct($dataDictName, $dictWeight, $flaggedWord)
-    {
-        $this->setDataDictName($dataDictName);
-        $this->setDictWeight($dictWeight);
-        $this->setFlaggedWord($flaggedWord);
-    }
-
+    /**
+     * @return mixed
+     */
     public function getDataDictName()
     {
         return $this->dataDictName;
     }
 
+    /**
+     * @param mixed $dataDictName
+     * @return FlaggedWord
+     */
     public function setDataDictName($dataDictName)
     {
         $this->dataDictName = $dataDictName;
+        return $this;
     }
 
+    /**
+     * @return mixed
+     */
     public function getDictWeight()
     {
         return $this->dictWeight;
     }
 
+    /**
+     * @param mixed $dictWeight
+     * @return FlaggedWord
+     */
     public function setDictWeight($dictWeight)
     {
         $this->dictWeight = $dictWeight;
+        return $this;
     }
 
+    /**
+     * @return mixed
+     */
     public function getFlaggedWord()
     {
         return $this->flaggedWord;
     }
 
+    /**
+     * @param mixed $flaggedWord
+     * @return FlaggedWord
+     */
     public function setFlaggedWord($flaggedWord)
     {
         $this->flaggedWord = $flaggedWord;
+        return $this;
     }
 }
