@@ -4,43 +4,71 @@
  * User: ewokthegreat
  * Date: 4/9/2016
  * Time: 8:07 PM
+ * Description: This is the heart of our app. This class calls the Facebook API, facilitates all the
+ * calls to the database and persistance of data and also initializes the report class.
  */
 
 class AppEngine
 {
+    private $fb; //an authorized instance of our application
+    private $id = '1679655878969496';
+    private $secret = '74ab0d53fbe6e26d3f001bc7f31cfcea';
+    private $version = 'v2.5';
+    private $token;
+    private $user;
+    private $db;
+    private $reportGenerator;
+    private $wordBankArray;
+//    private $scan;
+
     /**
      * AppEngine constructor.
-     * @param $wordBank
+     * @param $wordBankArray that will be used by the ReportGenerator class.
      */
-    public function __construct($wordBank) {
+    public function __construct($wordBankArray) {
         trace("AppEngine Initialized");
-        $this->wordBank = $wordBank;
+        $this->wordBankArray = $wordBankArray;
         $this->db = new DatabaseConnector();
         $this->reportGenerator = new ReportGenerator();
-        $this->reportGenerator->setDictionaryData($wordBank);
+        $this->reportGenerator->setDictionaryData($wordBankArray);
         $this->fb = $this->createServiceClass();
         $this->token = $this->getAccessToken();
         $this->user = $this->generateUserData();
-
     }
 
+    /**
+     * Runs the initial query to pull all posts from Facebook, generates a
+     * raw JSON report and saves it as a .ace file.
+     */
     public function init() {
         $this->queryTimeline();
         $report = $this->getReportGenerator()->init();
         $this->saveAceData($report);
     }
 
-    private function saveAceData($data) {
-        $applicantID = $data->getUserID();
-        $scanDate = $data->getDateGenerated();
+    /**
+     * Saves a raw JSON Report object to a .ace file that will be utilized
+     * by the front end to create the report.
+     * @param $reportData The raw JSON report data.
+     * @throws Exception
+     */
+    private function saveAceData($reportData) {
+        $applicantID = $reportData->getUserID();
+        $scanDate = $reportData->getDateGenerated();
         $dirPath = __USER_DATA__ . '/' . $applicantID;
         $filename = $scanDate . '__' . $applicantID;
         $extension = '.ace';
         $fullPath = $dirPath . '/' . $filename . $extension;
 
-        $this->writeFile($fullPath, $data);
-        
-        $scan = new Scan($filename, $applicantID, '99', $scanDate, $fullPath);
+        $this->writeFile($fullPath, $reportData);
+
+        //get score, which is the average posts per year
+        $score = $reportData->getFlaggedPostsPerYear();
+
+        //round score
+        $score = round($score, 0, PHP_ROUND_HALF_UP);
+
+        $scan = new Scan($filename, $applicantID, $score, $scanDate, $fullPath);
 
         $this->getDb()->insert($scan);
     }
@@ -80,16 +108,16 @@ class AppEngine
         $callback($response);
     }
 
-    private $fb;
-    private $id = '1679655878969496';
-    private $secret = '74ab0d53fbe6e26d3f001bc7f31cfcea';
-    private $version = 'v2.5';
-    private $token;
-    private $user;
-    private $db;
-    private $reportGenerator;
-    private $wordBank;
-    private $scan;
+//    private $fb;
+//    private $id = '1679655878969496';
+//    private $secret = '74ab0d53fbe6e26d3f001bc7f31cfcea';
+//    private $version = 'v2.5';
+//    private $token;
+//    private $user;
+//    private $db;
+//    private $reportGenerator;
+//    private $wordBank;
+//    private $scan;
 
     /**
      * @return ReportGenerator
