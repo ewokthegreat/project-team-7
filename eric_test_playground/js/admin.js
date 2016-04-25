@@ -15,12 +15,17 @@
      * @param data
      * @private
      */
-    function _requestScript(scriptPath, callback, data) {
+    function _requestScript(scriptPath, callback, data, debug) {
+        var debug = false || debug;
         var xhr = new XMLHttpRequest();
         xhr.open('post', scriptPath);
         xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         xhr.onload = function() {
-            callback(JSON.parse(xhr.responseText));
+            if(debug) {
+                callback(xhr.responseText);
+            } else {
+                callback(JSON.parse(xhr.responseText));
+            }
         };
         xhr.send(JSON.stringify(data));
     }
@@ -74,7 +79,16 @@
      * @private
      */
     function _loadReport(response) {
-        console.log(response);
+        // console.log(response);
+        if (_storageAvailable('localStorage')) {
+            console.log('Good to go!');
+            localStorage.setItem('report', JSON.stringify(response));
+            var url = 'report_beta.html?nocache=1';
+            var reportWindow = window.open(url, '_blank');
+            reportWindow.focus;
+        } else {
+            console.log('LocalStorage is not available in your browser. Try a different browser.');
+        }
     }
 
     /**
@@ -101,17 +115,30 @@
      * @private
      */
     function _handleViewLinkClicks() {
-        var reportLinkArray = document.getElementsByClassName('report-link');
+        var reportLinkArray = document.getElementsByClassName('view-report');
 
         for(var i = 0; i < reportLinkArray.length; i++) {
             var currentLink = reportLinkArray[i];
 
             currentLink.addEventListener('click', function() {
                 console.log('CLICK');
-                console.log(this.dataset.id);
-                var data = { id: this.dataset.id };
+                console.log(this.dataset.path);
+                var data = { path: this.dataset.path };
                 _requestScript('php/reportLoader.php', _loadReport, data);
             });
+        }
+    }
+
+    function _storageAvailable(type) {
+        try {
+            var storage = window[type],
+                x = '__storage_test__';
+            storage.setItem(x, x);
+            storage.removeItem(x);
+            return true;
+        }
+        catch(e) {
+            return false;
         }
     }
 })(window, document, undefined);

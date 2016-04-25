@@ -1,6 +1,12 @@
 /**
  * Created by ewokthegreat on 4/6/2016.
  */
+function BubbleChart(bubbleChartData, bubbleChartElement) {
+    var self = this instanceof BubbleChart ? this : Object.create(BubbleChart.prototype);
+    
+    return self;
+}
+
 (function(window, document, undefined) {
     
     var x = {};

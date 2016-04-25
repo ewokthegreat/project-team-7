@@ -44,16 +44,14 @@ window.fbAsyncInit = function() {
 
     loginButton.addEventListener('click', function() {
         console.log(this);
-        FB.login(function(response) {
-            console.log('Logging in');
-        });
+        FB.getLoginStatus(statusChangeCallback);
     });
     logoutButton.addEventListener('click', function() {
         console.log(this);
         FB.logout();
     });
 
-    FB.getLoginStatus(statusChangeCallback);
+    // FB.getLoginStatus(statusChangeCallback);
 
     return false;
 };
