@@ -350,31 +350,19 @@ class ReportGenerator implements JsonSerializable
     }
 
     /**
-     * @param $flaggedPostArray
-     * @return float
+     * Method that gets average of flagged posts per year
+     * @param $flaggedPostArray array Flagged post array
+     * @return float the average of flagged posts per year.
      */
     public function getFlaggedPostsPerYear($flaggedPostArray)
     {
-//        echo "'\n'***ReportGenerator->getFlaggedPostsPerYear()***'\n'";
-
         $minDate = $this->getFirstFlaggedPostDate($flaggedPostArray);
-//        echo "'\n'minDate: $minDate'\n'";
-
         $maxDate = $this->getLastFlaggedPostDate($flaggedPostArray);
-//        echo "'\n'maxDate: $maxDate'\n'";
-
-//        echo "'\n'maxDate-stringToTime: " . strtotime($maxDate) . "'\n'";
-//        echo "'\n'minDate-stringToTime: " . strtotime($minDate) . "'\n'";
 
         $dateDiff = strtotime($maxDate) - strtotime($minDate);
-//        echo "'\n'dateDiff: $dateDiff'\n'";
-
         $totalYears = floor($dateDiff / (60 * 60 * 24 * 365));
-//        echo "'\n'totalYears: $totalYears'\n'";
 
         $postsPerYear = sizeof($flaggedPostArray) / $totalYears;
-//        echo "'\n'postsPerYear: $postsPerYear'\n'";
-
         return $postsPerYear;
     }
 
@@ -400,44 +388,52 @@ class ReportGenerator implements JsonSerializable
         foreach ($this->flaggedPostArray as $flaggedPost) { //Iterate through all flagged post data
             $date_m_d = date("m Y", strtotime($flaggedPost->getPostData()->getDate())); //convert flagged post data into
                                                                                         // 'Month Year" format.
-            //Increment dateRangeArray frequncy
+            //Increment dateRangeArray frequency
             $dateRangeArray[$date_m_d]++;
         }
-        print_r(PHP_EOL."This is Line Graph Array: ".PHP_EOL);
-        print_r($dateRangeArray);
-//        return array_values($dateRangeArray);
         return $dateRangeArray;
     }
 
-    public function createDateRangeArray($dateFrom, $dateTo)
+    /**
+     * Method to create empty date range array. This will be used to populate our
+     * post per frequency array.
+     * @param $dateFrom string date of first post
+     * @param $dateTo string date of last post
+     * @return array of month and year as the key and 0 for values
+     */
+    private function createDateRangeArray($dateFrom, $dateTo)
     {
         $rangeArray = array(); //array that is being returned
 
+        //Convert to new DateTime objects.
         $dateTimeFrom = new DateTime($dateFrom);
         $dateTimeTo = new DateTime($dateTo);
 
+        //Pull month and year from first post date
         $firstDateMonth = $dateTimeFrom->format('m');
         $firstDateYear = $dateTimeFrom->format('Y');
 
+        //Pull month and year from second first date
         $lastDateMonth = $dateTimeTo->format('m');
         $lastDateYear = $dateTimeTo->format('Y');
 
-        $isFirstIteration= True;
+        $isFirstIteration = True;
 
         //iterate through years
-        for($year = $firstDateYear; $year <= $lastDateYear; $year++) {
+        for($year = $firstDateYear; $year <= $lastDateYear; $year++) { //for loop to increment years
             //If this is the first time the loop is iterating through months of the first year, set the first month
-            //to the first month that was recieved from the first data. otherwise, set the first month as 1
+            //to the first month that was received from the first data. otherwise, set the first month as 1
             if($isFirstIteration) {
                 $month = $firstDateMonth;
                 $isFirstIteration = False;
             } else {
-                $month = 1;
+                $month = 1; //resets month to 1 every time there is a new year
             }
             //iterate through months
             for ($i = $month; $i <= 12; $i++) {
 
-                //Checks to see if the length string is less then 2. if it is, it adds a leading 0
+                //Checks to see if the length string is less then 2. if it is, it adds a leading 0. this is
+                //mainly used for formatting when executing the getIntervalFlaggedPosts method.
                 if (strlen($i) < 2) {
                     $formattedMonth = strval(0) . $i;
                 } else {
@@ -460,33 +456,14 @@ class ReportGenerator implements JsonSerializable
     }
 
     /**
-     * @param $startDate
-     * @param $endDate
-     * @param $flaggedPostArray
-     * @return array
-     */
-//    public function getPostsWithinRange($startDate, $endDate, $flaggedPostArray)
-//    {
-//        $startDate = strtotime($startDate);
-//        $endDate = strtotime($endDate);
-//        $flaggedPostArrayInRange = array();
-//        foreach ($flaggedPostArray as $fpa) {
-//            $curDate = strtotime($fpa->getPostData()->getDate());
-//            if ($curDate > $startDate && $curDate < $endDate) {
-//                array_push($flaggedPostArrayInRange, $fpa);
-//            }
-//        }
-//        return $flaggedPostArrayInRange;
-//    }
-
-    /**
-     * @param $flaggedPostArray
-     * @return array
+     * Used to format the flagged words account into a usable information to be used
+     * to display the flagged words for the bubble data graph.
+     * @param $flaggedPostArray array of Flagged POst
+     * @return array an array of flagged words and frequency which will be used to create
+     * the bubble graph.
      */
     public function getBubbleData($flaggedPostArray)
     {
-        echo "'\n'INSIDE BUBBLE ARRAY'\n'";
-
         $bubbleDataArray = array();
 
         foreach ($flaggedPostArray as $flaggedPost) {
@@ -645,7 +622,7 @@ class FlaggedPost implements JsonSerializable
     }
 
     /**
-     * This method calculated the total weight of the post by adding all the
+     * This method calculates the total weight of the post by adding all the
      * words and phrases that are found in the post and adding them together.
      * @return int the total weight of the post.
      */
