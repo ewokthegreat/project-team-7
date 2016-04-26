@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="css/bootstrap.css">
     <link rel="stylesheet" href="css/report-beta.css">
     <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css" type="text/css" media="all" />
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,800,700,300' rel='stylesheet' type='text/css'>
 
 </head>
 <body>
@@ -20,23 +21,41 @@
         <div id="sidebar" class="col-md-3 sidebar">
 
             <div id="profile-summary" class="panel panel-default">
+                <div id="profile-links" class="center-block">
+                    <a class="fb-link"><img src="img/facebook_icon.svg" /></a>
+                    <img src="img/google_plus_icon.svg" />
+                    <img src="img/twitter_icon.svg" />
+                    <img src="img/linked_in_icon.svg" />
+                </div>
                 <div id="profile-picture" class="center-block dynamic"></div><!--/#profile-picture-->
                 <div id="profile-info" class="text-center">
                     <div id="first-name" class="dynamic"></div>
                     <div id="last-name" class="dynamic"></div>
                     <div id="profile-email" class="dynamic"></div>
                     <div id="profile-scan-date" class="dynamic"></div>
-                    <a id="profile-link" href="#"  class="dynamic"></a>
                 </div><!--/#profile-info-->
+                <div id="data-summary">
+                    <div class="center-block summary-line"></div>
+                    <div id="metric-wrapper">
+                        <div id="frequency-metric"></div><!--/#frequency-metric-->
+                        <div id="quality-metric"></div><!--/#quality-metric-->
+                    </div><!--/#metric-wrapper-->
+                    <div class="center-block summary-line"></div>
+                    <div id="summary-list" class="center-block">
+                        <h3 class="center-block">Summary</h3>
+                        <dl class="dl-horizontal">
+                            <dt>Scan Date</dt><dd class="scan-date"></dd>
+                            <dt>First Flagged Post</dt><dd class="first-flag"></dd>
+                            <dt>Last Flagged Post</dt><dd class="last-flag"></dd>
+                            <dt>Favorite Team</dt><dd class="fav-team"></dd>
+                        </dl>
+                    </div>
+                </div><!--/#data-summary-->
             </div><!--/#profile-summary-->
 
         </div><!--/#sidebar-->
 
         <div id="main-content" class="col-md-9 cod-md-offset-3 content">
-
-            <div id="post-data-summary" class="panel panel-default">
-                <h1>Summary</h1>
-            </div><!--/#post-data-summary-->
 
             <div id="bubble-chart" class="panel panel-default">
                 <h1>Bubble Graph Data</h1>
