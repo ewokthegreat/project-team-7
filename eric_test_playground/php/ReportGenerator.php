@@ -28,7 +28,7 @@ class ReportGenerator implements JsonSerializable
     }
 
     /**
-     * Sets the $path and and raw post data in this object.
+     * Sets the $path and and $rawPostData in this object.
      */
     private function fetchRawPostData()
     {
@@ -144,7 +144,8 @@ class ReportGenerator implements JsonSerializable
      */
     private function populateFlaggedPostArray()
     {
-        $startTime = microtime(true);
+        //used to detrmine the actual time of the algorithm to pull posts, if necessary.
+//        $startTime = microtime(true);
         $flaggedPostsArray = array();
 
         foreach ($this->getPostDataArray() as $currentPost) {// iterate through each post
@@ -180,7 +181,7 @@ class ReportGenerator implements JsonSerializable
         }
 
         //Uses to help us determine how long our main algorithm is taking, in case there is any chance for improvements.
-        echo 'Elapsed Time: ' . (microtime(true) - $startTime) . "seconds";
+//        echo 'Elapsed Time: ' . (microtime(true) - $startTime) . "seconds";
         $this->flaggedPostArray = $flaggedPostsArray;
         return $flaggedPostsArray;
     }
@@ -250,7 +251,6 @@ class ReportGenerator implements JsonSerializable
     public function getSortedFlaggedWordsArray($flaggedWordArray)
     {
         arsort($flaggedWordArray);
-
         return $flaggedWordArray;
     }
 
