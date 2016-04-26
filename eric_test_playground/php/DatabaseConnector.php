@@ -32,7 +32,7 @@ class DatabaseConnector {
 
     /**
      * Does an insert on the specified object.
-     * @param $obj that is being inserted, either a Scan or Applicant
+     * @param $obj Scan/Applicant being inserted into the table.
      * @throws Exception
      */
     public function insert($obj) {
@@ -51,7 +51,8 @@ class DatabaseConnector {
             $fields = implode(',', array_keys($props));
 
             try {
-                if ($primary_column == ':applicantID') { //Check to see if insert is an applicant's table
+                //Check to see if insert is an applicant's table
+                if ($primary_column == ':applicantID') {
                     $applicantID_value = $props["applicantID"];
                     $allApplicants = $this->selectAllApplicants();
 
@@ -61,7 +62,7 @@ class DatabaseConnector {
                             if ($success_update) { //if inserted, can terminate early
                                 return;
                             } else {
-                                throw new PDOException("Update failed for applicant table");
+                                throw new PDOException("Update failed for applicant table.");
                             }
                         }
                     }
@@ -86,7 +87,8 @@ class DatabaseConnector {
 
     /**
      * Gets an applicant from the database by there applicant ID.
-     * @param $applicantID primary key value that will be used to get applicant from table.
+     * @param $applicantID string, primary key value that will be used to
+     * get applicant from table.
      * @return mixed in most cases returns an Applicant object.
      */
     public function selectApplicant($applicantID) {
@@ -113,7 +115,7 @@ class DatabaseConnector {
 
     /**
      * Gets all the scans from a particular applicant.
-     * @param $applicantID foreign key value that will be used to get all scans.
+     * @param $applicantID string foreign key value that will be used to get all scans.
      * @return array of scan objects pertaining to one applicant.
      */
     public function selectAllScansFromApplicant($applicantID) {
@@ -125,7 +127,7 @@ class DatabaseConnector {
 
     /**
      * Returns a summary of all applicants with scans.
-     * @return array
+     * @return array of summary object.
      */
     public function createAllUserSummaryObject() {
         $sql = "SELECT * FROM applicant JOIN scan ON applicant.applicantID = scan.applicantID";

@@ -5,7 +5,8 @@
  * User: ewokthegreat
  * Date: 4/9/2016
  * Time: 3:21 PM
- * Update: today
+ * Details: This class represents a scan and stores basically all the applicant's details
+ * as well as their raw post data.
  */
 class Scan extends DBObject implements JsonSerializable {
     /**
@@ -25,25 +26,16 @@ class Scan extends DBObject implements JsonSerializable {
         $this->path = $path;
     }
 
-    /*
-        $this->setScanID(basename($fileName, '.json'));
-        $fileInfo = explode('__', $this->getScanID());
-        $this->setApplicantID($fileInfo[1]);
-        $this->setDate($fileInfo[0]);
-
-        $path = $this->getScanID() . 'ace';
-
-        $this->setPath($path);
-
-        // Unused field (for now)
-        $this->setScore(NULL);
-     */
     protected $scanID;
     protected $applicantID;
     protected $score;
     protected $date;
     protected $path;
 
+    /**
+     * Used to help convert this class into JSON file.
+     * @return array
+     */
     public function jsonSerialize() {
         $props = array();
 

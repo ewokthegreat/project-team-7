@@ -5,12 +5,20 @@
  * User: ewokthegreat
  * Date: 4/12/2016
  * Time: 3:57 AM
+ * Details: This represents a data dictionary or specific word bank. This will be
+ * used in our algorithm to match posts to words.
  */
 class DictionaryData {
     private $name;
     private $dictionaryArray;
     private $weight;
 
+    /**
+     * DictionaryData constructor.
+     * @param $name
+     * @param $pathToCSV
+     * @param $weight
+     */
     public function __construct($name, $pathToCSV, $weight) {
         $data = preg_split('/,/', file_get_contents($pathToCSV),-1, PREG_SPLIT_NO_EMPTY);
 
@@ -59,6 +67,7 @@ class DictionaryData {
         $this->dictionaryArray = $dictionaryArray;
         return $this;
     }
+
     /**
      * @return mixed
      */
@@ -66,7 +75,6 @@ class DictionaryData {
     {
         return $this->weight;
     }
-
 
     /**
      * @param mixed $weight

@@ -5,6 +5,8 @@
  * User: ewokthegreat
  * Date: 4/17/2016
  * Time: 9:14 PM
+ * Description: This class represents that actual report object that
+ * will be converted to a JSON to be stored on the server.
  */
 class Report implements jsonSerializable {
     private $userID;
@@ -39,7 +41,11 @@ class Report implements jsonSerializable {
      * @param $sortedByWeightFlaggedWordsAndFrequencyArray
      * @param $intervalFlaggedPosts
      */
-    public function __construct($userID, $pathToReportData, $dateGenerated, $percentageOfFlaggedPosts, $averageWeightOfFlaggedPost, $favoriteTeam, $firstFlaggedPostDate, $lastFlaggedPostDate, $flaggedPostsPerYear, $bubbleGraphData, $sortedByWeightFlaggedPostsArray, $sortedByWeightFlaggedWordsAndFrequencyArray, $intervalFlaggedPosts)
+    public function __construct($userID, $pathToReportData, $dateGenerated, $percentageOfFlaggedPosts,
+                                $averageWeightOfFlaggedPost, $favoriteTeam, $firstFlaggedPostDate,
+                                $lastFlaggedPostDate, $flaggedPostsPerYear, $bubbleGraphData,
+                                $sortedByWeightFlaggedPostsArray, $sortedByWeightFlaggedWordsAndFrequencyArray,
+                                $intervalFlaggedPosts)
     {
         $this->userID = $userID;
         $this->pathToReportData = $pathToReportData;
