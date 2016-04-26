@@ -22,10 +22,10 @@
 
             <div id="profile-summary" class="panel panel-default">
                 <div id="profile-links" class="center-block">
-                    <a class="fb-link"><img src="img/facebook_icon.svg" /></a>
-                    <img src="img/google_plus_icon.svg" />
-                    <img src="img/twitter_icon.svg" />
-                    <img src="img/linked_in_icon.svg" />
+                    <a class="fb-link"><img src="img/facebook_icon.svg" class="social-icon"/></a>
+                    <img src="img/google_plus_icon.svg" class="social-icon" />
+                    <img src="img/twitter_icon.svg" class="social-icon"/>
+                    <img src="img/linked_in_icon.svg" class="social-icon" />
                 </div>
                 <div id="profile-picture" class="center-block dynamic"></div><!--/#profile-picture-->
                 <div id="profile-info" class="text-center">
@@ -57,25 +57,71 @@
 
         <div id="main-content" class="col-md-9 cod-md-offset-3 content">
 
-            <div id="bubble-chart" class="panel panel-default">
-                <h1>Bubble Graph Data</h1>
-            </div><!--/#post-data-detail-->
-
-            <div id="freq-line-graph" class="panel panel-default">
-                <h1>Flagged Post Frequency Per Month</h1>
+            <div id="freq-line-graph" class="panel panel-success">
+                <h1 class="panel-heading">Flagged Post Frequency Per Month</h1>
 
                 <div id="freq-graph" class="aGraph"></div>
                 <div id="freq-slider-range" style="width: 80%; margin-left:10%; margin-right:10%"></div>
 
             </div><!--/#line-graph-->
+
+            <div id="bubble-chart" class="panel panel-success">
+                <h1 class="panel-heading">Bubble Graph Data</h1>
+            </div><!--/#post-data-detail-->
+
+            <div id="post-detail-wrapper" class="panel panel-success">
+                <h1 class="panel-heading">Flagged Post Details</h1>
+                <div id="post-detail"></div><!--/#post-detail-->
+            </div><!--/#post-detail-->
         </div><!--/#main-content-->
     </div><!--/.row-->
 </div><!--/.container-fluid-->
 
+<script id="post-detail-template" type="x-tmpl-mustache">
+
+{{ #flaggedPostArr }}
+<div class="flagged-post-data panel panel-default">
+    {{#.}}
+        <div class="panel panel-warning">
+        <h3 class="panel-heading">Post Meta</h3>
+        {{ #postData }}
+            <dl class="dl-horizontal">
+                <dt>Post Date</dt><dd>{{ date }}</dd>
+                <dt>Post ID</dt><dd>{{ id }}</dd>
+                {{ #story }}<dt>Story</dt><dd>{{ story }}</dd>{{ /story }}
+                {{ #message }}<dt>Message</dt><dd>{{ message }}</dd>{{ /message }}
+            </dl>
+        {{ /postData }}
+
+        <h3 class="panel-heading">Flagged Words</h3>
+        <dl class="dl-horizontal">
+
+        {{ #flaggedWords }}
+            {{ #. }}
+
+            <dt>Word</dt><dd>{{ flaggedWord }}</dd>
+            <dt>Dictionary</dt><dd>{{ dataDictName }}</dd>
+            <dt>Weight</dt><dd>{{ dictWeight }}</dd>
+            <hr/>
+            {{ /.}}
+        {{ /flaggedWords }}
+
+        </dl>
+        </div>
+
+    {{/.}}
+</div>
+{{ /flaggedPostArr }}
+
+</script>
+
 <script type="text/javascript" src="js/lib/d3.js"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"></script>
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>-->
+<!--<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"></script>-->
 <script src="js/lib/bootstrap.js"></script>
+<script src="js/lib/mustache.js"></script>
 <script type="text/javascript" src="js/bubbleChart.js"></script>
 <script type="text/javascript" src="js/lineGraph.js"></script>
 <script type="text/javascript" src="js/reportScripts.js"></script>

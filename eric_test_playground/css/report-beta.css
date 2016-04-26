@@ -2,12 +2,19 @@ h1,h2,h3,h4,h5 {
     margin: 0;
     padding: 0;
 }
+html {
+    font-family: 'Open Sans';
+    padding: 10px;
+}
 .content-box {
     border: 1px solid black;
 }
-
+.social-icon {
+    width: 40px;
+    height: 40px;
+}
 #profile-summary {
-    font-family: 'Open Sans';
+    height: 100%;
     /*text-transform: uppercase;*/
 }
 #profile-summary div {
@@ -19,10 +26,6 @@ h1,h2,h3,h4,h5 {
     background-color: black;
     padding: 5px;
     border-radius: 0 0 5px 5px;
-}
-#profile-links img {
-    width: 40px;
-    height: 40px;
 }
 #profile-picture {
     margin-top: 5px;
@@ -106,4 +109,10 @@ path {
 }
 
 #sidebar {
+    height: 100%;
+}
+#freq-slider-range {
+    /*width: 5%;*/
+    margin-left: 5%;
+    margin-bottom: 40px;
 }

@@ -66,6 +66,15 @@
 
     favoriteTeam.innerHTML = report.favoriteTeam.charAt(0).toUpperCase() + report.favoriteTeam.slice(1);
 
+    var flaggedPostArr = report.sortedByWeightFlaggedPostsArray;
+
+    var flaggedPostObj = {
+        flaggedPostArr: flaggedPostArr
+    };
+
+    console.log(flaggedPostObj);
+    
+    _loadTemplate('post-detail', 'post-detail-template', flaggedPostObj );
 
     function _getCurrentApplicantData(id, data) {
         for(var i = 0; i < data.length; i++) {
@@ -75,6 +84,17 @@
                 return currentData;
             }
         }
+    }
+
+    function _loadTemplate(target, template, data) {
+        var template = document.getElementById(template).innerHTML;
+        var target = document.getElementById(target);
+        // target.classList.toggle('hide');
+
+        Mustache.parse(template);
+
+        var rendered = Mustache.render(template, data);
+        target.innerHTML = rendered;
     }
 
 
