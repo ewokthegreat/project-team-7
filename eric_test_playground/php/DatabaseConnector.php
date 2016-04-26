@@ -8,14 +8,6 @@
  */
 class DatabaseConnector {
 
-    /**
-     * DatabaseConnector constructor.
-     */
-    function __construct() {
-        $this->dsn = "mysql:host=$this->host;dbname=$this->db;charset=$this->charset";
-        $this->pdo = new PDO($this->dsn, $this->user, $this->pass, $this->opt);
-    }
-
     private $host = "localhost";
     private $db = "ewoktheg_spider";
     private $user = "ewoktheg_spider";
@@ -29,6 +21,34 @@ class DatabaseConnector {
     ];
     private $pdo;
     private $query;
+
+    /**
+     * DatabaseConnector constructor.
+     */
+    public function __construct() {
+        $this->dsn = "mysql:host=$this->host;dbname=$this->db;charset=$this->charset";
+        $this->init();
+//        $this->pdo = new PDO($this->dsn, $this->user, $this->pass, $this->opt);
+    }
+
+    // The ping() will try to reconnect once if connection lost.
+    /**
+     * Tests database connection before trying to perform SQL command.
+     * If disconnected, attempts to reconnect.
+     * @return bool
+     */
+    public function ping() {
+        try {
+            $this->pdo->query('SELECT 1');
+        } catch (PDOException $e) {
+            $this->init();            // Don't catch exception here, so that re-connect fail will throw exception
+        }
+        return true;
+    }
+
+    public function init() {
+        $this->pdo = new PDO($this->dsn, $this->user, $this->pass, $this->opt);
+    }
 
     /**
      * Does an insert on the specified object.
@@ -73,9 +93,10 @@ class DatabaseConnector {
                 $sql = "INSERT INTO $tableName ($fields) VALUES ($ins)";
 
                 $stmt = $this->pdo->prepare($sql);
-                $success = $stmt->execute($obj->getProperties());
-
-                trace("Success: " . $success);
+                if ($this->ping()) { //pings database. Will throw PDOException if unsuccessful.
+                    $success = $stmt->execute($obj->getProperties());
+                }
+//                trace("Success: " . $success);
             } catch (PDOException $e) {
                 echo 'This is where the error is:';
                 echo $e->getMessage();
@@ -94,7 +115,9 @@ class DatabaseConnector {
     public function selectApplicant($applicantID) {
         $sql = "SELECT * FROM applicant WHERE applicantID = :applicantID";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(['applicantID' => $applicantID]);
+        if ($this->ping()) { //pings database. Will throw PDOException if unsuccessful.
+            $stmt->execute(['applicantID' => $applicantID]);
+        }
         $applicant = $stmt->fetch();
 
         return $applicant;
@@ -107,9 +130,9 @@ class DatabaseConnector {
     public function selectAllApplicants() {
 
         $sql = "SELECT * FROM applicant WHERE applicantID != 999";
-
-        $allApplicantsArray = $this->pdo->query($sql)->fetchAll(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'applicant');
-
+        if ($this->ping()) { //pings database. Will throw PDOException if unsuccessful.
+            $allApplicantsArray = $this->pdo->query($sql)->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'applicant');
+        }
         return $allApplicantsArray;
     }
 
@@ -120,8 +143,9 @@ class DatabaseConnector {
      */
     public function selectAllScansFromApplicant($applicantID) {
         $sql = "SELECT * FROM scan WHERE applicantID = $applicantID";
-        $scanForApplicantArray = $this->pdo->query($sql)->fetchAll(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'scan');
-
+        if ($this->ping()) { //pings database. Will throw PDOException if unsuccessful.
+            $scanForApplicantArray = $this->pdo->query($sql)->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'scan');
+        }
         return $scanForApplicantArray;
     }
 
@@ -131,8 +155,9 @@ class DatabaseConnector {
      */
     public function createAllUserSummaryObject() {
         $sql = "SELECT * FROM applicant JOIN scan ON applicant.applicantID = scan.applicantID";
-        $userSummaryObject = $this->pdo->query($sql)->fetchAll();
-
+        if ($this->ping()) { //pings database. Will throw PDOException if unsuccessful.
+            $userSummaryObject = $this->pdo->query($sql)->fetchAll();
+        }
         return $userSummaryObject;
     }
 
@@ -167,8 +192,9 @@ class DatabaseConnector {
         $stmt->bindValue(":profilePicture", $props["profilePicture"]);
         $stmt->bindValue(":applicantID", $props["applicantID"]);
 
-        $success_update = $stmt->execute();
-        trace("Success: " . $success_update);
+        if ($this->ping()) { //pings database. Will throw PDOException if unsuccessful.
+            $success_update = $stmt->execute();
+        }
 
         return $success_update;
     }

@@ -136,7 +136,7 @@ class AppEngine
         $requestString = '/me?fields=id,first_name,last_name,email,link,picture.width(80)';
         $this->makeGraphRequest($requestString, function($response) use($db) {
             $user = json_decode($response->getGraphUser());
-            print_r($user);
+//            print_r($user);
             $applicantID = $user->id;
             $fbAuthToken = $this->fb->getDefaultAccessToken()->getValue();
             $firstName = $user->first_name;
