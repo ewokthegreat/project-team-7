@@ -1,6 +1,11 @@
 /**
  * Created by ewokthegreat on 3/21/2016.
  */
+/**
+ * Handles front-end interaction with the Facebook API.
+ * Logs the proper user in to facebook and stores a cookie for use with the Facebook PHP-SDK on the back end.
+ * @returns {boolean}
+ */
 window.fbAsyncInit = function() {
     FB.init({
         appId      : '1679655878969496', //Social Spider Test appID
@@ -50,8 +55,6 @@ window.fbAsyncInit = function() {
         console.log(this);
         FB.logout();
     });
-
-    // FB.getLoginStatus(statusChangeCallback);
 
     return false;
 };

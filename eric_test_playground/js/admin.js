@@ -1,6 +1,9 @@
 /**
  * Created by ewokthegreat on 4/17/2016.
  */
+/**
+ * Function that handles DOM manipulation for Profile.html (aka the admin interface).
+ */
 (function(w, d, u) {
 
     var data = {};
@@ -9,7 +12,7 @@
 
 
     /**
-     *
+     *  Wrapper for native XMLHttpRequest Objects
      * @param scriptPath
      * @param callback
      * @param data
@@ -31,8 +34,9 @@
     }
 
     /**
-     *
-     * @param response
+     *  Grabs the data for each applicant, passes it to the templating engine for
+     *  and DOM insertion and attaches click event listeners to the new elements. 
+     * @param response - the content of the XMLHttpRequest
      * @private
      */
     function _populateApplicantTable(response) {
@@ -58,8 +62,9 @@
     }
 
     /**
-     *
-     * @param response
+     *  Grabs the scan data from the database, feeds it to the templating engine for
+     *  DOM insertion and attaches click event handlers to the new elements.
+     * @param response - the content of the XMLHttpRequest
      * @private
      */
     function _populateScanTable(response) {
@@ -82,8 +87,8 @@
     }
 
     /**
-     * 
-     * @param response
+     * Places the report data into LocalStorage via the LocalStorage API
+     * @param response 
      * @private
      */
     function _loadReport(response) {
@@ -100,7 +105,7 @@
     }
 
     /**
-     *
+     *  Adds click event listeners to links in the report table.
      * @private
      */
     function _handleReportLinkClicks() {
@@ -120,7 +125,7 @@
     }
 
     /**
-     *
+     *  Adds click event listeners to each report link
      * @private
      */
     function _handleViewLinkClicks() {
@@ -140,7 +145,7 @@
     }
 
     /**
-     * 
+     * Verifies that LocalStorage API is available and accessible to our scripts.
      * @param type
      * @returns {boolean}
      * @private

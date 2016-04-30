@@ -1,5 +1,10 @@
+/** Created by ewokthegreat on 4/6/2016. */
 /**
- * Created by ewokthegreat on 4/6/2016.
+ * Handles the creation of the bubble chart. REQUIRES D3.js
+ * @param bubbleGraphData - the data that the bubble chart will use
+ * @param bubbleGraphElement - the element that contains the bubble chart.
+ * @returns {BubbleChart}
+ * @constructor
  */
 function BubbleChart(bubbleGraphData, bubbleGraphElement) {
     var selfObj = this instanceof BubbleChart ? this : Object.create(BubbleChart.prototype);

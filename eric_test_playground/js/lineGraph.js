@@ -3,10 +3,10 @@
  */
 /* implementation heavily influenced by http://bl.ocks.org/1166403 */
 /**
- * 
- * @param data
- * @param graphElement
- * @param sliderElement
+ * Creates the line chart REQUIRES D3.js
+ * @param data - The data for D3 to parse.
+ * @param graphElement - The container for the graph element.
+ * @param sliderElement - The container for the slider element.
  * @returns {LineChart}
  * @constructor
  */
@@ -82,7 +82,7 @@ function LineChart(data, graphElement, sliderElement) {
         .attr('d', line(data));
 
     /**
-     * 
+     * Handles granularity on the line chart
      * @param start
      * @param finish
      */
@@ -106,7 +106,7 @@ function LineChart(data, graphElement, sliderElement) {
     });
 
     /**
-     * 
+     * Groan -- JQuery UI slider element.
      */
     $(function () {
         $(sliderElement).slider({
