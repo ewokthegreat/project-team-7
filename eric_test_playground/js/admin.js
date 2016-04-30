@@ -139,6 +139,12 @@
         }
     }
 
+    /**
+     * 
+     * @param type
+     * @returns {boolean}
+     * @private
+     */
     function _storageAvailable(type) {
         try {
             var storage = window[type],

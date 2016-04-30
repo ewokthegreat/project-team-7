@@ -13,10 +13,7 @@
     var applicantArr = JSON.parse(applicantData);
     var applicant = _getCurrentApplicantData(report.userID, applicantArr);
     var freqArr = report.intervalFlaggedPosts;
-
-    console.log(applicant);
-    console.log(report);
-
+    
     var jsonFreq = [];
     for(var date in freqArr) {
         var obj = {};
@@ -71,11 +68,16 @@
     var flaggedPostObj = {
         flaggedPostArr: flaggedPostArr
     };
-
-    console.log(flaggedPostObj);
-    
+   
     _loadTemplate('post-detail', 'post-detail-template', flaggedPostObj );
 
+    /**
+     * 
+     * @param id
+     * @param data
+     * @returns {*}
+     * @private
+     */
     function _getCurrentApplicantData(id, data) {
         for(var i = 0; i < data.length; i++) {
             var currentData = data[i];
@@ -86,6 +88,13 @@
         }
     }
 
+    /**
+     * 
+     * @param target
+     * @param template
+     * @param data
+     * @private
+     */
     function _loadTemplate(target, template, data) {
         var template = document.getElementById(template).innerHTML;
         var target = document.getElementById(target);

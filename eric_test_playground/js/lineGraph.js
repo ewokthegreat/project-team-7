@@ -2,6 +2,14 @@
  * Created by ewokthegreat on 4/23/2016.
  */
 /* implementation heavily influenced by http://bl.ocks.org/1166403 */
+/**
+ * 
+ * @param data
+ * @param graphElement
+ * @param sliderElement
+ * @returns {LineChart}
+ * @constructor
+ */
 function LineChart(data, graphElement, sliderElement) {
     var selfObj = this instanceof LineChart ? this : Object.create(LineChart.prototype);
 
@@ -73,6 +81,11 @@ function LineChart(data, graphElement, sliderElement) {
         .attr('clip-path', 'url(#clip)')
         .attr('d', line(data));
 
+    /**
+     * 
+     * @param start
+     * @param finish
+     */
     function zoom(start, finish) {
         var begin = new Date(start);
         var end = new Date(finish);
@@ -80,18 +93,7 @@ function LineChart(data, graphElement, sliderElement) {
         x.domain([begin, end]);
 
         var t = svg.transition().duration(0);
-
-        // var size = finish - start;
-        // var step = size / 10;
-        // var ticks = [];
-        // for (var i = 0; i <= 10; i++) {
-        //     ticks.push(new Date(Math.floor(start + step * i)));
-        // }
-        //
-        // console.log(ticks);
-        //
-        // xAxis.tickValues(ticks);
-
+        
         t.select(".x.axis").call(xAxis);
         t.select('.path').attr("d", line(data));
     }
@@ -103,6 +105,9 @@ function LineChart(data, graphElement, sliderElement) {
         return d.date;
     });
 
+    /**
+     * 
+     */
     $(function () {
         $(sliderElement).slider({
             range: true,
