@@ -11,8 +11,8 @@
 class AppEngine
 {
     private $fb; //an authorized instance of our application
-    private $id = '1679655878969496';
-    private $secret = '74ab0d53fbe6e26d3f001bc7f31cfcea';
+    private $id = '****';
+    private $secret = '****';
     private $version = 'v2.5';
     private $token;
     private $user;
